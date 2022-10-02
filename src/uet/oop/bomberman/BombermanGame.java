@@ -27,6 +27,9 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 
+import static uet.oop.bomberman.Map.createMap;
+import static uet.oop.bomberman.Map.mapRender;
+
 public class BombermanGame extends Application {
 
     public static final int WIDTH = 31;
@@ -37,8 +40,7 @@ public class BombermanGame extends Application {
     private GraphicsContext gc;
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
-    private List<Entity> stillObjects = new ArrayList<>();
-
+    //private List<Entity> stillObjects = new ArrayList<>();
 
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
@@ -89,53 +91,13 @@ public class BombermanGame extends Application {
         });
     }
 
-
-    public void createMap() throws IOException {
-
-        File file = new File("res/levels/Level" + LEVEL + ".txt");
-        Scanner scanner = new Scanner(file);
-
-        scanner.nextLine();
-
-        List<List<Character>> mapInfo = new ArrayList<>();
-        List<Character> rowInfo;
-        String rowString = "";
-        for (int i = 0; i < HEIGHT; i++) {
-            if (scanner.hasNext()) {
-                rowString = scanner.nextLine();
-                System.out.println(rowString);
-            }
-
-            for (int j = 0; j < WIDTH; j++) {
-                Entity object;
-
-                rowInfo = new ArrayList<>();
-                rowInfo.add(rowString.charAt(j));
-
-                if (rowString.charAt(j) == '#') {
-                    object = new Wall(j, i, Sprite.wall.getFxImage());
-                } else if (rowString.charAt(j) == '*') {
-                    object = new Wall(j, i, Sprite.brick.getFxImage());
-                } else if (rowString.charAt(j) == 'x') {
-                    object = new Wall(j, i, Sprite.portal.getFxImage());
-                } else {
-                    object = new Grass(j, i, Sprite.grass.getFxImage());
-                }
-
-                mapInfo.add(rowInfo);
-
-                stillObjects.add(object);
-            }
-        }
-    }
-
     public void update() {
         entities.forEach(Entity::update);
     }
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        stillObjects.forEach(g -> g.render(gc));
+        mapRender(gc);
         entities.forEach(g -> g.render(gc));
     }
 }
