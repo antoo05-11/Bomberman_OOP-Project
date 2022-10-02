@@ -127,7 +127,6 @@ public class BombermanGame extends Application {
                 stillObjects.add(object);
             }
         }
-
     }
 
     public void update() {
