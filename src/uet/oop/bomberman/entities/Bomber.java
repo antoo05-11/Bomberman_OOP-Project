@@ -1,12 +1,12 @@
 package uet.oop.bomberman.entities;
 
-import com.sun.xml.internal.ws.policy.EffectiveAlternativeSelector;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import uet.oop.bomberman.graphics.Sprite;
 
 import java.security.Key;
 
@@ -16,6 +16,7 @@ public class Bomber extends Entity {
     boolean goRight = false;
     boolean goUp = false;
     boolean goDown = false;
+    int frame = 0;
 
     private static final int SPEED = 2;
 
@@ -25,7 +26,7 @@ public class Bomber extends Entity {
 
     public void saveKeyEvent(KeyCode keyCode, boolean isPress) {
         if (keyCode.isArrowKey()) {
-            if (isPress)
+            if (isPress) {
                 switch (keyCode) {
                     case DOWN:
                         goDown = true;
@@ -40,7 +41,7 @@ public class Bomber extends Entity {
                         goUp = true;
                         break;
                 }
-            else {
+            } else {
                 switch (keyCode) {
                     case DOWN:
                         goDown = false;
@@ -59,11 +60,23 @@ public class Bomber extends Entity {
         }
     }
 
+    public void moving() {
+        if (goRight) {
+            x += SPEED;
+        }
+        if (goLeft) {
+            x -= SPEED;
+        }
+        if (goUp) {
+            y -= SPEED;
+        }
+        if (goDown) {
+            y += SPEED;
+        }
+    }
+
     @Override
     public void update() {
-        if (goRight) x += SPEED;
-        if (goLeft) x -= SPEED;
-        if (goUp) y -= SPEED;
-        if (goDown) y += SPEED;
+        moving();
     }
 }
