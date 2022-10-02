@@ -15,13 +15,24 @@ import uet.oop.bomberman.entities.Grass;
 import uet.oop.bomberman.entities.Wall;
 import uet.oop.bomberman.graphics.Sprite;
 
+import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
+import java.util.logging.Level;
 
 public class BombermanGame extends Application {
 
-    public static final int WIDTH = 20;
-    public static final int HEIGHT = 15;
+    public static final int WIDTH = 31;
+    public static final int HEIGHT = 13;
+
+    public static int LEVEL = 1;
 
     private GraphicsContext gc;
     private Canvas canvas;
@@ -34,7 +45,7 @@ public class BombermanGame extends Application {
     }
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws IOException {
         // Tao Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
         gc = canvas.getGraphicsContext2D();
@@ -78,18 +89,45 @@ public class BombermanGame extends Application {
         });
     }
 
-    public void createMap() {
-        for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
+
+    public void createMap() throws IOException {
+
+        File file = new File("res/levels/Level" + LEVEL + ".txt");
+        Scanner scanner = new Scanner(file);
+
+        scanner.nextLine();
+
+        List<List<Character>> mapInfo = new ArrayList<>();
+        List<Character> rowInfo;
+        String rowString = "";
+        for (int i = 0; i < HEIGHT; i++) {
+            if (scanner.hasNext()) {
+                rowString = scanner.nextLine();
+                System.out.println(rowString);
+            }
+
+            for (int j = 0; j < WIDTH; j++) {
                 Entity object;
-                if (j == 0 || j == HEIGHT - 1 || i == 0 || i == WIDTH - 1) {
-                    object = new Wall(i, j, Sprite.wall.getFxImage());
+
+                rowInfo = new ArrayList<>();
+                rowInfo.add(rowString.charAt(j));
+
+                if (rowString.charAt(j) == '#') {
+                    object = new Wall(j, i, Sprite.wall.getFxImage());
+                } else if (rowString.charAt(j) == '*') {
+                    object = new Wall(j, i, Sprite.brick.getFxImage());
+                } else if (rowString.charAt(j) == 'x') {
+                    object = new Wall(j, i, Sprite.portal.getFxImage());
                 } else {
-                    object = new Grass(i, j, Sprite.grass.getFxImage());
+                    object = new Grass(j, i, Sprite.grass.getFxImage());
                 }
+
+                mapInfo.add(rowInfo);
+
                 stillObjects.add(object);
             }
         }
+
     }
 
     public void update() {

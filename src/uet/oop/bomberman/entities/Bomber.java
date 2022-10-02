@@ -17,6 +17,8 @@ public class Bomber extends Entity {
     boolean goUp = false;
     boolean goDown = false;
 
+    private static final int SPEED = 2;
+
     public Bomber(int x, int y, Image img) {
         super(x, y, img);
     }
@@ -59,9 +61,9 @@ public class Bomber extends Entity {
 
     @Override
     public void update() {
-        if(goRight) x++;
-        if(goLeft) x--;
-        if(goUp) y--;
-        if(goDown) y++;
+        if (goRight) x += SPEED;
+        if (goLeft) x -= SPEED;
+        if (goUp) y -= SPEED;
+        if (goDown) y += SPEED;
     }
 }
