@@ -1,6 +1,5 @@
 package uet.oop.bomberman.entities;
 
-import com.sun.xml.internal.ws.policy.EffectiveAlternativeSelector;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
