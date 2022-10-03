@@ -2,8 +2,10 @@ package uet.oop.bomberman.entities;
 
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import uet.oop.bomberman.CollisionManager;
 import uet.oop.bomberman.entities.bombmaster.Bomb;
 import uet.oop.bomberman.graphics.Sprite;
+import uet.oop.bomberman.Direction.DIRECTION;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -12,22 +14,26 @@ public class Bomber extends Entity {
     /**
      * Direction check and bombed check.
      */
+    private CollisionManager collisionManager;
     boolean goLeft = false;
     boolean goRight = false;
     boolean goUp = false;
     boolean goDown = false;
+    boolean isRunning = false;
 
     private KeyCode latestDirectKey = KeyCode.RIGHT;
     boolean bombed = false;
     public List<Entity> bombsList = new LinkedList<>();
     Entity newBomb;
 
+
+    private int speed = 2;
     int indexOfSprite = 0;
 
-    private static final int SPEED = 2;
 
-    public Bomber(int x, int y, Image img) {
+    public Bomber(int x, int y, Image img, CollisionManager collisionManager) {
         super(x, y, img);
+        this.collisionManager = collisionManager;
     }
 
     public void setSprite(Image img) {
@@ -39,15 +45,19 @@ public class Bomber extends Entity {
             switch (keyCode) {
                 case DOWN:
                     goDown = isPress;
+                    if (collisionManager.collide(x, y, "DOWN")) goDown = false;
                     break;
                 case LEFT:
                     goLeft = isPress;
+                    if (collisionManager.collide(x, y, "LEFT")) goLeft = false;
                     break;
                 case RIGHT:
                     goRight = isPress;
+                    if (collisionManager.collide(x, y, "RIGHT")) goRight = false;
                     break;
                 case UP:
                     goUp = isPress;
+                    if (collisionManager.collide(x, y, "UP")) goUp = false;
                     break;
             }
             if (!isPress) {
@@ -72,7 +82,6 @@ public class Bomber extends Entity {
     }
 
     private void moving() {
-
         if (goUp || goDown || goRight || goLeft) indexOfSprite++;
         else {
             switch (latestDirectKey) {
@@ -96,8 +105,7 @@ public class Bomber extends Entity {
                     Sprite.player_down_1,
                     Sprite.player_down_2, indexOfSprite, 20).getFxImage()
             );
-            y += SPEED;
-
+            y += speed;
         }
         if (goLeft) {
             setSprite(Sprite.movingSprite(
@@ -105,14 +113,15 @@ public class Bomber extends Entity {
                     Sprite.player_left_1,
                     Sprite.player_left_2, indexOfSprite, 20).getFxImage()
             );
-            x -= SPEED;
+            x -= speed;
         }
         if (goUp) {
             setSprite(Sprite.movingSprite(
                     Sprite.player_up,
                     Sprite.player_up_1,
                     Sprite.player_up_2, indexOfSprite, 20).getFxImage());
-            y -= SPEED;
+            y -= speed;
+
         }
         if (goRight) {
             setSprite(Sprite.movingSprite(
@@ -120,7 +129,7 @@ public class Bomber extends Entity {
                     Sprite.player_right_1,
                     Sprite.player_right_2, indexOfSprite, 20).getFxImage()
             );
-            x += SPEED;
+            x += speed;
         }
     }
 
@@ -130,8 +139,8 @@ public class Bomber extends Entity {
             if (((Bomb) bombsList.get(0)).getBombStatus() == Bomb.BombStatus.DISAPPEAR) {
                 bombsList.remove(0);
             }
-        for(Entity i : bombsList) {
-            if(((Bomb)i).getBombStatus() == Bomb.BombStatus.NotExplodedYet) ((Bomb)i).render(gc);
+        for (Entity i : bombsList) {
+            if (((Bomb) i).getBombStatus() == Bomb.BombStatus.NotExplodedYet) ((Bomb) i).render(gc);
         }
 
     }
