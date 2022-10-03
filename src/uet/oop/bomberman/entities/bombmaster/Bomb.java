@@ -79,7 +79,6 @@ public class Bomb extends Entity {
 
         if (bombStatus == BombStatus.EXPLODED) {
             indexOfSprite = (indexOfSprite < 1000) ? indexOfSprite + 1 : 0;
-            System.out.println(indexOfSprite);
             ((FlameAround) flameAroundList.get(0)).setSprite(Sprite.movingSprite(Sprite.explosion_vertical_down_last,
                     Sprite.explosion_vertical_down_last1,
                     Sprite.explosion_vertical_down_last2,
@@ -107,7 +106,6 @@ public class Bomb extends Entity {
             if (indexOfSprite == 15) {
                 bombStatus = BombStatus.DISAPPEAR;
             }
-
         }
     }
 
