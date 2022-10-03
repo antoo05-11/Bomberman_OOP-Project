@@ -31,7 +31,7 @@ public class BombermanGame extends Application {
 
     public static final int WIDTH = 31;
     public static final int HEIGHT = 13;
-    Map map = new Map(1);
+     Map map = new Map(1);
     public static int LEVEL = 1;
     private GraphicsContext gc;
     private Canvas canvas;
@@ -73,6 +73,7 @@ public class BombermanGame extends Application {
 
         bomberman.setGraphicsContext(gc);
         entities.add(bomberman);
+        System.out.println(map.getEntityAt(0, 1));
 
         /**
          * Catch keyboard event
@@ -100,4 +101,5 @@ public class BombermanGame extends Application {
         map.mapRender(gc);
         entities.forEach(g -> g.render(gc));
     }
+
 }
