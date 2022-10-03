@@ -99,6 +99,5 @@ public class BombermanGame extends Application {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         map.mapRender(gc);
         entities.forEach(g -> g.render(gc));
-        ((Bomber) bomberman).bombsList.forEach(g -> g.render(gc));
     }
 }

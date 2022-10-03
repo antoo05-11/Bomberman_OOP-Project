@@ -22,14 +22,16 @@ public class Bomb extends Entity {
     int indexOfSprite = 0;
     protected BombStatus bombStatus;
     protected List<Entity> flameAroundList = new ArrayList<>();
-    Timer timer = new Timer(); //timer for counting 3 seconds before exploding
+
+    /**
+     * Timer for counting 3 seconds before exploding.
+     */
+    Timer timer = new Timer();
     TimerTask task = new TimerTask() {
         int i = 0;
-
         @Override
         public void run() {
             i++;
-            //System.out.println(i + " " + waitForExplodingTime);
             if ((waitForExplodingTime - i) <= 0) {
                 bombStatus = BombStatus.EXPLODED;
                 timer.cancel();
@@ -38,6 +40,9 @@ public class Bomb extends Entity {
         }
     };
 
+    /**
+     * Constructor for Bomb, run timer and add all flame sprite around.
+     */
     public Bomb(int x, int y, Image img) {
         super(x, y, img);
         timer.schedule(task, 0, 1000);
@@ -95,9 +100,6 @@ public class Bomb extends Entity {
                 bombStatus = BombStatus.DISAPPEAR;
             }
                 flameAroundList.forEach(g -> g.render(gc));
-        }
-        if (bombStatus == BombStatus.DISAPPEAR) {
-
         }
     }
 

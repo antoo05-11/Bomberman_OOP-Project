@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Bomber extends Entity {
-    private KeyCode keyCode;
     /**
      * Direction check and bombed check.
      */
@@ -17,6 +16,8 @@ public class Bomber extends Entity {
     boolean goRight = false;
     boolean goUp = false;
     boolean goDown = false;
+
+    private KeyCode latestDirectKey = KeyCode.RIGHT;
     boolean bombed = false;
     public List<Entity> bombsList = new LinkedList<>();
     Entity newBomb;
@@ -52,6 +53,7 @@ public class Bomber extends Entity {
             if (!isPress) {
                 indexOfSprite = 0;
             }
+            latestDirectKey = keyCode;
         }
         if (keyCode == KeyCode.SPACE) {
             bombed = isPress;
@@ -60,8 +62,8 @@ public class Bomber extends Entity {
 
     private void setBomb() {
         if (bombed) {
-            newBomb = new Bomb(x / Sprite.SCALED_SIZE,
-                    y / Sprite.SCALED_SIZE,
+            newBomb = new Bomb((x + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE,
+                    (y + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE,
                     Sprite.bomb.getFxImage());
             newBomb.setGraphicsContext(gc);
             bombsList.add(newBomb);
@@ -70,7 +72,24 @@ public class Bomber extends Entity {
     }
 
     private void moving() {
+
         if (goUp || goDown || goRight || goLeft) indexOfSprite++;
+        else {
+            switch (latestDirectKey) {
+                case LEFT:
+                    setSprite(Sprite.player_left.getFxImage());
+                    break;
+                case RIGHT:
+                    setSprite(Sprite.player_right.getFxImage());
+                    break;
+                case UP:
+                    setSprite(Sprite.player_up.getFxImage());
+                    break;
+                case DOWN:
+                    setSprite(Sprite.player_down.getFxImage());
+                    break;
+            }
+        }
         if (goDown) {
             setSprite(Sprite.movingSprite(
                     Sprite.player_down,
@@ -105,14 +124,22 @@ public class Bomber extends Entity {
         }
     }
 
+    private void updateAndRenderBombsList() {
+        bombsList.forEach(Entity::update);
+        if (!bombsList.isEmpty())
+            if (((Bomb) bombsList.get(0)).getBombStatus() == Bomb.BombStatus.DISAPPEAR) {
+                bombsList.remove(0);
+            }
+        for(Entity i : bombsList) {
+            if(((Bomb)i).getBombStatus() == Bomb.BombStatus.NotExplodedYet) ((Bomb)i).render(gc);
+        }
+
+    }
+
     @Override
     public void update() {
         moving();
         setBomb();
-        bombsList.forEach(Entity::update);
-        if(!bombsList.isEmpty())
-        if(((Bomb)bombsList.get(0)).getBombStatus() == Bomb.BombStatus.DISAPPEAR) {
-            bombsList.remove(0);
-        }
+        updateAndRenderBombsList();
     }
 }
