@@ -71,7 +71,6 @@ public class BombermanGame extends Application {
 
         map.createMap();
 
-        bomberman.setGraphicsContext(gc);
         entities.add(bomberman);
         System.out.println(map.getEntityAt(1, 2));
 
@@ -93,13 +92,14 @@ public class BombermanGame extends Application {
     }
 
     public void update() {
+        entities.forEach(g -> g.render(gc));
         entities.forEach(Entity::update);
     }
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         map.mapRender(gc);
-        entities.forEach(g -> g.render(gc));
+
     }
 
 }

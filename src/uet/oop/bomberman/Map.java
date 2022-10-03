@@ -61,7 +61,16 @@ public class Map {
         }
     }
 
-    public Entity getEntityAt(int x, int y) {
-        return mapInfo.get(Math.round(y / Sprite.SCALED_SIZE)).get(Math.round(x / Sprite.SCALED_SIZE));
+    public String getEntityAt(int x, int y) {
+        if (mapInfo.get(y).get(x) instanceof Wall) {
+            return "WALL";
+        }
+        if (mapInfo.get(y).get(x) instanceof Brick) {
+            return "Brick";
+        }
+        if (mapInfo.get(y).get(x) instanceof Grass) {
+            return "Grass";
+        }
+        return "Nothing";
     }
 }
