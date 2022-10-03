@@ -2,6 +2,7 @@ package uet.oop.bomberman;
 
 import javafx.scene.canvas.GraphicsContext;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.stillobjectmaster.Brick;
 import uet.oop.bomberman.entities.stillobjectmaster.Grass;
 import uet.oop.bomberman.entities.stillobjectmaster.Wall;
 import uet.oop.bomberman.graphics.Sprite;
@@ -15,7 +16,8 @@ import java.util.Scanner;
 import static uet.oop.bomberman.BombermanGame.*;
 
 public class Map {
-    private List<Entity> stillObjects = new ArrayList<>();
+    private List<List<Entity>> mapInfo = new ArrayList<>();
+    private List<Entity> renderObject = new ArrayList<>();
     int LEVEL;
 
     public Map(int LEVEL) {
@@ -29,43 +31,47 @@ public class Map {
 
         scanner.nextLine();
 
-        List<List<Character>> mapInfo = new ArrayList<>();
-        List<Character> rowInfo;
         String rowString = "";
         for (int i = 0; i < HEIGHT; i++) {
-            if (scanner.hasNext()) {
                 rowString = scanner.nextLine();
-            }
-
+                List<Entity> stillObject = new ArrayList<>();
             for (int j = 0; j < WIDTH; j++) {
-                Entity object;
-
-                rowInfo = new ArrayList<>();
-                rowInfo.add(rowString.charAt(j));
-
-                switch (rowString.charAt(j)) {
+                switch (rowString.charAt(j)){
                     case '#':
-                        object = new Wall(j, i, Sprite.wall.getFxImage());
+                        stillObject.add(new Wall(j, i, Sprite.wall.getFxImage()));
+                        renderObject.add(new Wall(j, i, Sprite.wall.getFxImage()));
                         break;
                     case '*':
-                        object = new Wall(j, i, Sprite.brick.getFxImage());
-                        break;
-                    case 'x':
-                        object = new Wall(j, i, Sprite.portal.getFxImage());
+                        stillObject.add(new Brick(j, i, Sprite.brick.getFxImage()));
+                        renderObject.add(new Brick(j, i, Sprite.brick.getFxImage()));
                         break;
                     default:
-                        object = new Grass(j, i, Sprite.grass.getFxImage());
+                        stillObject.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                        renderObject.add(new Grass(j, i, Sprite.grass.getFxImage()));
                         break;
                 }
-
-                mapInfo.add(rowInfo);
-
-                stillObjects.add(object);
+                mapInfo.add(stillObject);
             }
         }
+        scanner.close();
     }
 
     public void mapRender(GraphicsContext gc) {
-        stillObjects.forEach(g -> g.render(gc));
+        for(Entity x : renderObject){
+            x.render(gc);
+        }
+    }
+
+    public String getEntityAt(int x, int y){
+        if (mapInfo.get(y).get(x) instanceof Wall){
+            return "WALL";
+        }
+        if (mapInfo.get(y).get(x) instanceof Brick){
+            return "Brick";
+        }
+        if (mapInfo.get(y).get(x) instanceof Grass){
+            return "Grass";
+        }
+        return "Nothing";
     }
 }
