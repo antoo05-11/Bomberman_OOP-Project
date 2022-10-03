@@ -1,5 +1,6 @@
 package uet.oop.bomberman.entities.bombmaster;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graphics.Sprite;
@@ -28,6 +29,7 @@ public class Bomb extends Entity {
     Timer timer = new Timer();
     TimerTask task = new TimerTask() {
         int i = 0;
+
         @Override
         public void run() {
             i++;
@@ -57,8 +59,15 @@ public class Bomb extends Entity {
     public BombStatus getBombStatus() {
         return bombStatus;
     }
+
     private void setSprite(Image img) {
         this.img = img;
+    }
+
+    @Override
+    public void render(GraphicsContext gc) {
+        if (bombStatus == BombStatus.NotExplodedYet) super.render(gc);
+        if (bombStatus == BombStatus.EXPLODED) flameAroundList.forEach(g -> g.render(gc));
     }
 
     @Override
@@ -98,7 +107,7 @@ public class Bomb extends Entity {
             if (indexOfSprite == 15) {
                 bombStatus = BombStatus.DISAPPEAR;
             }
-                flameAroundList.forEach(g -> g.render(gc));
+
         }
     }
 

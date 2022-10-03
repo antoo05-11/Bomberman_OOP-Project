@@ -3,15 +3,15 @@ package uet.oop.bomberman;
 import uet.oop.bomberman.entities.Entity;
 
 public class CollisionManager {
-     private Map map;
+    private Map map;
 
     public static enum DIRECTION {
         UP, DOWN, LEFT, RIGHT, CENTER, STOP;
     }
 
-     public CollisionManager(Map map){
-         this.map = map;
-     }
+    public CollisionManager(Map map) {
+        this.map = map;
+    }
 
      /*public boolean collide(int x, int y, DIRECTION dir){
          Entity object1;

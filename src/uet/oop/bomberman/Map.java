@@ -62,7 +62,6 @@ public class Map {
     }
 
     public String getEntityAt(int x, int y) {
-        //System.out.println(mapInfo.get(y).get(x).getClass());
         if (mapInfo.get(y).get(x) instanceof Wall) {
             return "WALL";
         }

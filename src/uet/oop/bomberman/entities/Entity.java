@@ -16,7 +16,6 @@ public abstract class Entity {
     protected int y;
 
     protected Image img;
-    public GraphicsContext gc;
 
     //Khởi tạo đối tượng, chuyển từ tọa độ đơn vị sang tọa độ trong canvas
     public Entity( int xUnit, int yUnit, Image img) {
@@ -31,9 +30,6 @@ public abstract class Entity {
     public abstract void update();
     public void saveKeyEvent(KeyCode keyCode, boolean isPress) {
 
-    }
-    public void setGraphicsContext(GraphicsContext gc) {
-        this.gc = gc;
     }
 
 }

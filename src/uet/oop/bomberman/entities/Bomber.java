@@ -1,5 +1,6 @@
 package uet.oop.bomberman.entities;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import uet.oop.bomberman.entities.bombmaster.Bomb;
@@ -65,7 +66,6 @@ public class Bomber extends Entity {
             newBomb = new Bomb((x + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE,
                     (y + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE,
                     Sprite.bomb.getFxImage());
-            newBomb.setGraphicsContext(gc);
             bombsList.add(newBomb);
             bombed = false;
         }
@@ -124,22 +124,26 @@ public class Bomber extends Entity {
         }
     }
 
-    private void updateAndRenderBombsList() {
+    private void updateBombsList() {
         bombsList.forEach(Entity::update);
         if (!bombsList.isEmpty())
             if (((Bomb) bombsList.get(0)).getBombStatus() == Bomb.BombStatus.DISAPPEAR) {
                 bombsList.remove(0);
             }
-        for(Entity i : bombsList) {
-            if(((Bomb)i).getBombStatus() == Bomb.BombStatus.NotExplodedYet) ((Bomb)i).render(gc);
-        }
+    }
 
+    @Override
+    public void render(GraphicsContext gc) {
+        for(Entity i : bombsList) {
+            i.render(gc);
+        }
+        super.render(gc);
     }
 
     @Override
     public void update() {
         moving();
         setBomb();
-        updateAndRenderBombsList();
+        updateBombsList();
     }
 }
