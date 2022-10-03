@@ -43,7 +43,6 @@ public class BombermanGame extends Application {
         Application.launch(BombermanGame.class);
     }
 
-
     @Override
     public void start(Stage stage) throws IOException {
         // Tao Canvas
@@ -72,9 +71,12 @@ public class BombermanGame extends Application {
 
         map.createMap();
 
+        bomberman.setGraphicsContext(gc);
         entities.add(bomberman);
 
-
+        /**
+         * Catch keyboard event
+         */
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {

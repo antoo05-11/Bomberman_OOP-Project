@@ -10,7 +10,6 @@ import java.util.List;
 
 public class Bomber extends Entity {
     private KeyCode keyCode;
-
     /**
      * Direction check and bombed check.
      */
@@ -36,36 +35,21 @@ public class Bomber extends Entity {
 
     public void saveKeyEvent(KeyCode keyCode, boolean isPress) {
         if (keyCode.isArrowKey()) {
-            if (isPress) {
-                switch (keyCode) {
-                    case DOWN:
-                        goDown = true;
-                        break;
-                    case LEFT:
-                        goLeft = true;
-                        break;
-                    case RIGHT:
-                        goRight = true;
-                        break;
-                    case UP:
-                        goUp = true;
-                        break;
-                }
-            } else {
-                switch (keyCode) {
-                    case DOWN:
-                        goDown = false;
-                        break;
-                    case LEFT:
-                        goLeft = false;
-                        break;
-                    case RIGHT:
-                        goRight = false;
-                        break;
-                    case UP:
-                        goUp = false;
-                        break;
-                }
+            switch (keyCode) {
+                case DOWN:
+                    goDown = isPress;
+                    break;
+                case LEFT:
+                    goLeft = isPress;
+                    break;
+                case RIGHT:
+                    goRight = isPress;
+                    break;
+                case UP:
+                    goUp = isPress;
+                    break;
+            }
+            if (!isPress) {
                 indexOfSprite = 0;
             }
         }
@@ -76,15 +60,18 @@ public class Bomber extends Entity {
 
     private void setBomb() {
         if (bombed) {
-            newBomb = new Bomb(x / Sprite.SCALED_SIZE, y / Sprite.SCALED_SIZE, Sprite.bomb.getFxImage());
+            newBomb = new Bomb(x / Sprite.SCALED_SIZE,
+                    y / Sprite.SCALED_SIZE,
+                    Sprite.bomb.getFxImage());
+            newBomb.setGraphicsContext(gc);
             bombsList.add(newBomb);
             bombed = false;
         }
     }
 
     private void moving() {
+        if (goUp || goDown || goRight || goLeft) indexOfSprite++;
         if (goDown) {
-            indexOfSprite++;
             setSprite(Sprite.movingSprite(
                     Sprite.player_down,
                     Sprite.player_down_1,
@@ -94,7 +81,6 @@ public class Bomber extends Entity {
 
         }
         if (goLeft) {
-            indexOfSprite++;
             setSprite(Sprite.movingSprite(
                     Sprite.player_left,
                     Sprite.player_left_1,
@@ -103,7 +89,6 @@ public class Bomber extends Entity {
             x -= SPEED;
         }
         if (goUp) {
-            indexOfSprite++;
             setSprite(Sprite.movingSprite(
                     Sprite.player_up,
                     Sprite.player_up_1,
@@ -111,7 +96,6 @@ public class Bomber extends Entity {
             y -= SPEED;
         }
         if (goRight) {
-            indexOfSprite++;
             setSprite(Sprite.movingSprite(
                     Sprite.player_right,
                     Sprite.player_right_1,
@@ -126,5 +110,9 @@ public class Bomber extends Entity {
         moving();
         setBomb();
         bombsList.forEach(Entity::update);
+        if(!bombsList.isEmpty())
+        if(((Bomb)bombsList.get(0)).getBombStatus() == Bomb.BombStatus.DISAPPEAR) {
+            bombsList.remove(0);
+        }
     }
 }

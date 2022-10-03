@@ -8,7 +8,12 @@ public class FlameAround extends Entity {
     public FlameAround(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
-
+    public void setSprite(Image img) {
+        this.img = img;
+    }
+    public Image getSprite() {
+        return img;
+    }
     @Override
     public void update() {
 
