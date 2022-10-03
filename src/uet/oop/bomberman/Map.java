@@ -2,8 +2,8 @@ package uet.oop.bomberman;
 
 import javafx.scene.canvas.GraphicsContext;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.Grass;
-import uet.oop.bomberman.entities.Wall;
+import uet.oop.bomberman.entities.stillobjectmaster.Grass;
+import uet.oop.bomberman.entities.stillobjectmaster.Wall;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.io.File;
