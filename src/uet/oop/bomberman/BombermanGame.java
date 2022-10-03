@@ -36,6 +36,7 @@ public class BombermanGame extends Application {
     private GraphicsContext gc;
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
+    //private List<Entity> stillObjects = new ArrayList<>();
     Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
 
     public static void main(String[] args) {
