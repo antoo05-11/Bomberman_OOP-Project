@@ -43,31 +43,38 @@ public class Bomber extends Entity {
         if (keyCode.isArrowKey()) {
             if (isPress) {
                 indexOfSprite++;
-                if (indexOfSprite > 2) indexOfSprite = 0;
+                //if (indexOfSprite > 2) indexOfSprite = 0;
                 switch (keyCode) {
                     case DOWN:
                         goDown = true;
-                        if (indexOfSprite == 0) setSprite(Sprite.player_down.getFxImage());
-                        else if (indexOfSprite == 1) setSprite(Sprite.player_down_1.getFxImage());
-                        else if (indexOfSprite == 2) setSprite(Sprite.player_down_2.getFxImage());
+                        setSprite(Sprite.movingSprite(
+                                Sprite.player_down,
+                                Sprite.player_down_1,
+                                Sprite.player_down_2, indexOfSprite, 10).getFxImage()
+                        );
                         break;
                     case LEFT:
                         goLeft = true;
-                        if (indexOfSprite == 0) setSprite(Sprite.player_left.getFxImage());
-                        else if (indexOfSprite == 1) setSprite(Sprite.player_left_1.getFxImage());
-                        else if (indexOfSprite == 2) setSprite(Sprite.player_left_2.getFxImage());
+                        setSprite(Sprite.movingSprite(
+                                Sprite.player_left,
+                                Sprite.player_left_1,
+                                Sprite.player_left_2, indexOfSprite, 10).getFxImage()
+                        );
                         break;
                     case RIGHT:
                         goRight = true;
-                        if (indexOfSprite == 0) setSprite(Sprite.player_right.getFxImage());
-                        else if (indexOfSprite == 1) setSprite(Sprite.player_right_1.getFxImage());
-                        else if (indexOfSprite == 2) setSprite(Sprite.player_right_2.getFxImage());
+                        setSprite(Sprite.movingSprite(
+                                Sprite.player_right,
+                                Sprite.player_right_1,
+                                Sprite.player_right_2, indexOfSprite, 10).getFxImage()
+                        );
                         break;
                     case UP:
                         goUp = true;
-                        if (indexOfSprite == 0) setSprite(Sprite.player_up.getFxImage());
-                        else if (indexOfSprite == 1) setSprite(Sprite.player_up_1.getFxImage());
-                        else if (indexOfSprite == 2) setSprite(Sprite.player_up_2.getFxImage());
+                        setSprite(Sprite.movingSprite(
+                                Sprite.player_up,
+                                Sprite.player_up_1,
+                                Sprite.player_up_2, indexOfSprite, 10).getFxImage());
                         break;
                 }
             } else {
@@ -113,5 +120,6 @@ public class Bomber extends Entity {
     public void update() {
         moving();
         setBomb();
+        bombsList.forEach(Entity::update);
     }
 }
