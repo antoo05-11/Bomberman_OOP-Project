@@ -28,15 +28,14 @@ public class Map {
 
         File file = new File("res/levels/Level" + LEVEL + ".txt");
         Scanner scanner = new Scanner(file);
+        scanner.nextLine(); //Read first line in Level.txt.
+        String rowString = ""; //Save info of a row into string.
 
-        scanner.nextLine();
-
-        String rowString = "";
         for (int i = 0; i < HEIGHT; i++) {
-                rowString = scanner.nextLine();
-                List<Entity> stillObject = new ArrayList<>();
+            rowString = scanner.nextLine();
+            List<Entity> stillObject = new ArrayList<>();
             for (int j = 0; j < WIDTH; j++) {
-                switch (rowString.charAt(j)){
+                switch (rowString.charAt(j)) {
                     case '#':
                         stillObject.add(new Wall(j, i, Sprite.wall.getFxImage()));
                         renderObject.add(new Wall(j, i, Sprite.wall.getFxImage()));
@@ -50,26 +49,27 @@ public class Map {
                         renderObject.add(new Grass(j, i, Sprite.grass.getFxImage()));
                         break;
                 }
-                mapInfo.add(stillObject);
             }
+            mapInfo.add(stillObject);
         }
         scanner.close();
     }
 
     public void mapRender(GraphicsContext gc) {
-        for(Entity x : renderObject){
+        for (Entity x : renderObject) {
             x.render(gc);
         }
     }
 
-    public String getEntityAt(int x, int y){
-        if (mapInfo.get(y).get(x) instanceof Wall){
+    public String getEntityAt(int x, int y) {
+        //System.out.println(mapInfo.get(y).get(x).getClass());
+        if (mapInfo.get(y).get(x) instanceof Wall) {
             return "WALL";
         }
-        if (mapInfo.get(y).get(x) instanceof Brick){
+        if (mapInfo.get(y).get(x) instanceof Brick) {
             return "Brick";
         }
-        if (mapInfo.get(y).get(x) instanceof Grass){
+        if (mapInfo.get(y).get(x) instanceof Grass) {
             return "Grass";
         }
         return "Nothing";

@@ -11,9 +11,7 @@ public class FlameAround extends Entity {
     public void setSprite(Image img) {
         this.img = img;
     }
-    public Image getSprite() {
-        return img;
-    }
+
     @Override
     public void update() {
 
