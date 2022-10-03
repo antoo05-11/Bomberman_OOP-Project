@@ -77,6 +77,7 @@ public class BombermanGame extends Application {
 
         entities.add(bomberman);
 
+
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -93,7 +94,7 @@ public class BombermanGame extends Application {
 
     public void update() {
         entities.forEach(Entity::update);
-
+        ((Bomber) bomberman).bombsList.forEach(Entity::update);
     }
 
     public void render() {

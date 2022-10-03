@@ -25,6 +25,7 @@ public class Bomber extends Entity {
     boolean goDown = false;
     boolean bombed = false;
     public List<Entity> bombsList = new LinkedList<>();
+    Entity newBomb;
 
     int indexOfSprite = 0;
 
@@ -94,13 +95,14 @@ public class Bomber extends Entity {
 
     private void setBomb() {
         if (bombed) {
-            Entity newBomb = new Bomb(x, y, Sprite.bomb.getFxImage());
+            newBomb = new Bomb(x / Sprite.SCALED_SIZE, y/ Sprite.SCALED_SIZE, Sprite.bomb.getFxImage());
             bombsList.add(newBomb);
             bombed = false;
         }
     }
 
-    public void moving() {
+
+    private void moving() {
         if (goRight) x += SPEED;
         if (goLeft) x -= SPEED;
         if (goUp) y -= SPEED;
