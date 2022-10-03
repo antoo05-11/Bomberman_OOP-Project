@@ -7,12 +7,11 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import uet.oop.bomberman.entities.Bomber;
-import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.Grass;
-import uet.oop.bomberman.entities.Wall;
+import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.awt.*;
@@ -35,16 +34,18 @@ public class BombermanGame extends Application {
     public static final int WIDTH = 31;
     public static final int HEIGHT = 13;
 
-    public static int LEVEL = 1;
 
+    public static int LEVEL = 1;
     private GraphicsContext gc;
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
     //private List<Entity> stillObjects = new ArrayList<>();
+    Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
 
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
     }
+
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -65,7 +66,7 @@ public class BombermanGame extends Application {
 
         AnimationTimer timer = new AnimationTimer() {
             @Override
-            public void handle(long l) {
+            public void handle(long now) {
                 render();
                 update();
             }
@@ -74,7 +75,6 @@ public class BombermanGame extends Application {
 
         createMap();
 
-        Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
         entities.add(bomberman);
 
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -93,11 +93,13 @@ public class BombermanGame extends Application {
 
     public void update() {
         entities.forEach(Entity::update);
+
     }
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         mapRender(gc);
         entities.forEach(g -> g.render(gc));
+        ((Bomber) bomberman).bombsList.forEach(g -> g.render(gc));
     }
 }
