@@ -1,4 +1,4 @@
-package uet.oop.bomberman.entities;
+package uet.oop.bomberman.entities.enemiesmaster;
 
 import javafx.scene.image.Image;
 
