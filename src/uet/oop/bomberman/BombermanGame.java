@@ -26,20 +26,16 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 
-import static uet.oop.bomberman.Map.createMap;
-import static uet.oop.bomberman.Map.mapRender;
 
 public class BombermanGame extends Application {
 
     public static final int WIDTH = 31;
     public static final int HEIGHT = 13;
-
-
+    Map map = new Map(1);
     public static int LEVEL = 1;
     private GraphicsContext gc;
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
-    //private List<Entity> stillObjects = new ArrayList<>();
     Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
 
     public static void main(String[] args) {
@@ -73,7 +69,7 @@ public class BombermanGame extends Application {
         };
         timer.start();
 
-        createMap();
+        map.createMap();
 
         entities.add(bomberman);
 
@@ -94,12 +90,11 @@ public class BombermanGame extends Application {
 
     public void update() {
         entities.forEach(Entity::update);
-
     }
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        mapRender(gc);
+        map.mapRender(gc);
         entities.forEach(g -> g.render(gc));
         ((Bomber) bomberman).bombsList.forEach(g -> g.render(gc));
     }
