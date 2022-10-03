@@ -2,13 +2,16 @@ package uet.oop.bomberman;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
@@ -56,10 +59,24 @@ public class BombermanGame extends Application {
         // Tao scene
         Scene scene = new Scene(root);
 
+        /**
+         * Add start scene
+         */
+        /*
+        Button startButton =new Button("START");
+        StackPane layout = new StackPane();
+        layout.getChildren().add(startButton);
+        Scene startScene = new Scene(layout, Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
+        startButton.setOnAction(event -> {
+            stage.setScene(scene);
+        });
+        */
+
         // Them scene vao stage
         stage.setScene(scene);
         stage.show();
 
+        //run render and update in a loop
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -72,7 +89,6 @@ public class BombermanGame extends Application {
         map.createMap();
 
         entities.add(bomberman);
-        System.out.println(map.getEntityAt(1, 2));
 
         /**
          * Catch keyboard event.
@@ -99,7 +115,6 @@ public class BombermanGame extends Application {
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         map.mapRender(gc);
-
     }
 
 }
