@@ -1,7 +1,9 @@
 package uet.oop.bomberman.entities;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import uet.oop.bomberman.CollisionManager;
 import uet.oop.bomberman.entities.bombmaster.Bomb;
 import uet.oop.bomberman.graphics.Sprite;
 
@@ -21,13 +23,16 @@ public class Bomber extends Entity {
     boolean bombed = false;
     public List<Entity> bombsList = new LinkedList<>();
     Entity newBomb;
+    CollisionManager collisionManager;
+
 
     int indexOfSprite = 0;
 
-    private static final int SPEED = 2;
+    private static int SPEED = 2;
 
-    public Bomber(int x, int y, Image img) {
+    public Bomber(int x, int y, Image img, CollisionManager collisionManager) {
         super(x, y, img);
+        this.collisionManager = collisionManager;
     }
 
     public void setSprite(Image img) {
@@ -65,7 +70,6 @@ public class Bomber extends Entity {
             newBomb = new Bomb((x + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE,
                     (y + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE,
                     Sprite.bomb.getFxImage());
-            newBomb.setGraphicsContext(gc);
             bombsList.add(newBomb);
             bombed = false;
         }
@@ -97,7 +101,6 @@ public class Bomber extends Entity {
                     Sprite.player_down_2, indexOfSprite, 20).getFxImage()
             );
             y += SPEED;
-
         }
         if (goLeft) {
             setSprite(Sprite.movingSprite(
@@ -124,22 +127,33 @@ public class Bomber extends Entity {
         }
     }
 
-    private void updateAndRenderBombsList() {
+    private void updateBombsList() {
         bombsList.forEach(Entity::update);
         if (!bombsList.isEmpty())
             if (((Bomb) bombsList.get(0)).getBombStatus() == Bomb.BombStatus.DISAPPEAR) {
                 bombsList.remove(0);
             }
-        for(Entity i : bombsList) {
-            if(((Bomb)i).getBombStatus() == Bomb.BombStatus.NotExplodedYet) ((Bomb)i).render(gc);
-        }
-
     }
 
     @Override
+    public void render(GraphicsContext gc) {
+        for(Entity i : bombsList) {
+            i.render(gc);
+        }
+        super.render(gc);
+    }
+
+    public void canMove(){
+        if (collisionManager.collide(x, y, "DOWN")) goDown = false;
+        if (collisionManager.collide(x, y, "RIGHT")) goRight = false;
+        if (collisionManager.collide(x, y, "LEFT")) goLeft = false;
+        if (collisionManager.collide(x, y, "UP")) goUp = false;
+    }
+    @Override
     public void update() {
+        canMove();
         moving();
         setBomb();
-        updateAndRenderBombsList();
+        updateBombsList();
     }
 }
