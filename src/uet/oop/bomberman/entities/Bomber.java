@@ -13,6 +13,11 @@ import java.util.List;
 
 public class Bomber extends Entity {
     /**
+     * Bomber size
+     */
+    public static final int HEIGHT = 30;
+    public static final int WIDTH = 20;
+    /**
      * Direction check and bombed check.
      */
     public boolean goLeft = false;
@@ -108,12 +113,14 @@ public class Bomber extends Entity {
             );
             if (!collisionManager.collide(x, y, "DOWN")) y += SPEED;
             else {
-                if ((x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - x < 10
-                        && !(collisionManager.downRight instanceof StillObjects)) {
-                    x = (x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
-                } else if (x + 20 - ((x + 20) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 10
-                        && !(collisionManager.downLeft instanceof StillObjects)) {
-                    x = ((x + 20) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - 21;
+                if(!goUp && !goLeft && !goRight) {
+                    if ((x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - x < 10
+                            && !(collisionManager.downRight instanceof StillObjects)) {
+                        x = (x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
+                    } else if (x + 20 - ((x + 20) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 10
+                            && !(collisionManager.downLeft instanceof StillObjects)) {
+                        x = ((x + 20) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - 21;
+                    }
                 }
             }
         }
@@ -125,12 +132,14 @@ public class Bomber extends Entity {
             );
             if (!collisionManager.collide(x, y, "LEFT")) x -= SPEED;
             else {
-                if ((y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - y < 11
-                        && !(collisionManager.downLeft instanceof StillObjects)) {
-                    y = (y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
-                } else if (y + 30 - ((y + 30) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 11
-                        && !(collisionManager.topLeft instanceof StillObjects)) {
-                    y = ((y + 30) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - 31;
+                if(!goUp && !goDown && !goRight) {
+                    if ((y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - y < 11
+                            && !(collisionManager.downLeft instanceof StillObjects)) {
+                        y = (y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
+                    } else if (y + 30 - ((y + 30) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 11
+                            && !(collisionManager.topLeft instanceof StillObjects)) {
+                        y = ((y + 30) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - 31;
+                    }
                 }
             }
         }
@@ -141,12 +150,14 @@ public class Bomber extends Entity {
                     Sprite.player_up_2, indexOfSprite, 20).getFxImage());
             if (!collisionManager.collide(x, y, "UP")) y -= SPEED;
             else {
-                if ((x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - x < 10
-                        && !(collisionManager.topRight instanceof StillObjects)) {
-                    x = (x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
-                } else if (x + 20 - ((x + 20) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 10
-                        && !(collisionManager.topLeft instanceof StillObjects)) {
-                    x = ((x + 20) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - 21;
+                if(!goDown && !goLeft && !goRight) {
+                    if ((x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - x < 10
+                            && !(collisionManager.topRight instanceof StillObjects)) {
+                        x = (x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
+                    } else if (x + 20 - ((x + 20) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 10
+                            && !(collisionManager.topLeft instanceof StillObjects)) {
+                        x = ((x + 20) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - 21;
+                    }
                 }
             }
         }
@@ -157,12 +168,16 @@ public class Bomber extends Entity {
                     Sprite.player_right_2, indexOfSprite, 20).getFxImage()
             );
             if (!collisionManager.collide(x, y, "RIGHT")) x += SPEED;
-            if ((y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - y < 11
-                    && !(collisionManager.downRight instanceof StillObjects)) {
-                y = (y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
-            } else if (y + 30 - ((y + 30) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 11
-                    && !(collisionManager.topRight instanceof StillObjects)) {
-                y = ((y + 30) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - 31;
+            else {
+                if(!goUp && !goLeft && !goDown) {
+                    if ((y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - y < 11
+                            && !(collisionManager.downRight instanceof StillObjects)) {
+                        y = (y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
+                    } else if (y + 30 - ((y + 30) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 11
+                            && !(collisionManager.topRight instanceof StillObjects)) {
+                        y = ((y + 30) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - 31;
+                    }
+                }
             }
         }
     }

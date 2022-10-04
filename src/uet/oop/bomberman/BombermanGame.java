@@ -21,8 +21,9 @@ public class BombermanGame extends Application {
 
     public static final int WIDTH = 31;
     public static final int HEIGHT = 13;
-    Map map = new Map(1);
+
     public static int LEVEL = 1;
+    Map map = new Map(LEVEL);
     private GraphicsContext gc;
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
