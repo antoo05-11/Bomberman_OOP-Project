@@ -14,11 +14,10 @@ public class Bomber extends Entity {
     /**
      * Direction check and bombed check.
      */
-    boolean goLeft = false;
-    boolean goRight = false;
-    boolean goUp = false;
-    boolean goDown = false;
-
+    public boolean goLeft = false;
+    public boolean goRight = false;
+    public boolean goUp = false;
+    public boolean goDown = false;
     private KeyCode latestDirectKey = KeyCode.RIGHT;
     boolean bombed = false;
     public List<Entity> bombsList = new LinkedList<>();
@@ -28,7 +27,7 @@ public class Bomber extends Entity {
 
     int indexOfSprite = 0;
 
-    private static int SPEED = 2;
+    public static int SPEED = 1;
 
     public Bomber(int x, int y, Image img, CollisionManager collisionManager) {
         super(x, y, img);
@@ -70,13 +69,19 @@ public class Bomber extends Entity {
             newBomb = new Bomb((x + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE,
                     (y + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE,
                     Sprite.bomb.getFxImage());
-            bombsList.add(newBomb);
+            boolean checkRepeated = false;
+            for (Entity i : bombsList) {
+                if (i.x == newBomb.x && i.y == newBomb.y) {
+                    checkRepeated = true;
+                }
+            }
+            if (!checkRepeated)
+                bombsList.add(newBomb);
             bombed = false;
         }
     }
 
     private void moving() {
-
         if (goUp || goDown || goRight || goLeft) indexOfSprite++;
         else {
             switch (latestDirectKey) {
@@ -100,7 +105,7 @@ public class Bomber extends Entity {
                     Sprite.player_down_1,
                     Sprite.player_down_2, indexOfSprite, 20).getFxImage()
             );
-            y += SPEED;
+            if (!collisionManager.collide(x, y, "DOWN")) y += SPEED;
         }
         if (goLeft) {
             setSprite(Sprite.movingSprite(
@@ -108,14 +113,14 @@ public class Bomber extends Entity {
                     Sprite.player_left_1,
                     Sprite.player_left_2, indexOfSprite, 20).getFxImage()
             );
-            x -= SPEED;
+            if (!collisionManager.collide(x, y, "LEFT")) x -= SPEED;
         }
         if (goUp) {
             setSprite(Sprite.movingSprite(
                     Sprite.player_up,
                     Sprite.player_up_1,
                     Sprite.player_up_2, indexOfSprite, 20).getFxImage());
-            y -= SPEED;
+            if (!collisionManager.collide(x, y, "UP")) y -= SPEED;
         }
         if (goRight) {
             setSprite(Sprite.movingSprite(
@@ -123,7 +128,7 @@ public class Bomber extends Entity {
                     Sprite.player_right_1,
                     Sprite.player_right_2, indexOfSprite, 20).getFxImage()
             );
-            x += SPEED;
+            if (!collisionManager.collide(x, y, "RIGHT")) x += SPEED;
         }
     }
 
@@ -137,21 +142,22 @@ public class Bomber extends Entity {
 
     @Override
     public void render(GraphicsContext gc) {
-        for(Entity i : bombsList) {
+        for (Entity i : bombsList) {
             i.render(gc);
         }
         super.render(gc);
     }
 
-    public void canMove(){
+    public void canMove() {
         if (collisionManager.collide(x, y, "DOWN")) goDown = false;
         if (collisionManager.collide(x, y, "RIGHT")) goRight = false;
         if (collisionManager.collide(x, y, "LEFT")) goLeft = false;
         if (collisionManager.collide(x, y, "UP")) goUp = false;
     }
+
     @Override
     public void update() {
-        canMove();
+        //canMove();
         moving();
         setBomb();
         updateBombsList();

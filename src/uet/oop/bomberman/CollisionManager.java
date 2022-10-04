@@ -1,47 +1,50 @@
 package uet.oop.bomberman;
 
+import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.stillobjectmaster.StillObjects;
+import uet.oop.bomberman.entities.stillobjectmaster.Wall;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.Direction.DIRECTION;
+
 public class CollisionManager {
     private Map map;
-    private static final int FIX_WIDTH = 6;
+    private static final int FIX_WIDTH = 5;
     private static final int FIX_HEIGHT = 5;
 
     public CollisionManager(Map map) {
         this.map = map;
     }
-    
+
     public boolean collide(int x, int y, String dir) {
         Entity object1;
         Entity object2;
+        Entity object3;
+        Entity object4;
+        int curX = x;
+        int curY = y;
         switch (dir) {
             case "UP":
-                object1 = map.getEntityAt(x + FIX_WIDTH, y + FIX_HEIGHT);
-                object2 = map.getEntityAt(x + 20 - FIX_WIDTH, y + FIX_HEIGHT);
+                curY -= Bomber.SPEED;
                 break;
             case "DOWN":
-                object1 = map.getEntityAt(x + FIX_WIDTH, y + Sprite.SCALED_SIZE - FIX_HEIGHT);
-                object2 = map.getEntityAt(x + 20 - FIX_WIDTH, y + Sprite.SCALED_SIZE - FIX_HEIGHT);
+                curY += Bomber.SPEED;
                 break;
             case "LEFT":
-                object1 = map.getEntityAt(x + FIX_WIDTH, y + FIX_HEIGHT);
-                object2 = map.getEntityAt(x + FIX_WIDTH, y + Sprite.SCALED_SIZE - FIX_HEIGHT);
+                curX -= Bomber.SPEED;
                 break;
             case "RIGHT":
-                object1 = map.getEntityAt(x + 20, y + FIX_HEIGHT);
-                object2 = map.getEntityAt(x + 20, y + Sprite.SCALED_SIZE - FIX_HEIGHT);
-                break;
-            default:
-                object1 = map.getEntityAt(x, y);
-                object2 = map.getEntityAt(x, y);
+                curX += Bomber.SPEED;
                 break;
         }
-        if (object1 instanceof StillObjects || object2 instanceof StillObjects) {
-            return true;
-        }
-        else return false;
+
+        object1 = map.getEntityAt(curX, curY);
+        object2 = map.getEntityAt(curX + 20, curY);
+        object3 = map.getEntityAt(curX, curY + 30);
+        object4 = map.getEntityAt(curX + 20, curY + 30);
+
+        return object1 instanceof StillObjects || object2 instanceof StillObjects
+                || object3 instanceof StillObjects || object4 instanceof StillObjects;
     }
 
 }

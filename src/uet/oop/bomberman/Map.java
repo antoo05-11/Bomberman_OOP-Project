@@ -62,6 +62,6 @@ public class Map {
     }
 
     public Entity getEntityAt(int x, int y) {
-        return mapInfo.get(Math.round(y / Sprite.SCALED_SIZE)).get(Math.round(x / Sprite.SCALED_SIZE));
+        return mapInfo.get(y / Sprite.SCALED_SIZE).get(x / Sprite.SCALED_SIZE);
     }
 }
