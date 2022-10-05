@@ -29,10 +29,7 @@ public class Bomber extends Entity {
     public List<Entity> bombsList = new LinkedList<>();
     Entity newBomb;
     CollisionManager collisionManager;
-
-
     int indexOfSprite = 0;
-
     public static int SPEED = 2;
 
     public Bomber(int x, int y, Image img, CollisionManager collisionManager) {
@@ -74,7 +71,7 @@ public class Bomber extends Entity {
         if (bombed) {
             newBomb = new Bomb((x + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE,
                     (y + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE,
-                    Sprite.bomb.getFxImage());
+                    Sprite.bomb.getFxImage(), collisionManager.getMap());
             boolean checkRepeated = false;
             for (Entity i : bombsList) {
                 if (i.x == newBomb.x && i.y == newBomb.y) {
@@ -113,13 +110,13 @@ public class Bomber extends Entity {
             );
             if (!collisionManager.collide(x, y, "DOWN")) y += SPEED;
             else {
-                if(!goUp && !goLeft && !goRight) {
-                    if ((x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - x < 10
+                if (!goUp && !goLeft && !goRight) {
+                    if ((x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - x < 11
                             && !(collisionManager.downRight instanceof StillObjects)) {
                         x = (x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
-                    } else if (x + 20 - ((x + 20) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 10
+                    } else if (x + WIDTH - ((x + WIDTH) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 11
                             && !(collisionManager.downLeft instanceof StillObjects)) {
-                        x = ((x + 20) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - 21;
+                        x = ((x + WIDTH) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - WIDTH - 1;
                     }
                 }
             }
@@ -132,13 +129,13 @@ public class Bomber extends Entity {
             );
             if (!collisionManager.collide(x, y, "LEFT")) x -= SPEED;
             else {
-                if(!goUp && !goDown && !goRight) {
+                if (!goUp && !goDown && !goRight) {
                     if ((y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - y < 11
                             && !(collisionManager.downLeft instanceof StillObjects)) {
                         y = (y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
-                    } else if (y + 30 - ((y + 30) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 11
+                    } else if (y + HEIGHT - ((y + HEIGHT) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 11
                             && !(collisionManager.topLeft instanceof StillObjects)) {
-                        y = ((y + 30) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - 31;
+                        y = ((y + 30) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - HEIGHT - 1;
                     }
                 }
             }
@@ -150,13 +147,13 @@ public class Bomber extends Entity {
                     Sprite.player_up_2, indexOfSprite, 20).getFxImage());
             if (!collisionManager.collide(x, y, "UP")) y -= SPEED;
             else {
-                if(!goDown && !goLeft && !goRight) {
-                    if ((x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - x < 10
+                if (!goDown && !goLeft && !goRight) {
+                    if ((x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - x < 11
                             && !(collisionManager.topRight instanceof StillObjects)) {
                         x = (x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
-                    } else if (x + 20 - ((x + 20) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 10
+                    } else if (x + WIDTH - ((x + WIDTH) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 1
                             && !(collisionManager.topLeft instanceof StillObjects)) {
-                        x = ((x + 20) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - 21;
+                        x = ((x + 20) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - WIDTH - 1;
                     }
                 }
             }
@@ -169,13 +166,13 @@ public class Bomber extends Entity {
             );
             if (!collisionManager.collide(x, y, "RIGHT")) x += SPEED;
             else {
-                if(!goUp && !goLeft && !goDown) {
+                if (!goUp && !goLeft && !goDown) {
                     if ((y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - y < 11
                             && !(collisionManager.downRight instanceof StillObjects)) {
                         y = (y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
-                    } else if (y + 30 - ((y + 30) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 11
+                    } else if (y + HEIGHT - ((y + HEIGHT) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 11
                             && !(collisionManager.topRight instanceof StillObjects)) {
-                        y = ((y + 30) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - 31;
+                        y = ((y + HEIGHT) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - HEIGHT - 1;
                     }
                 }
             }
@@ -198,16 +195,8 @@ public class Bomber extends Entity {
         super.render(gc);
     }
 
-    public void canMove() {
-        if (collisionManager.collide(x, y, "DOWN")) goDown = false;
-        if (collisionManager.collide(x, y, "RIGHT")) goRight = false;
-        if (collisionManager.collide(x, y, "LEFT")) goLeft = false;
-        if (collisionManager.collide(x, y, "UP")) goUp = false;
-    }
-
     @Override
     public void update() {
-        //canMove();
         moving();
         setBomb();
         updateBombsList();

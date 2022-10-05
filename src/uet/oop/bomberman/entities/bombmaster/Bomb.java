@@ -2,6 +2,7 @@ package uet.oop.bomberman.entities.bombmaster;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import uet.oop.bomberman.Map;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graphics.Sprite;
 
@@ -44,10 +45,11 @@ public class Bomb extends Entity {
     /**
      * Constructor for Bomb, run timer and add all flame sprite around.
      */
-    public Bomb(int x, int y, Image img) {
+    public Bomb(int x, int y, Image img, Map map) {
         super(x, y, img);
         timer.schedule(task, 0, 1000);
         bombStatus = BombStatus.NotExplodedYet;
+
         flameAroundList.add(new FlameAround(x, y + 1, Sprite.explosion_vertical_down_last.getFxImage()));
         flameAroundList.add(new FlameAround(x, y - 1, Sprite.explosion_vertical_top_last.getFxImage()));
         flameAroundList.add(new FlameAround(x - 1, y, Sprite.explosion_horizontal_left_last.getFxImage()));

@@ -29,7 +29,7 @@ public class BombermanGame extends Application {
     private List<Entity> entities = new ArrayList<>();
 
 
-    Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage(), new CollisionManager(map));
+    Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage(), new CollisionManager(map, Bomber.WIDTH, Bomber.HEIGHT));
 
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);

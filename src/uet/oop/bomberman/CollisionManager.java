@@ -12,16 +12,24 @@ public class CollisionManager {
     private Map map;
     private static final int FIX_WIDTH = 5;
     private static final int FIX_HEIGHT = 5;
+    private int CENTER_OBJECT_HEIGHT;
+    private int CENTER_OBJECT_WIDTH;
 
-    public CollisionManager(Map map) {
+    public CollisionManager(Map map, int width, int height) {
         this.map = map;
+        CENTER_OBJECT_WIDTH = width;
+        CENTER_OBJECT_HEIGHT = height;
     }
+
+    public Map getMap() {
+        return map;
+    }
+
     public Entity topLeft;
     public Entity topRight;
     public Entity downLeft;
     public Entity downRight;
     public boolean collide(int x, int y, String dir) {
-
         int curX = x;
         int curY = y;
         switch (dir) {
@@ -39,9 +47,9 @@ public class CollisionManager {
                 break;
         }
         topLeft = map.getEntityAt(curX, curY);
-        topRight = map.getEntityAt(curX + 20, curY);
-        downLeft = map.getEntityAt(curX, curY + 30);
-        downRight = map.getEntityAt(curX + 20, curY + 30);
+        topRight = map.getEntityAt(curX + CENTER_OBJECT_WIDTH, curY);
+        downLeft = map.getEntityAt(curX, curY + CENTER_OBJECT_HEIGHT);
+        downRight = map.getEntityAt(curX + CENTER_OBJECT_WIDTH, curY + CENTER_OBJECT_HEIGHT);
         return topLeft instanceof StillObjects || topRight instanceof StillObjects
                 || downLeft instanceof StillObjects || downRight instanceof StillObjects;
     }
