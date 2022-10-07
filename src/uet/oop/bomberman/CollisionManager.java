@@ -2,11 +2,8 @@ package uet.oop.bomberman;
 
 import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.stillobjectmaster.Grass;
+import uet.oop.bomberman.entities.enemiesmaster.Enemy;
 import uet.oop.bomberman.entities.stillobjectmaster.StillObjects;
-import uet.oop.bomberman.entities.stillobjectmaster.Wall;
-import uet.oop.bomberman.graphics.Sprite;
-import uet.oop.bomberman.Direction.DIRECTION;
 
 public class CollisionManager {
     private Map map;
@@ -21,7 +18,6 @@ public class CollisionManager {
     public Entity downLeft;
     public Entity downRight;
     public boolean collide(int x, int y, String dir) {
-
         int curX = x;
         int curY = y;
         switch (dir) {
@@ -37,6 +33,7 @@ public class CollisionManager {
             case "RIGHT":
                 curX += Bomber.SPEED;
                 break;
+            default:
         }
         topLeft = map.getEntityAt(curX, curY);
         topRight = map.getEntityAt(curX + 20, curY);
@@ -45,4 +42,28 @@ public class CollisionManager {
         return topLeft instanceof StillObjects || topRight instanceof StillObjects
                 || downLeft instanceof StillObjects || downRight instanceof StillObjects;
     }
+
+    /*public boolean collideForEnemy(int x, int y, String dir){
+        int curX = x;
+        int curY = y;
+
+        switch (dir){
+            case "LEFT":
+                curX -= 1;
+                break;
+            case "RIGHT":
+                curX += 1;
+            case "UP":
+                curY -= 1;
+            case "DOWN":
+               curY += 1;
+            default:
+        }
+        topLeft = map.getEntityAt(curX, curY);
+        topRight = map.getEntityAt(curX + 31, curY);
+        downLeft = map.getEntityAt(curX, curY + 31);
+        downRight = map.getEntityAt(curX + 31, curY + 31);
+        return topLeft instanceof StillObjects || topRight instanceof StillObjects
+                || downLeft instanceof StillObjects || downRight instanceof StillObjects;
+    }*/
 }
