@@ -76,6 +76,7 @@ public class Bomber extends Entity {
             for (Entity i : bombsList) {
                 if (i.x == newBomb.x && i.y == newBomb.y) {
                     checkRepeated = true;
+                    break;
                 }
             }
             if (!checkRepeated)
@@ -151,7 +152,7 @@ public class Bomber extends Entity {
                     if ((x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - x < 11
                             && !(collisionManager.topRight instanceof StillObjects)) {
                         x = (x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
-                    } else if (x + WIDTH - ((x + WIDTH) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 1
+                    } else if (x + WIDTH - ((x + WIDTH) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 11
                             && !(collisionManager.topLeft instanceof StillObjects)) {
                         x = ((x + 20) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - WIDTH - 1;
                     }

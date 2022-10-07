@@ -15,6 +15,7 @@ public class CollisionManager {
     private int CENTER_OBJECT_HEIGHT;
     private int CENTER_OBJECT_WIDTH;
 
+
     public CollisionManager(Map map, int width, int height) {
         this.map = map;
         CENTER_OBJECT_WIDTH = width;
