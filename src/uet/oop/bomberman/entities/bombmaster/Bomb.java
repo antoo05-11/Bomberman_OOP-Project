@@ -2,6 +2,7 @@ package uet.oop.bomberman.entities.bombmaster;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import uet.oop.bomberman.Map;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graphics.Sprite;
 
@@ -22,6 +23,7 @@ public class Bomb extends Entity {
     int indexOfSprite = 0;
     protected BombStatus bombStatus;
     protected List<Entity> flameAroundList = new ArrayList<>();
+    private Map map;
 
     /**
      * Timer for counting 3 seconds before exploding.
@@ -44,16 +46,17 @@ public class Bomb extends Entity {
     /**
      * Constructor for Bomb, run timer and add all flame sprite around.
      */
-    public Bomb(int x, int y, Image img) {
+    public Bomb(int x, int y, Image img, Map map) {
         super(x, y, img);
+        this.map = map;
         timer.schedule(task, 0, 1000);
         bombStatus = BombStatus.NotExplodedYet;
-        flameAroundList.add(new FlameAround(x, y + 1, Sprite.explosion_vertical_down_last.getFxImage()));
-        flameAroundList.add(new FlameAround(x, y - 1, Sprite.explosion_vertical_top_last.getFxImage()));
-        flameAroundList.add(new FlameAround(x - 1, y, Sprite.explosion_horizontal_left_last.getFxImage()));
-        flameAroundList.add(new FlameAround(x + 1, y, Sprite.explosion_horizontal_right_last.getFxImage()));
-        flameAroundList.add(new FlameAround(x, y, Sprite.explosion_horizontal.getFxImage()));
-        flameAroundList.add(new FlameAround(x, y, Sprite.explosion_vertical.getFxImage()));
+        flameAroundList.add(new FlameAround(x, y + 1, FlameAround.FlameType.DOWN, map));
+        flameAroundList.add(new FlameAround(x, y - 1, FlameAround.FlameType.TOP, map));
+        flameAroundList.add(new FlameAround(x - 1, y, FlameAround.FlameType.LEFT, map));
+        flameAroundList.add(new FlameAround(x + 1, y, FlameAround.FlameType.RIGHT, map));
+        flameAroundList.add(new FlameAround(x, y, FlameAround.FlameType.HORIZON, map));
+        flameAroundList.add(new FlameAround(x, y, FlameAround.FlameType.VERTICAL, map));
     }
 
     public BombStatus getBombStatus() {
@@ -76,37 +79,9 @@ public class Bomb extends Entity {
             indexOfSprite = (indexOfSprite < 1000) ? indexOfSprite + 1 : 0;
             setSprite(Sprite.movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2, indexOfSprite, 30).getFxImage());
         }
-
         if (bombStatus == BombStatus.EXPLODED) {
-            indexOfSprite = (indexOfSprite < 1000) ? indexOfSprite + 1 : 0;
-            ((FlameAround) flameAroundList.get(0)).setSprite(Sprite.movingSprite(Sprite.explosion_vertical_down_last,
-                    Sprite.explosion_vertical_down_last1,
-                    Sprite.explosion_vertical_down_last2,
-                    indexOfSprite, 30).getFxImage());
-            ((FlameAround) flameAroundList.get(1)).setSprite(Sprite.movingSprite(Sprite.explosion_vertical_top_last,
-                    Sprite.explosion_vertical_top_last1,
-                    Sprite.explosion_vertical_top_last2,
-                    indexOfSprite, 30).getFxImage());
-            ((FlameAround) flameAroundList.get(2)).setSprite(Sprite.movingSprite(Sprite.explosion_horizontal_left_last,
-                    Sprite.explosion_horizontal_left_last1,
-                    Sprite.explosion_horizontal_left_last2,
-                    indexOfSprite, 30).getFxImage());
-            ((FlameAround) flameAroundList.get(3)).setSprite(Sprite.movingSprite(Sprite.explosion_horizontal_right_last,
-                    Sprite.explosion_horizontal_right_last1,
-                    Sprite.explosion_horizontal_right_last2,
-                    indexOfSprite, 30).getFxImage());
-            ((FlameAround) flameAroundList.get(4)).setSprite(Sprite.movingSprite(Sprite.explosion_horizontal,
-                    Sprite.explosion_horizontal1,
-                    Sprite.explosion_horizontal2,
-                    indexOfSprite, 30).getFxImage());
-            ((FlameAround) flameAroundList.get(5)).setSprite(Sprite.movingSprite(Sprite.explosion_vertical,
-                    Sprite.explosion_vertical1,
-                    Sprite.explosion_vertical2,
-                    indexOfSprite, 30).getFxImage());
-            if (indexOfSprite == 15) {
-                bombStatus = BombStatus.DISAPPEAR;
-            }
+            bombStatus = ((FlameAround) flameAroundList.get(0)).getStatus();
+            flameAroundList.forEach(Entity::update);
         }
     }
-
 }
