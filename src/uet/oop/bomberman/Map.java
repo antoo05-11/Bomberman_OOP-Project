@@ -42,7 +42,7 @@ public class Map {
                     case 'p':
                         stillObject.add(new Grass(j, i, Sprite.grass.getFxImage()));
                         renderObject.add(new Grass(j, i, Sprite.grass.getFxImage()));
-                        Entity bomberman = new Bomber(j, i, Sprite.player_right.getFxImage(), new CollisionManager(this));
+                        Entity bomberman = new Bomber(j, i, Sprite.player_right.getFxImage(), new CollisionManager(this, Bomber.WIDTH, Bomber.HEIGHT));
                         entities.add(bomberman);
                         break;
                     case '#':
@@ -56,7 +56,7 @@ public class Map {
                     case '1':
                         stillObject.add(new Grass(j, i, Sprite.grass.getFxImage()));
                         renderObject.add(new Grass(j, i, Sprite.grass.getFxImage()));
-                        Enemy ballom = new Balloom(j, i, Sprite.balloom_left1.getFxImage(), new CollisionManager(this));
+                        Enemy ballom = new Balloom(j, i, Sprite.balloom_left1.getFxImage(), new CollisionManager(this, Enemy.WIDTH, Enemy.HEIGHT));
                         entities.add(ballom);
                         break;
                     default:
