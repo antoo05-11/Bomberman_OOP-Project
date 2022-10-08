@@ -10,6 +10,9 @@ public class Enemy extends Entity {
         super(xUnit, yUnit, img);
     }
 
+    public void setSprite(Image img){
+        this.img = img;
+    }
     @Override
     public void update() {
 
