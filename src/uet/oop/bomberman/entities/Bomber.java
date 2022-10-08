@@ -32,8 +32,9 @@ public class Bomber extends Entity {
     int indexOfSprite = 0;
     public static int SPEED = 2;
 
-    public Bomber(int x, int y, Image img, CollisionManager collisionManager) {
-        super(x, y, img);
+    public Bomber(int x, int y, CollisionManager collisionManager) {
+        super(x, y, null);
+        setSprite(Sprite.player_right.getFxImage());
         this.collisionManager = collisionManager;
     }
 

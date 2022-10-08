@@ -21,7 +21,8 @@ public class Balloom extends Enemy {
 
     public void move(){
         indexOfSprite++;
-        if (goNext == false) {
+        if (!goNext) {
+
             int rand = (int) (Math.random() * 8);
             switch (rand % 4) {
                 case 0:
