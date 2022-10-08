@@ -1,7 +1,10 @@
 package uet.oop.bomberman;
 
 import javafx.scene.canvas.GraphicsContext;
+import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.enemiesmaster.Balloom;
+import uet.oop.bomberman.entities.enemiesmaster.Enemy;
 import uet.oop.bomberman.entities.stillobjectmaster.Brick;
 import uet.oop.bomberman.entities.stillobjectmaster.Grass;
 import uet.oop.bomberman.entities.stillobjectmaster.Wall;
@@ -36,6 +39,12 @@ public class Map {
             List<Entity> stillObject = new ArrayList<>();
             for (int j = 0; j < WIDTH; j++) {
                 switch (rowString.charAt(j)) {
+                    case 'p':
+                        stillObject.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                        renderObject.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                        Entity bomberman = new Bomber(j, i, Sprite.player_right.getFxImage(), new CollisionManager(this, Bomber.WIDTH, Bomber.HEIGHT));
+                        entities.add(bomberman);
+                        break;
                     case '#':
                         stillObject.add(new Wall(j, i, Sprite.wall.getFxImage()));
                         renderObject.add(new Wall(j, i, Sprite.wall.getFxImage()));
@@ -43,6 +52,12 @@ public class Map {
                     case '*':
                         stillObject.add(new Brick(j, i, Sprite.brick.getFxImage()));
                         renderObject.add(new Brick(j, i, Sprite.brick.getFxImage()));
+                        break;
+                    case '1':
+                        stillObject.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                        renderObject.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                        Enemy ballom = new Balloom(j, i, Sprite.balloom_left1.getFxImage(), new CollisionManager(this, Enemy.WIDTH, Enemy.HEIGHT));
+                        entities.add(ballom);
                         break;
                     default:
                         stillObject.add(new Grass(j, i, Sprite.grass.getFxImage()));

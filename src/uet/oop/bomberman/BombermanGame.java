@@ -26,10 +26,8 @@ public class BombermanGame extends Application {
     Map map = new Map(LEVEL);
     private GraphicsContext gc;
     private Canvas canvas;
-    private List<Entity> entities = new ArrayList<>();
+    protected static List<Entity> entities = new ArrayList<>();
 
-
-    Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage(), new CollisionManager(map, Bomber.WIDTH, Bomber.HEIGHT));
 
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
@@ -77,7 +75,7 @@ public class BombermanGame extends Application {
 
         map.createMap();
 
-        entities.add(bomberman);
+        //entities.add(bomberman);
 
         /**
          * Catch keyboard event.
@@ -85,13 +83,13 @@ public class BombermanGame extends Application {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                bomberman.saveKeyEvent(event.getCode(), true);
+                entities.get(0).saveKeyEvent(event.getCode(), true);
             }
         });
         scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                bomberman.saveKeyEvent(event.getCode(), false);
+                entities.get(0).saveKeyEvent(event.getCode(), false);
             }
         });
     }
