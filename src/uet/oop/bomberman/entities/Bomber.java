@@ -4,6 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import uet.oop.bomberman.CollisionManager;
+import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.entities.bombmaster.Bomb;
 import uet.oop.bomberman.entities.stillobjectmaster.StillObjects;
 import uet.oop.bomberman.graphics.Sprite;
@@ -12,6 +13,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Bomber extends Entity {
+    /**
+     * Bomber status
+     */
+    enum BomberStatus {
+        ALIVE,
+        DEAD
+    }
+
+    BomberStatus bomberStatus;
     /**
      * Bomber size
      */
@@ -34,6 +44,7 @@ public class Bomber extends Entity {
 
     public Bomber(int x, int y, CollisionManager collisionManager) {
         super(x, y, null);
+        bomberStatus = BomberStatus.ALIVE;
         setSprite(Sprite.player_right.getFxImage());
         this.collisionManager = collisionManager;
     }
@@ -65,6 +76,20 @@ public class Bomber extends Entity {
         }
         if (keyCode == KeyCode.SPACE) {
             bombed = isPress;
+        }
+    }
+
+    private void updateBomberStatus() {
+        /**
+         * Died by bomb.
+         */
+        for (Entity i : bombsList) {
+            if (((Bomb) i).insideBombRange_Pixel(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2)
+                    && ((Bomb) i).getBombStatus() == Bomb.BombStatus.EXPLODED) {
+                bomberStatus = BomberStatus.DEAD;
+                indexOfSprite = 0;
+                break;
+            }
         }
     }
 
@@ -191,16 +216,31 @@ public class Bomber extends Entity {
 
     @Override
     public void render(GraphicsContext gc) {
-        for (Entity i : bombsList) {
-            i.render(gc);
+        if (bomberStatus == BomberStatus.ALIVE) {
+            for (Entity i : bombsList) {
+                i.render(gc);
+            }
+            super.render(gc);
         }
-        super.render(gc);
+        if (bomberStatus == BomberStatus.DEAD) {
+            super.render(gc);
+        }
     }
 
     @Override
     public void update() {
-        moving();
-        setBomb();
-        updateBombsList();
+        if (bomberStatus == BomberStatus.ALIVE) {
+            moving();
+            setBomb();
+            updateBombsList();
+            updateBomberStatus();
+        }
+        if (bomberStatus == BomberStatus.DEAD) {
+            indexOfSprite++;
+            setSprite(Sprite.movingSprite(Sprite.player_dead1, Sprite.player_dead2, Sprite.player_dead3, indexOfSprite, 20).getFxImage());
+            if (indexOfSprite == 20) {
+                GameController.gameStatus = GameController.GameStatus.GAME_LOBBY;
+            }
+        }
     }
 }

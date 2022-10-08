@@ -20,7 +20,7 @@ import java.util.Scanner;
 import static uet.oop.bomberman.BombermanGame.*;
 
 public class Map {
-    private List<List<Entity>> mapInfo = new ArrayList<>();
+    private List<List<Entity>> mapInfo = new ArrayList<>(); //Can be changed.
     private List<Entity> renderObject = new ArrayList<>();
     int LEVEL;
 
@@ -88,5 +88,10 @@ public class Map {
 
     public Entity getEntityAt(int x, int y) {
         return mapInfo.get(y / Sprite.SCALED_SIZE).get(x / Sprite.SCALED_SIZE);
+    }
+    public void reset() {
+        renderObject.clear();
+        GameController.entities.get(LEVEL).clear();
+        readMapFromFile();
     }
 }

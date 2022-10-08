@@ -2,6 +2,7 @@ package uet.oop.bomberman.entities.bombmaster;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.Map;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graphics.Sprite;
@@ -65,6 +66,24 @@ public class Bomb extends Entity {
     private void setSprite(Image img) {
         this.img = img;
     }
+
+    /**
+     * Check if a point in Pixel is inside bombList.
+     */
+    public boolean insideBombRange_Pixel(int xPos, int yPos) {
+        int xTile = xPos / Sprite.SCALED_SIZE;
+        int yTile = yPos / Sprite.SCALED_SIZE;
+        int xBombTile = x / Sprite.SCALED_SIZE;
+        int yBombTile = y / Sprite.SCALED_SIZE;
+        if ((xTile == xBombTile && yTile == yBombTile)
+                || (xTile == xBombTile && yTile + 1 == yBombTile)
+                || (xTile == xBombTile && yTile - 1 == yBombTile)
+                || (xTile == xBombTile + 1 && yTile == yBombTile)
+                || (xTile == xBombTile - 1 && yTile == yBombTile)) return true;
+        return false;
+    }
+
+
 
     @Override
     public void render(GraphicsContext gc) {

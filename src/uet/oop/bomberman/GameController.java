@@ -4,11 +4,10 @@ import javafx.animation.AnimationTimer;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.enemiesmaster.Balloom;
 import uet.oop.bomberman.scenemaster.LobbyScene;
 import uet.oop.bomberman.scenemaster.PlayScene;
-import uet.oop.bomberman.scenemaster.RootScene;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,14 +15,14 @@ public class GameController {
     /**
      * Game status control
      */
-    enum GameStatus {
+    public enum GameStatus {
         GAME_LOBBY,
         GAME_PLAYING,
         WIN_ALL,
-        LOSE
+        GAME_LOSE
     }
 
-    GameStatus gameStatus = GameStatus.GAME_LOBBY;
+    public static GameStatus gameStatus = GameStatus.GAME_LOBBY;
 
     /**
      * Constructor.
@@ -36,7 +35,7 @@ public class GameController {
     /**
      * Map control.
      */
-    private List<Map> mapList = new ArrayList<>();
+    public final static List<Map> mapList = new ArrayList<>();
     public static int LEVEL = 0;
     private static final int MAX_LEVEL = 0;
 
@@ -51,23 +50,18 @@ public class GameController {
      * Scene control.
      */
     private Stage stage;
+
     private LobbyScene lobbyScene = new LobbyScene();
     private PlayScene playScene = new PlayScene();
 
     /**
      * Timer for scenes.
      */
-    AnimationTimer lobbyTimer = new AnimationTimer() {
+    AnimationTimer timer = new AnimationTimer() {
         @Override
         public void handle(long now) {
-
-        }
-    };
-    AnimationTimer playTimer = new AnimationTimer() {
-        @Override
-        public void handle(long now) {
-            render(playScene);
-            update(playScene);
+            render();
+            update();
         }
     };
 
@@ -80,26 +74,36 @@ public class GameController {
      * Run game engine.
      */
     public void run() {
-        stage.setScene(playScene.getScene());
+        stage.setScene(lobbyScene.getScene());
         stage.show();
-        playTimer.start();
+        timer.start();
     }
 
-    public void update(RootScene scene) {
-        if (scene instanceof PlayScene) {
-            entities.get(LEVEL).forEach(g -> g.render(scene.getGc()));
+    public void update() {
+        if (gameStatus == GameStatus.GAME_PLAYING) {
+            if (!stage.getScene().equals(playScene)) stage.setScene(playScene.getScene());
+            entities.get(LEVEL).forEach(g -> g.render(playScene.getGc()));
             entities.get(LEVEL).forEach(Entity::update);
-        } else if (scene instanceof LobbyScene) {
+        } else if (gameStatus == GameStatus.GAME_LOBBY) {
+            if (!stage.getScene().equals(lobbyScene)) {
+                reset(); //Reset all game specs before go out.
+                stage.setScene(lobbyScene.getScene());
+            }
+        }
+    }
+
+    public void render() {
+        if (gameStatus == GameStatus.GAME_PLAYING) {
+            playScene.getGc().clearRect(0, 0, playScene.getCanvas().getWidth(), playScene.getCanvas().getHeight());
+            mapList.get(LEVEL).mapRender(playScene.getGc());
+        } else if (gameStatus == GameStatus.GAME_LOBBY) {
 
         }
     }
 
-    public void render(RootScene scene) {
-        if (scene instanceof PlayScene) {
-            scene.getGc().clearRect(0, 0, scene.getCanvas().getWidth(), scene.getCanvas().getHeight());
-            mapList.get(LEVEL).mapRender(scene.getGc());
-        } else if (scene instanceof LobbyScene) {
-
+    private void reset() {
+        for (int i = 0; i <= LEVEL; i++) {
+            mapList.get(LEVEL).reset(); //Reset played map in map list.
         }
     }
 }
