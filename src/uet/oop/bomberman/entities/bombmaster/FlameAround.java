@@ -15,6 +15,7 @@ public class FlameAround extends Entity {
         DOWN,
         LEFT,
         RIGHT,
+        CENTER,
         HORIZON,
         VERTICAL
     }
@@ -41,6 +42,9 @@ public class FlameAround extends Entity {
                 break;
             case LEFT:
                 img = Sprite.explosion_horizontal_left_last.getFxImage();
+                break;
+            case CENTER:
+                img = Sprite.bomb_exploded2.getFxImage();
                 break;
             case HORIZON:
                 img = Sprite.explosion_horizontal.getFxImage();
@@ -97,6 +101,12 @@ public class FlameAround extends Entity {
                 setSprite(Sprite.movingSprite(Sprite.explosion_vertical,
                         Sprite.explosion_vertical1,
                         Sprite.explosion_vertical2,
+                        indexOfSprite, 20).getFxImage());
+                break;
+            case CENTER:
+                setSprite(Sprite.movingSprite(Sprite.bomb_exploded,
+                        Sprite.bomb_exploded1,
+                        Sprite.bomb_exploded2,
                         indexOfSprite, 20).getFxImage());
                 break;
         }
