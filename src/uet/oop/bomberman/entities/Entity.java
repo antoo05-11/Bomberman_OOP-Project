@@ -34,4 +34,11 @@ public abstract class Entity {
 
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 }

@@ -1,16 +1,20 @@
 package uet.oop.bomberman.entities;
 
+import com.sun.org.glassfish.gmbal.GmbalException;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import org.omg.PortableInterceptor.ServerRequestInfo;
 import uet.oop.bomberman.CollisionManager;
 import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.entities.bombmaster.Bomb;
+import uet.oop.bomberman.entities.stillobjectmaster.Brick;
 import uet.oop.bomberman.entities.stillobjectmaster.StillObjects;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class Bomber extends Entity {
     /**
@@ -214,6 +218,44 @@ public class Bomber extends Entity {
             }
     }
 
+    /**
+     * update status of still object like brick.
+     */
+    private void updateEntity() {
+        Entity nearTile;
+        for (int i = 0; i < bombsList.size(); i++) {
+            if (((Bomb) bombsList.get(i)).getBombStatus() == Bomb.BombStatus.EXPLODED) {
+                int xTile = ((Bomb) bombsList.get(i)).x / Sprite.SCALED_SIZE;
+                int yTile = ((Bomb) bombsList.get(i)).y / Sprite.SCALED_SIZE;
+
+                nearTile = GameController.mapList.get(GameController.LEVEL)
+                        .getEntityAt(xTile * Sprite.SCALED_SIZE, (yTile + 1) * Sprite.SCALED_SIZE);
+
+                if (nearTile instanceof Brick) {
+                    GameController.mapList.get(GameController.LEVEL).replace(yTile + 1, xTile);
+                }
+
+                nearTile = GameController.mapList.get(GameController.LEVEL)
+                        .getEntityAt(xTile * Sprite.SCALED_SIZE, (yTile - 1) * Sprite.SCALED_SIZE);
+                if (nearTile instanceof Brick) {
+                    GameController.mapList.get(GameController.LEVEL).replace(yTile - 1, xTile);
+                }
+
+                nearTile = GameController.mapList.get(GameController.LEVEL)
+                        .getEntityAt((xTile + 1) * Sprite.SCALED_SIZE, yTile * Sprite.SCALED_SIZE);
+                if (nearTile instanceof Brick) {
+                    GameController.mapList.get(GameController.LEVEL).replace(yTile, xTile + 1);
+                }
+
+                nearTile = GameController.mapList.get(GameController.LEVEL)
+                        .getEntityAt((xTile - 1) * Sprite.SCALED_SIZE, yTile * Sprite.SCALED_SIZE);
+                if (nearTile instanceof Brick) {
+                    GameController.mapList.get(GameController.LEVEL).replace(yTile, xTile - 1);
+                }
+            }
+        }
+    }
+
     @Override
     public void render(GraphicsContext gc) {
         if (bomberStatus == BomberStatus.ALIVE) {
@@ -234,6 +276,7 @@ public class Bomber extends Entity {
             setBomb();
             updateBombsList();
             updateBomberStatus();
+            updateEntity();
         }
         if (bomberStatus == BomberStatus.DEAD) {
             indexOfSprite++;

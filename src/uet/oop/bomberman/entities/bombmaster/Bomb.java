@@ -20,7 +20,7 @@ public class Bomb extends Entity {
         DISAPPEAR
     }
 
-    int waitForExplodingTime = 3;
+    int waitForExplodingTime = 2;
     int indexOfSprite = 0;
     protected BombStatus bombStatus;
     protected List<Entity> flameAroundList = new ArrayList<>();
@@ -83,7 +83,15 @@ public class Bomb extends Entity {
         return false;
     }
 
-
+    public boolean insideBombRange_Tile(int xTile, int yTile) {
+        int xBombTile = x / Sprite.SCALED_SIZE;
+        int yBombTile = y / Sprite.SCALED_SIZE;
+        return (xTile == xBombTile && yTile == yBombTile)
+                || (xTile == xBombTile && yTile + 1 == yBombTile)
+                || (xTile == xBombTile && yTile - 1 == yBombTile)
+                || (xTile == xBombTile + 1 && yTile == yBombTile)
+                || (xTile == xBombTile - 1 && yTile == yBombTile);
+    }
 
     @Override
     public void render(GraphicsContext gc) {

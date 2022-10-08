@@ -2,8 +2,8 @@ package uet.oop.bomberman;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-public class BombermanGame extends Application {
 
+public class BombermanGame extends Application {
     public static final int WIDTH = 31;
     public static final int HEIGHT = 13;
 
@@ -12,7 +12,7 @@ public class BombermanGame extends Application {
     }
 
     @Override
-    public void start(Stage stage)  {
+    public void start(Stage stage) {
         GameController gameController = new GameController(stage);
         gameController.run();
     }
