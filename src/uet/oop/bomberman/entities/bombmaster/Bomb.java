@@ -55,8 +55,7 @@ public class Bomb extends Entity {
         flameAroundList.add(new FlameAround(x, y - 1, FlameAround.FlameType.TOP, map));
         flameAroundList.add(new FlameAround(x - 1, y, FlameAround.FlameType.LEFT, map));
         flameAroundList.add(new FlameAround(x + 1, y, FlameAround.FlameType.RIGHT, map));
-        flameAroundList.add(new FlameAround(x, y, FlameAround.FlameType.HORIZON, map));
-        flameAroundList.add(new FlameAround(x, y, FlameAround.FlameType.VERTICAL, map));
+        flameAroundList.add(new FlameAround(x, y, FlameAround.FlameType.CENTER, map));
     }
 
     public BombStatus getBombStatus() {
