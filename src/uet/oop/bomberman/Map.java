@@ -11,6 +11,7 @@ import uet.oop.bomberman.entities.stillobjectmaster.Wall;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +26,22 @@ public class Map {
 
     public Map(int LEVEL) {
         this.LEVEL = LEVEL;
+        readMapFromFile();
     }
 
-    public void createMap() throws IOException {
+    /**
+     * Read map.
+     */
+    public void readMapFromFile() {
+        File file = new File("res/levels/Level" + (LEVEL + 1) + ".txt");
+        Scanner scanner = null;
+        try{
+            scanner = new Scanner(file);
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("No file exist");
+        }
 
-        File file = new File("res/levels/Level" + LEVEL + ".txt");
-        Scanner scanner = new Scanner(file);
         scanner.nextLine(); //Read first line in Level.txt.
         String rowString = ""; //Save info of a row into string.
 
@@ -42,8 +53,8 @@ public class Map {
                     case 'p':
                         stillObject.add(new Grass(j, i, Sprite.grass.getFxImage()));
                         renderObject.add(new Grass(j, i, Sprite.grass.getFxImage()));
-                        Entity bomberman = new Bomber(j, i, Sprite.player_right.getFxImage(), new CollisionManager(this, Bomber.WIDTH, Bomber.HEIGHT));
-                        entities.add(bomberman);
+                        Entity bomberman = new Bomber(j, i, new CollisionManager(this, Bomber.WIDTH, Bomber.HEIGHT));
+                        GameController.entities.get(LEVEL).add(bomberman);
                         break;
                     case '#':
                         stillObject.add(new Wall(j, i, Sprite.wall.getFxImage()));
@@ -57,7 +68,7 @@ public class Map {
                         stillObject.add(new Grass(j, i, Sprite.grass.getFxImage()));
                         renderObject.add(new Grass(j, i, Sprite.grass.getFxImage()));
                         Enemy ballom = new Balloom(j, i, Sprite.balloom_left1.getFxImage(), new CollisionManager(this, Enemy.WIDTH, Enemy.HEIGHT));
-                        entities.add(ballom);
+                        GameController.entities.get(LEVEL).add(ballom);
                         break;
                     default:
                         stillObject.add(new Grass(j, i, Sprite.grass.getFxImage()));
@@ -69,7 +80,6 @@ public class Map {
         }
         scanner.close();
     }
-
     public void mapRender(GraphicsContext gc) {
         for (Entity x : renderObject) {
             x.render(gc);

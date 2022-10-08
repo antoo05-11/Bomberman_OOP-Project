@@ -18,7 +18,7 @@ public class Balloom extends Enemy {
     }
 
     public void move(){
-        if (goNext == false) {
+        if (!goNext) {
             int rand = (int) (Math.random() * 8);
             switch (rand % 4) {
                 case 0:
@@ -39,7 +39,6 @@ public class Balloom extends Enemy {
         }
         if (collisionManager.collide(x, y, dir)){
             goNext = false;
-            return;
         } else {
             if (dir == "LEFT") x--;
             if (dir == "RIGHT") x++;
