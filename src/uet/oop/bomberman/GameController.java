@@ -5,6 +5,7 @@ import javafx.stage.Stage;
 import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.enemiesmaster.Balloom;
+import uet.oop.bomberman.entities.itemmaster.Item;
 import uet.oop.bomberman.scenemaster.LobbyScene;
 import uet.oop.bomberman.scenemaster.PlayScene;
 
@@ -69,6 +70,7 @@ public class GameController {
      * Game characters.
      */
     public static List<List<Entity>> entities = new ArrayList<>();
+    public static List<Entity> items = new ArrayList<>();
 
     /**
      * Run game engine.
@@ -84,6 +86,7 @@ public class GameController {
             if (!stage.getScene().equals(playScene)) stage.setScene(playScene.getScene());
             entities.get(LEVEL).forEach(g -> g.render(playScene.getGc()));
             entities.get(LEVEL).forEach(Entity::update);
+            items.forEach(Entity::update);
         } else if (gameStatus == GameStatus.GAME_LOBBY) {
             if (!stage.getScene().equals(lobbyScene)) {
                 reset(); //Reset all game specs before go out.

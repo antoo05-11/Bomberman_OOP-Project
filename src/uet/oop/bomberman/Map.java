@@ -5,7 +5,10 @@ import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.enemiesmaster.Balloom;
 import uet.oop.bomberman.entities.enemiesmaster.Enemy;
+import uet.oop.bomberman.entities.itemmaster.BombItem;
+import uet.oop.bomberman.entities.itemmaster.FlameItem;
 import uet.oop.bomberman.entities.itemmaster.Item;
+import uet.oop.bomberman.entities.itemmaster.SpeedItem;
 import uet.oop.bomberman.entities.stillobjectmaster.Brick;
 import uet.oop.bomberman.entities.stillobjectmaster.Grass;
 import uet.oop.bomberman.entities.stillobjectmaster.Wall;
@@ -16,9 +19,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 import static uet.oop.bomberman.BombermanGame.*;
+import static uet.oop.bomberman.GameController.items;
 
 public class Map {
     private List<List<Entity>> mapInfo = new ArrayList<>(); //Can be changed.
@@ -90,8 +95,28 @@ public class Map {
         GameController.entities.get(LEVEL).clear();
         readMapFromFile();
     }
-    public void replace(int rowPos, int columnPos) {
-        Entity newItem = new Item(columnPos, rowPos, Sprite.powerup_bombs.getFxImage());
+    public void randomItem(int rowPos, int columnPos) {
+        Entity newItem = null;
+        Random random = new Random();
+        int rand = random.nextInt(1);
+        switch (rand){
+            case 0:
+                newItem = new SpeedItem(columnPos, rowPos, Sprite.powerup_speed.getFxImage());
+                break;
+            case 1:
+                newItem = new FlameItem(columnPos, rowPos, Sprite.powerup_flames.getFxImage());
+                break;
+            case 2:
+                newItem = new BombItem(columnPos, rowPos, Sprite.powerup_bombs.getFxImage());
+                break;
+        }
+        if (rand <= 2){
+            items.add(newItem);
+            replace(rowPos, columnPos, newItem);
+        }
+        else replace(rowPos, columnPos, new Grass(columnPos, rowPos, Sprite.grass.getFxImage()));
+    }
+    public void replace(int rowPos, int columnPos, Entity newItem){
         mapInfo.get(rowPos).set(columnPos, newItem);
     }
 }

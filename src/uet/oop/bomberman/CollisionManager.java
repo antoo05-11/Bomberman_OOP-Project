@@ -3,6 +3,7 @@ package uet.oop.bomberman;
 import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.enemiesmaster.Enemy;
+import uet.oop.bomberman.entities.itemmaster.Item;
 import uet.oop.bomberman.entities.stillobjectmaster.StillObjects;
 
 public class CollisionManager {
@@ -53,27 +54,16 @@ public class CollisionManager {
                 || downLeft instanceof StillObjects || downRight instanceof StillObjects;
     }
 
-    /*public boolean collideForEnemy(int x, int y, String dir){
+    public boolean collideForItem(int x, int y){
         int curX = x;
         int curY = y;
 
-        switch (dir){
-            case "LEFT":
-                curX -= 1;
-                break;
-            case "RIGHT":
-                curX += 1;
-            case "UP":
-                curY -= 1;
-            case "DOWN":
-               curY += 1;
-            default:
-        }
         topLeft = map.getEntityAt(curX, curY);
-        topRight = map.getEntityAt(curX + 31, curY);
-        downLeft = map.getEntityAt(curX, curY + 31);
-        downRight = map.getEntityAt(curX + 31, curY + 31);
-        return topLeft instanceof StillObjects || topRight instanceof StillObjects
-                || downLeft instanceof StillObjects || downRight instanceof StillObjects;
-    }*/
+        topRight = map.getEntityAt(curX + Bomber.WIDTH, curY);
+        downLeft = map.getEntityAt(curX, curY + Bomber.HEIGHT);
+        downRight = map.getEntityAt(curX + Bomber.WIDTH, curY + Bomber.HEIGHT);
+
+        return topLeft instanceof Item || topRight instanceof Item
+                || downLeft instanceof Item || downRight instanceof Item;
+    }
 }
