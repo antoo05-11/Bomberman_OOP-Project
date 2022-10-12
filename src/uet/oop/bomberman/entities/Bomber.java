@@ -1,14 +1,15 @@
 package uet.oop.bomberman.entities;
 
-import com.sun.org.glassfish.gmbal.GmbalException;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
-import org.omg.PortableInterceptor.ServerRequestInfo;
 import uet.oop.bomberman.CollisionManager;
 import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.entities.bombmaster.Bomb;
+import uet.oop.bomberman.entities.itemmaster.Item;
+import uet.oop.bomberman.entities.itemmaster.SpeedItem;
 import uet.oop.bomberman.entities.stillobjectmaster.Brick;
+import uet.oop.bomberman.entities.stillobjectmaster.Grass;
 import uet.oop.bomberman.entities.stillobjectmaster.StillObjects;
 import uet.oop.bomberman.graphics.Sprite;
 
@@ -44,7 +45,7 @@ public class Bomber extends Entity {
     Entity newBomb;
     CollisionManager collisionManager;
     int indexOfSprite = 0;
-    public static int SPEED = 2;
+    public static int SPEED = 1;
 
     public Bomber(int x, int y, CollisionManager collisionManager) {
         super(x, y, null);
@@ -232,30 +233,42 @@ public class Bomber extends Entity {
                         .getEntityAt(xTile * Sprite.SCALED_SIZE, (yTile + 1) * Sprite.SCALED_SIZE);
 
                 if (nearTile instanceof Brick) {
-                    GameController.mapList.get(GameController.LEVEL).replace(yTile + 1, xTile);
+                    GameController.mapList.get(GameController.LEVEL).randomItem(yTile + 1, xTile);
                 }
 
                 nearTile = GameController.mapList.get(GameController.LEVEL)
                         .getEntityAt(xTile * Sprite.SCALED_SIZE, (yTile - 1) * Sprite.SCALED_SIZE);
                 if (nearTile instanceof Brick) {
-                    GameController.mapList.get(GameController.LEVEL).replace(yTile - 1, xTile);
+                    GameController.mapList.get(GameController.LEVEL).randomItem(yTile - 1, xTile);
                 }
 
                 nearTile = GameController.mapList.get(GameController.LEVEL)
                         .getEntityAt((xTile + 1) * Sprite.SCALED_SIZE, yTile * Sprite.SCALED_SIZE);
                 if (nearTile instanceof Brick) {
-                    GameController.mapList.get(GameController.LEVEL).replace(yTile, xTile + 1);
+                    GameController.mapList.get(GameController.LEVEL).randomItem(yTile, xTile + 1);
                 }
 
                 nearTile = GameController.mapList.get(GameController.LEVEL)
                         .getEntityAt((xTile - 1) * Sprite.SCALED_SIZE, yTile * Sprite.SCALED_SIZE);
                 if (nearTile instanceof Brick) {
-                    GameController.mapList.get(GameController.LEVEL).replace(yTile, xTile - 1);
+                    GameController.mapList.get(GameController.LEVEL).randomItem(yTile, xTile - 1);
                 }
             }
         }
     }
 
+    private void pickUpItem(){
+        if (collisionManager.collideForItem(x,y)){
+            //System.out.println("COLLIDE");
+            Item.pickUp = true;
+            Entity grass = new Grass(x / Sprite.SCALED_SIZE, y / Sprite.SCALED_SIZE, Sprite.grass.getFxImage());
+            if (Item.pickUp == true){
+                GameController.items.remove(0);
+            }
+            GameController.mapList.get(GameController.LEVEL).replace(y/ Sprite.SCALED_SIZE, x / Sprite.SCALED_SIZE, grass);
+        } else Item.pickUp = false;
+
+    }
     @Override
     public void render(GraphicsContext gc) {
         if (bomberStatus == BomberStatus.ALIVE) {
@@ -271,7 +284,9 @@ public class Bomber extends Entity {
 
     @Override
     public void update() {
+        System.out.println(GameController.items.size());
         if (bomberStatus == BomberStatus.ALIVE) {
+            pickUpItem();
             moving();
             setBomb();
             updateBombsList();
