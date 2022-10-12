@@ -23,7 +23,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 import static uet.oop.bomberman.BombermanGame.*;
-import static uet.oop.bomberman.GameController.items;
+
 
 public class Map {
     private List<List<Entity>> mapInfo = new ArrayList<>(); //Can be changed.
@@ -95,7 +95,7 @@ public class Map {
         GameController.entities.get(LEVEL).clear();
         readMapFromFile();
     }
-    public void randomItem(int rowPos, int columnPos) {
+    public Entity randomItem(int rowPos, int columnPos) {
         Entity newItem = null;
         Random random = new Random();
         int rand = random.nextInt(1);
@@ -110,11 +110,8 @@ public class Map {
                 newItem = new BombItem(columnPos, rowPos, Sprite.powerup_bombs.getFxImage());
                 break;
         }
-        if (rand <= 2){
-            items.add(newItem);
-            replace(rowPos, columnPos, newItem);
-        }
-        else replace(rowPos, columnPos, new Grass(columnPos, rowPos, Sprite.grass.getFxImage()));
+        replace(rowPos, columnPos, new Grass(columnPos, rowPos, Sprite.grass.getFxImage()));
+        return newItem;
     }
     public void replace(int rowPos, int columnPos, Entity newItem){
         mapInfo.get(rowPos).set(columnPos, newItem);
