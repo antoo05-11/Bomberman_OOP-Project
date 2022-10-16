@@ -1,22 +1,18 @@
 package uet.oop.bomberman.entities;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import uet.oop.bomberman.CollisionManager;
 import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.entities.bombmaster.Bomb;
 import uet.oop.bomberman.entities.itemmaster.Item;
-import uet.oop.bomberman.entities.itemmaster.SpeedItem;
 import uet.oop.bomberman.entities.stillobjectmaster.Brick;
-import uet.oop.bomberman.entities.stillobjectmaster.Grass;
 import uet.oop.bomberman.entities.stillobjectmaster.StillObjects;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 
 public class Bomber extends Entity {
     /**
@@ -55,11 +51,6 @@ public class Bomber extends Entity {
         setSprite(Sprite.player_right.getFxImage());
         this.collisionManager = collisionManager;
     }
-
-    public void setSprite(Image img) {
-        this.img = img;
-    }
-
     public void saveKeyEvent(KeyCode keyCode, boolean isPress) {
         if (keyCode.isArrowKey()) {
             switch (keyCode) {

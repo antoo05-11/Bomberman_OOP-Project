@@ -63,10 +63,6 @@ public class Bomb extends Entity {
         return bombStatus;
     }
 
-    private void setSprite(Image img) {
-        this.img = img;
-    }
-
     /**
      * Check if a point in Pixel is inside bombList.
      */

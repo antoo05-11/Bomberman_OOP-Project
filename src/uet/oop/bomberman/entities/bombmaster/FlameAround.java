@@ -59,10 +59,6 @@ public class FlameAround extends Entity {
         status = Bomb.BombStatus.EXPLODED;
     }
 
-    public void setSprite(Image img) {
-        this.img = img;
-    }
-
     @Override
     public void update() {
         indexOfSprite++;

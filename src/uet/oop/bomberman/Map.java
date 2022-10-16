@@ -5,33 +5,37 @@ import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.enemiesmaster.Balloom;
 import uet.oop.bomberman.entities.enemiesmaster.Enemy;
+import uet.oop.bomberman.entities.enemiesmaster.Oneal;
 import uet.oop.bomberman.entities.itemmaster.BombItem;
 import uet.oop.bomberman.entities.itemmaster.FlameItem;
-import uet.oop.bomberman.entities.itemmaster.Item;
 import uet.oop.bomberman.entities.itemmaster.SpeedItem;
 import uet.oop.bomberman.entities.stillobjectmaster.Brick;
 import uet.oop.bomberman.entities.stillobjectmaster.Grass;
 import uet.oop.bomberman.entities.stillobjectmaster.Wall;
+import uet.oop.bomberman.graph_mapmaster.Graph;
+import uet.oop.bomberman.graph_mapmaster.Vertice;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-import static uet.oop.bomberman.BombermanGame.*;
-
+import static uet.oop.bomberman.BombermanGame.HEIGHT;
+import static uet.oop.bomberman.BombermanGame.WIDTH;
 
 public class Map {
-    private List<List<Entity>> mapInfo = new ArrayList<>(); //Can be changed.
+
+    private final List<List<Entity>> mapInfo = new ArrayList<>(); //Can be changed.
     int LEVEL;
+    Graph graph ;
 
     public Map(int LEVEL) {
         this.LEVEL = LEVEL;
         readMapFromFile();
+
     }
 
     /**
@@ -40,10 +44,9 @@ public class Map {
     public void readMapFromFile() {
         File file = new File("res/levels/Level" + (LEVEL + 1) + ".txt");
         Scanner scanner = null;
-        try{
+        try {
             scanner = new Scanner(file);
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             System.out.println("No file exist");
         }
 
@@ -68,8 +71,13 @@ public class Map {
                         break;
                     case '1':
                         mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
-                        Enemy ballom = new Balloom(j, i, Sprite.balloom_left1.getFxImage(), new CollisionManager(this, Enemy.WIDTH, Enemy.HEIGHT));
+                        Enemy ballom = new Balloom(j, i, Sprite.balloom_left1.getFxImage(), new CollisionManager(this, Balloom.WIDTH, Balloom.HEIGHT));
                         GameController.entities.get(LEVEL).add(ballom);
+                        break;
+                    case '2':
+                        mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
+                        Enemy oneal = new Oneal(j, i, Sprite.oneal_right1.getFxImage(), new CollisionManager(this, Oneal.WIDTH, Oneal.HEIGHT));
+                        GameController.entities.get(LEVEL).add(oneal);
                         break;
                     default:
                         mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
@@ -79,9 +87,10 @@ public class Map {
         }
         scanner.close();
     }
+
     public void mapRender(GraphicsContext gc) {
-        for(int i = 0; i < mapInfo.size(); i++) {
-            for(int j = 0; j < mapInfo.get(i).size(); j++) {
+        for (int i = 0; i < mapInfo.size(); i++) {
+            for (int j = 0; j < mapInfo.get(i).size(); j++) {
                 mapInfo.get(i).get(j).render(gc);
             }
         }
@@ -90,16 +99,18 @@ public class Map {
     public Entity getEntityAt(int x, int y) {
         return mapInfo.get(y / Sprite.SCALED_SIZE).get(x / Sprite.SCALED_SIZE);
     }
+
     public void reset() {
         mapInfo.clear();
         GameController.entities.get(LEVEL).clear();
         readMapFromFile();
     }
+
     public Entity randomItem(int rowPos, int columnPos) {
         Entity newItem = null;
         Random random = new Random();
         int rand = random.nextInt(1);
-        switch (rand){
+        switch (rand) {
             case 0:
                 newItem = new SpeedItem(columnPos, rowPos, Sprite.powerup_speed.getFxImage());
                 break;
@@ -113,7 +124,43 @@ public class Map {
         replace(rowPos, columnPos, new Grass(columnPos, rowPos, Sprite.grass.getFxImage()));
         return newItem;
     }
-    public void replace(int rowPos, int columnPos, Entity newItem){
+
+    public void replace(int rowPos, int columnPos, Entity newItem) {
         mapInfo.get(rowPos).set(columnPos, newItem);
     }
+
+    public Graph convertToGraph(Vertice onealVertice) {
+        //TODO: read from mapinfo to graph
+
+        List<Vertice> verticesList = new ArrayList<>();
+
+        //Add bomber pos and oneal pos as first and second vertice.
+        Vertice bomberVertice = new Vertice((GameController.entities.get(LEVEL).get(0).getX()+Bomber.WIDTH/2)/Sprite.SCALED_SIZE,
+                (GameController.entities.get(LEVEL).get(0).getY()+Bomber.HEIGHT/2)/Sprite.SCALED_SIZE);
+        verticesList.add(bomberVertice);
+        verticesList.add(onealVertice);
+
+        //Then add all vertice from mapInfo list.
+        for (int i = 1; i < mapInfo.size() - 1; i++) {
+            for (int j = 1; j < mapInfo.get(i).size() - 1; j++) {
+                if (mapInfo.get(i).get(j) instanceof Grass) {
+                    Vertice vertice = new Vertice(j, i);
+                    if (vertice.isAVerticeInGraph(mapInfo) && !vertice.equals(bomberVertice) && !vertice.equals(onealVertice)) {
+                        verticesList.add(vertice);
+                    }
+                }
+            }
+        }
+
+        Graph graph = new Graph(verticesList.size(), verticesList);
+
+
+        //Finally let graph complete itself.
+        graph.complete(mapInfo);
+
+        //System.out.println(graph);
+        return graph;
+    }
+
+
 }

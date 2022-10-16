@@ -10,6 +10,6 @@ public class SpeedItem extends Item{
 
     @Override
     public void update() {
-        System.out.println("LOL");
+
     }
 }

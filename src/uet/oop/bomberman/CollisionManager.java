@@ -28,6 +28,7 @@ public class CollisionManager {
     public Entity topRight;
     public Entity downLeft;
     public Entity downRight;
+
     public boolean collide(int x, int y, String dir) {
         int curX = x;
         int curY = y;
@@ -54,7 +55,7 @@ public class CollisionManager {
                 || downLeft instanceof StillObjects || downRight instanceof StillObjects;
     }
 
-    public boolean collideForItem(int x, int y){
+    public boolean collideForItem(int x, int y) {
         int curX = x;
         int curY = y;
 

@@ -27,6 +27,11 @@
             <artifactId>javafx-graphics</artifactId>
             <version>15</version>
         </dependency>
+        <dependency>
+            <groupId>uet.oop</groupId>
+            <artifactId>bomberman</artifactId>
+            <version>v0.1</version>
+        </dependency>
     </dependencies>
 
     <build>
