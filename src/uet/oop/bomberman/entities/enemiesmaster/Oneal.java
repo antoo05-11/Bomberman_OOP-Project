@@ -2,6 +2,7 @@ package uet.oop.bomberman.entities.enemiesmaster;
 
 import javafx.scene.image.Image;
 import uet.oop.bomberman.CollisionManager;
+import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graph_mapmaster.Graph;
 import uet.oop.bomberman.graph_mapmaster.Vertice;
 import uet.oop.bomberman.graphics.Sprite;
@@ -9,7 +10,6 @@ import uet.oop.bomberman.graphics.Sprite;
 import java.util.List;
 
 public class Oneal extends Enemy {
-    public static int SPEED = 1;
     public static final int WIDTH = 30;
     public static final int HEIGHT = 30;
     OnealStatus onealStatus;
@@ -20,12 +20,16 @@ public class Oneal extends Enemy {
         INVALID
     }
 
-    private Graph graph;
     private List<Vertice> path;
+    private Entity bomber;
 
-    public Oneal(int xUnit, int yUnit, Image img, CollisionManager collisionManager) {
+    /**
+     * Full constructor with param bomber for update continually position of bomberman.
+     */
+    public Oneal(int xUnit, int yUnit, Image img, CollisionManager collisionManager, Entity bomber) {
         super(xUnit, yUnit, img, collisionManager);
         onealStatus = OnealStatus.NOT_CONNECTED;
+        this.bomber = bomber;
     }
 
     public void setOnealStatus(OnealStatus onealStatus) {
@@ -40,8 +44,8 @@ public class Oneal extends Enemy {
         Vertice src = path.get(0);
         Vertice dst = path.get(1);
         indexOfSprite++;
-        // TODO: 4 cases of direction
-        //Case 1: left
+
+        // Case 1: left
         if (src.getxTilePos() >= dst.getxTilePos()) {
             if (x > dst.getxTilePos() * Sprite.SCALED_SIZE) {
                 if (!collisionManager.collide(x, y, "LEFT")) {
@@ -53,7 +57,7 @@ public class Oneal extends Enemy {
                 }
             }
         }
-        //Case 2: right
+        // Case 2: right
         if (src.getxTilePos() <= dst.getxTilePos()) {
             if (x < dst.getxTilePos() * Sprite.SCALED_SIZE) {
                 if (!collisionManager.collide(x, y, "RIGHT")) {
@@ -66,7 +70,7 @@ public class Oneal extends Enemy {
             }
         }
 
-        //Case 3: up
+        // Case 3: up
         if (src.getyTilePos() >= dst.getyTilePos()) {
             if (y > dst.getyTilePos() * Sprite.SCALED_SIZE) {
                 if (!collisionManager.collide(x, y, "UP")) {
@@ -79,10 +83,10 @@ public class Oneal extends Enemy {
             }
         }
 
-        //Case 4: down
+        // Case 4: down
         if (src.getyTilePos() <= dst.getyTilePos()) {
             if (y < dst.getyTilePos() * Sprite.SCALED_SIZE) {
-                if (!collisionManager.collide(x, y, "DOWN")){
+                if (!collisionManager.collide(x, y, "DOWN")) {
                     setSprite(Sprite.movingSprite(
                             leftSprites[0],
                             leftSprites[1],
@@ -94,19 +98,28 @@ public class Oneal extends Enemy {
     }
 
     public void move() {
+        int onealIndex = Graph.getVerticeIndex(x + Oneal.WIDTH / 2, y + Oneal.HEIGHT / 2);
+        int bomberIndex = Graph.getVerticeIndex(bomber.getX(), bomber.getY());
+
         if (onealStatus == OnealStatus.NOT_CONNECTED) {
-            graph = collisionManager.getMap().convertToGraph(new Vertice(x / Sprite.SCALED_SIZE, y / Sprite.SCALED_SIZE));
-            if (graph.isConnected()) {
-                onealStatus = OnealStatus.CONNECTED;
+            path = collisionManager.getMap().getGraph().breathFirstSearch(onealIndex, bomberIndex);
+            if (path != null) onealStatus = OnealStatus.CONNECTED;
+        }
+
+        if (onealStatus != OnealStatus.CONNECTED) {
+            randomMoving(); // If no connection to bomber then random move or has other oneal chase bomber.
+        } else {
+            path = collisionManager.getMap().getGraph().breathFirstSearch(onealIndex, bomberIndex);
+            if (path != null) {
+                moveAlongPath();
             }
         }
-        if (onealStatus != OnealStatus.CONNECTED) {
-            super.move(); // If no connection to bomber then random move or has other oneal chase bomber.
-        } else {
-            graph = collisionManager.getMap().convertToGraph(new Vertice((x + Oneal.WIDTH / 2) / Sprite.SCALED_SIZE, (y + Oneal.HEIGHT / 2) / Sprite.SCALED_SIZE));
-            path = graph.findWay(1, 0);
-            moveAlongPath();
-        }
+
+    }
+
+    public int getDistanceToBomber() {
+        if (path == null) return -1;
+        return path.size();
     }
 
 }

@@ -1,9 +1,14 @@
 package uet.oop.bomberman.entities.enemiesmaster;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.CollisionManager;
+import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.bombmaster.Bomb;
 import uet.oop.bomberman.graphics.Sprite;
+
+import static uet.oop.bomberman.GameController.bombsList;
 
 public abstract class Enemy extends Entity {
 
@@ -12,24 +17,33 @@ public abstract class Enemy extends Entity {
     }
 
     CollisionManager collisionManager;
-    private int speed;
+    protected int SPEED;
     private String dir = "";
     private boolean goNext = false;
     public int indexOfSprite;
     Sprite[] leftSprites = new Sprite[3];
     Sprite[] rightSprites = new Sprite[3];
+    public enum EnemyStatus {
+        ALIVE,
+        DEAD
+    }
 
+    public EnemyStatus getEnemyStatus() {
+        return enemyStatus;
+    }
+
+    EnemyStatus enemyStatus = EnemyStatus.ALIVE;
     public Enemy(int xUnit, int yUnit, Image img, CollisionManager collisionManager) {
         super(xUnit, yUnit, img);
         this.collisionManager = collisionManager;
-        this.speed = 1;
+        this.SPEED = 1;
     }
 
     /**
      * Random moving for all enemies.
      */
-    public void move() {
-        if(this instanceof Balloom) {
+    public void randomMoving() {
+        if (this instanceof Balloom) {
             leftSprites[0] = Sprite.balloom_left1;
             leftSprites[1] = Sprite.balloom_left2;
             leftSprites[2] = Sprite.balloom_left3;
@@ -37,7 +51,7 @@ public abstract class Enemy extends Entity {
             rightSprites[1] = Sprite.balloom_right2;
             rightSprites[2] = Sprite.balloom_right3;
         }
-        if(this instanceof Oneal) {
+        if (this instanceof Oneal) {
             leftSprites[0] = Sprite.oneal_left1;
             leftSprites[1] = Sprite.oneal_left2;
             leftSprites[2] = Sprite.oneal_left3;
@@ -101,9 +115,31 @@ public abstract class Enemy extends Entity {
             goNext = true;
         }
     }
-
+    public abstract void move();
+    private void updateEnemyStatus() {
+        for (Entity i : bombsList) {
+            if (((Bomb) i).insideBombRange_Pixel(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2)
+                    && ((Bomb) i).getBombStatus() == Bomb.BombStatus.EXPLODED) {
+                enemyStatus = EnemyStatus.DEAD;
+                break;
+            }
+        }
+    }
     @Override
     public void update() {
-        move();
+        updateEnemyStatus();
+        if(enemyStatus == EnemyStatus.ALIVE) move();
+    }
+
+    @Override
+    public void render(GraphicsContext gc) {
+        if(enemyStatus == EnemyStatus.ALIVE) super.render(gc);
+    }
+
+    public boolean collideBomber(int xPixel, int yPixel) {
+        boolean check = true;
+        if (xPixel + Bomber.WIDTH < x || xPixel > x + Sprite.SCALED_SIZE) check = false;
+        if (yPixel + Bomber.HEIGHT < y || yPixel > y + Sprite.SCALED_SIZE) check = false;
+        return check;
     }
 }
