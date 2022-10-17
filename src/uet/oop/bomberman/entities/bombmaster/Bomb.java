@@ -84,6 +84,7 @@ public class Bomb extends Entity {
         flameAroundRight.add(flameRightLast);
     }
 
+    boolean checkUp = true;
     public void destroyUp() {
         for (int i = 0; i < flameAroundTop.size(); i++) {
             int xTile = flameAroundTop.get(i).getX() / Sprite.SCALED_SIZE;
@@ -94,12 +95,14 @@ public class Bomb extends Entity {
                     .getEntityAt(xTile * Sprite.SCALED_SIZE, yTile * Sprite.SCALED_SIZE);
 
             if (nearTile instanceof Wall) {
+                checkUp = false;
                 if (bombStatus == BombStatus.EXPLODED) {
                     distance = (double) y / Sprite.SCALED_SIZE - (double) flameAroundTop.get(i).getY() / Sprite.SCALED_SIZE;
                     for (int j = flameAroundTop.size() - 1; j >= distance - 1; j--) flameAroundTop.remove(j);
                 }
                 return;
             } else if (nearTile instanceof Brick) {
+                checkUp = false;
                 if (bombStatus == BombStatus.EXPLODED) {
                     itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile, xTile));
                     map.convertMapToGraph();
@@ -111,6 +114,7 @@ public class Bomb extends Entity {
         }
     }
 
+    boolean checkDown = true;
     public void destroyDown() {
         for (int i = 0; i < flameAroundDown.size(); i++) {
             int xTile = flameAroundDown.get(i).getX() / Sprite.SCALED_SIZE;
@@ -121,12 +125,14 @@ public class Bomb extends Entity {
                     .getEntityAt(xTile * Sprite.SCALED_SIZE, yTile * Sprite.SCALED_SIZE);
 
             if (nearTile instanceof Wall) {
+                checkDown = false;
                 if (bombStatus == BombStatus.EXPLODED) {
                     distance = (double) flameAroundDown.get(i).getY() / Sprite.SCALED_SIZE - (double) y / Sprite.SCALED_SIZE;
                     for (int j = flameAroundDown.size() - 1; j >= distance - 1; j--) flameAroundDown.remove(j);
                 }
                 return;
             } else if (nearTile instanceof Brick) {
+                checkDown = false;
                 if (bombStatus == BombStatus.EXPLODED) {
                     itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile, xTile));
                     map.convertMapToGraph();
@@ -138,6 +144,7 @@ public class Bomb extends Entity {
         }
     }
 
+    boolean checkLeft = true;
     public void destroyLeft() {
         for (int i = 0; i < flameAroundLeft.size(); i++) {
             int xTile = flameAroundLeft.get(i).getX() / Sprite.SCALED_SIZE;
@@ -148,12 +155,14 @@ public class Bomb extends Entity {
                     .getEntityAt(Math.max(xTile * Sprite.SCALED_SIZE, 0), yTile * Sprite.SCALED_SIZE);
 
             if (nearTile instanceof Wall) {
+                checkLeft = false;
                 if (bombStatus == BombStatus.EXPLODED) {
                     distance = (double) x / Sprite.SCALED_SIZE - (double) flameAroundLeft.get(i).getX() / Sprite.SCALED_SIZE;
                     for (int j = flameAroundLeft.size() - 1; j >= distance - 1; j--) flameAroundLeft.remove(j);
                 }
                 return;
             } else if (nearTile instanceof Brick) {
+                checkLeft = false;
                 if (bombStatus == BombStatus.EXPLODED) {
                     itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile, xTile));
                     map.convertMapToGraph();
@@ -165,6 +174,7 @@ public class Bomb extends Entity {
         }
     }
 
+    boolean checkRight = true;
     public void destroyRight() {
         for (int i = 0; i < flameAroundRight.size(); i++) {
             int xTile = flameAroundRight.get(i).getX() / Sprite.SCALED_SIZE;
@@ -175,12 +185,14 @@ public class Bomb extends Entity {
                     .getEntityAt(Math.max(xTile * Sprite.SCALED_SIZE, 0), yTile * Sprite.SCALED_SIZE);
 
             if (nearTile instanceof Wall) {
+                checkRight = false;
                 if (bombStatus == BombStatus.EXPLODED) {
                     distance = (double) flameAroundRight.get(i).getX() / Sprite.SCALED_SIZE - (double) x / Sprite.SCALED_SIZE;
                     for (int j = flameAroundRight.size() - 1; j >= distance - 1; j--) flameAroundRight.remove(j);
                 }
                 return;
             } else if (nearTile instanceof Brick) {
+                checkRight = false;
                 if (bombStatus == BombStatus.EXPLODED) {
                     itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile, xTile));
                     map.convertMapToGraph();
@@ -211,10 +223,10 @@ public class Bomb extends Entity {
         int yBombTile = y / Sprite.SCALED_SIZE;
         for (int i = 1; i <= Bomber.BOMB_RADIUS; i++) {
             if ((xTile == xBombTile && yTile == yBombTile)
-                    || (xTile == xBombTile && yTile + i == yBombTile)
-                    || (xTile == xBombTile && yTile - i == yBombTile)
-                    || (xTile == xBombTile + i && yTile == yBombTile)
-                    || (xTile == xBombTile - i && yTile == yBombTile)) return true;
+                    || (xTile == xBombTile && yTile + i == yBombTile && checkDown)
+                    || (xTile == xBombTile && yTile - i == yBombTile && checkUp)
+                    || (xTile == xBombTile + i && yTile == yBombTile && checkRight)
+                    || (xTile == xBombTile - i && yTile == yBombTile && checkLeft)) return true;
         }
         return false;
     }

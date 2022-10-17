@@ -54,7 +54,7 @@ public class Bomber extends Entity {
     int indexOfSprite = 0;
     public static int SPEED = 2;
     public static int MAX_BOMB = 3;
-    public static int BOMB_RADIUS = 1;
+    public static int BOMB_RADIUS = 3;
 
     public Bomber(int x, int y, CollisionManager collisionManager) {
         super(x, y, null);
