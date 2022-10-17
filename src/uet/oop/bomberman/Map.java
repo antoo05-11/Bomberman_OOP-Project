@@ -109,7 +109,7 @@ public class Map {
     public Entity randomItem(int rowPos, int columnPos) {
         Entity newItem = null;
         Random random = new Random();
-        int rand = random.nextInt(1);
+        int rand = random.nextInt(3);
         switch (rand) {
             case 0:
                 newItem = new SpeedItem(columnPos, rowPos, Sprite.powerup_speed.getFxImage());

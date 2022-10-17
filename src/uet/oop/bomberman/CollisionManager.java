@@ -54,17 +54,4 @@ public class CollisionManager {
         return topLeft instanceof StillObjects || topRight instanceof StillObjects
                 || downLeft instanceof StillObjects || downRight instanceof StillObjects;
     }
-
-    public boolean collideForItem(int x, int y) {
-        int curX = x;
-        int curY = y;
-
-        topLeft = map.getEntityAt(curX, curY);
-        topRight = map.getEntityAt(curX + Bomber.WIDTH, curY);
-        downLeft = map.getEntityAt(curX, curY + Bomber.HEIGHT);
-        downRight = map.getEntityAt(curX + Bomber.WIDTH, curY + Bomber.HEIGHT);
-
-        return topLeft instanceof Item || topRight instanceof Item
-                || downLeft instanceof Item || downRight instanceof Item;
-    }
 }
