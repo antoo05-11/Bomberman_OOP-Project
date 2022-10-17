@@ -47,7 +47,7 @@ public class Bomber extends Entity {
     private KeyCode latestDirectKey = KeyCode.RIGHT;
 
     public List<Entity> bombsList = new LinkedList<>();
-    public static List<Entity> itemsList = new ArrayList<>();
+
     Entity newBomb;
     CollisionManager collisionManager;
 
@@ -90,7 +90,6 @@ public class Bomber extends Entity {
     }
 
     private void updateBomberStatus() {
-        //System.out.println(entities.get(LEVEL).size());
 
         /**
          * Died by bomb.
@@ -248,53 +247,6 @@ public class Bomber extends Entity {
         }
     }
 
-    /**
-     * update status of still object like brick.
-     */
-    /*private void updateEntities() {
-        Entity nearTile;
-        for (int i = 0; i < bombsList.size(); i++)
-            if (((Bomb) bombsList.get(i)).getBombStatus() == Bomb.BombStatus.EXPLODED) {
-                int xTile = ((Bomb) bombsList.get(i)).x / Sprite.SCALED_SIZE;
-                int yTile = ((Bomb) bombsList.get(i)).y / Sprite.SCALED_SIZE;
-
-                for (int j = 0; j <= BOMB_RADIUS; j++){
-                
-                    nearTile = GameController.mapList.get(GameController.LEVEL)
-                            .getEntityAt(xTile * Sprite.SCALED_SIZE, (yTile - j) * Sprite.SCALED_SIZE);
-                    if (nearTile instanceof Brick) {
-                        itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile - j, xTile));
-                        collisionManager.getMap().convertMapToGraph();
-                    }
-
-                    nearTile = GameController.mapList.get(GameController.LEVEL)
-                            .getEntityAt(xTile * Sprite.SCALED_SIZE, (yTile + j) * Sprite.SCALED_SIZE);
-
-                    if (nearTile instanceof Brick) {
-                        itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile + j, xTile));
-                        collisionManager.getMap().convertMapToGraph();
-                    }
-
-
-                    nearTile = GameController.mapList.get(GameController.LEVEL)
-                            .getEntityAt((xTile + j) * Sprite.SCALED_SIZE, yTile * Sprite.SCALED_SIZE);
-                    if (nearTile instanceof Brick) {
-                        itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile, xTile + j));
-                        collisionManager.getMap().convertMapToGraph();
-                    }
-
-                    nearTile = GameController.mapList.get(GameController.LEVEL)
-                            .getEntityAt((xTile - j) * Sprite.SCALED_SIZE, yTile * Sprite.SCALED_SIZE);
-                    if (nearTile instanceof Brick) {
-                        itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile, xTile - j));
-                        collisionManager.getMap().convertMapToGraph();
-                    }
-
-                }
-            }
-    }*/
-
-
     @Override
     public void render(GraphicsContext gc) {
         if (bomberStatus == BomberStatus.ALIVE) {
@@ -319,13 +271,12 @@ public class Bomber extends Entity {
             updateBombsList();
             updateItemsList();
             updateBomberStatus();
-            //updateEntities();
         }
         if (bomberStatus == BomberStatus.DEAD) {
             indexOfSprite++;
             setSprite(Sprite.movingSprite(Sprite.player_dead1, Sprite.player_dead2, Sprite.player_dead3, indexOfSprite, 20).getFxImage());
             if (indexOfSprite == 20) {
-                GameController.gameStatus = GameController.GameStatus.GAME_LOBBY;
+                GameController.gameStatus = GameStatus.GAME_LOSE;
             }
             itemsList.clear();
         }

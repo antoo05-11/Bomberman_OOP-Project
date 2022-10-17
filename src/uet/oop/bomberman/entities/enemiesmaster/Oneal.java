@@ -87,11 +87,16 @@ public class Oneal extends Enemy {
         if (src.getyTilePos() <= dst.getyTilePos()) {
             if (y < dst.getyTilePos() * Sprite.SCALED_SIZE) {
                 if (!collisionManager.collide(x, y, "DOWN")) {
-                    setSprite(Sprite.movingSprite(
-                            leftSprites[0],
-                            leftSprites[1],
-                            leftSprites[2], indexOfSprite, 20).getFxImage());
-                    y += SPEED;
+                    try {
+                        setSprite(Sprite.movingSprite(
+                                leftSprites[0],
+                                leftSprites[1],
+                                leftSprites[2], indexOfSprite, 20).getFxImage());
+                        y += SPEED;
+                    }
+                    catch (NullPointerException e) {
+                        System.out.println("lỗi");
+                    }
                 }
             }
         }

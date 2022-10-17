@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static uet.oop.bomberman.entities.Bomber.itemsList;
+import static uet.oop.bomberman.GameController.itemsList;
 
 
 public class Bomb extends Entity {
@@ -96,7 +96,6 @@ public class Bomb extends Entity {
             if (nearTile instanceof Wall) {
                 if (bombStatus == BombStatus.EXPLODED) {
                     distance = (double) y / Sprite.SCALED_SIZE - (double) flameAroundTop.get(i).getY() / Sprite.SCALED_SIZE;
-                    map.convertMapToGraph();
                     for (int j = flameAroundTop.size() - 1; j >= distance - 1; j--) flameAroundTop.remove(j);
                 }
                 return;
@@ -130,6 +129,7 @@ public class Bomb extends Entity {
             } else if (nearTile instanceof Brick) {
                 if (bombStatus == BombStatus.EXPLODED) {
                     itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile, xTile));
+                    map.convertMapToGraph();
                     distance = (double) flameAroundDown.get(i).getY() / Sprite.SCALED_SIZE - (double) y / Sprite.SCALED_SIZE;
                     for (int j = flameAroundDown.size() - 1; j >= distance - 1; j--) flameAroundDown.remove(j);
                 }
@@ -156,6 +156,7 @@ public class Bomb extends Entity {
             } else if (nearTile instanceof Brick) {
                 if (bombStatus == BombStatus.EXPLODED) {
                     itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile, xTile));
+                    map.convertMapToGraph();
                     distance = (double) x / Sprite.SCALED_SIZE - (double) flameAroundLeft.get(i).getX() / Sprite.SCALED_SIZE;
                     for (int j = flameAroundLeft.size() - 1; j >= distance - 1; j--) flameAroundLeft.remove(j);
                 }
@@ -182,6 +183,7 @@ public class Bomb extends Entity {
             } else if (nearTile instanceof Brick) {
                 if (bombStatus == BombStatus.EXPLODED) {
                     itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile, xTile));
+                    map.convertMapToGraph();
                     distance = (double) flameAroundRight.get(i).getX() / Sprite.SCALED_SIZE - (double) x / Sprite.SCALED_SIZE;
                     for (int j = flameAroundRight.size() - 1; j >= distance - 1; j--) flameAroundRight.remove(j);
                 }

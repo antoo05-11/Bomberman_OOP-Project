@@ -5,6 +5,7 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.bombmaster.Bomb;
 import uet.oop.bomberman.entities.enemiesmaster.Balloom;
 import uet.oop.bomberman.entities.enemiesmaster.Enemy;
 import uet.oop.bomberman.entities.enemiesmaster.Oneal;
@@ -73,6 +74,7 @@ public class GameController {
      */
     public static List<List<Entity>> entities = new ArrayList<>();
     public static List<Entity> bombsList = new ArrayList<>();
+    public static List<Entity> itemsList = new ArrayList<>();
 
     /**
      * Run game engine.
@@ -120,11 +122,6 @@ public class GameController {
                 }
             }
 
-        for(Entity i : entities.get(LEVEL)) {
-            if(i instanceof Oneal) {
-                System.out.println(((Oneal)i).getOnealStatus());
-            }
-        }
     }
 
     public void update() {
@@ -134,9 +131,12 @@ public class GameController {
             updateEntities();
         } else if (gameStatus == GameStatus.GAME_LOBBY) {
             if (!stage.getScene().equals(lobbyScene)) {
-                reset(); //Reset all game specs before go out.
                 stage.setScene(lobbyScene.getScene());
             }
+        }
+        else if(gameStatus == GameStatus.GAME_LOSE) {
+            reset(); //Reset all game specs before go out.
+            gameStatus = GameStatus.GAME_LOBBY;
         }
     }
 
