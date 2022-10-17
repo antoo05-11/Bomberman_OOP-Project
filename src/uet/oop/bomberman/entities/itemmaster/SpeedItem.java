@@ -1,6 +1,7 @@
 package uet.oop.bomberman.entities.itemmaster;
 
 import javafx.scene.image.Image;
+import uet.oop.bomberman.entities.Bomber;
 
 public class SpeedItem extends Item{
 
@@ -10,6 +11,6 @@ public class SpeedItem extends Item{
 
     @Override
     public void update() {
-
+        Bomber.SPEED += 1;
     }
 }

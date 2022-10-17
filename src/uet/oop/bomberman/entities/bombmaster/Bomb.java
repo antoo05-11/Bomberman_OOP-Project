@@ -232,6 +232,11 @@ public class Bomb extends Entity {
             flameAroundLeft.forEach(g -> g.render(gc));
             flameAroundRight.forEach(g -> g.render(gc));
             flameAroundCenter.render(gc);
+            flameAroundTop.forEach(Entity::update);
+            flameAroundDown.forEach(Entity::update);
+            flameAroundLeft.forEach(Entity::update);
+            flameAroundRight.forEach(Entity::update);
+            flameAroundCenter.update();
         }
     }
 
@@ -248,11 +253,7 @@ public class Bomb extends Entity {
         }
         if (bombStatus == BombStatus.EXPLODED) {
             bombStatus = ((FlameAround) flameAroundCenter).getStatus();
-            flameAroundTop.forEach(Entity::update);
-            flameAroundDown.forEach(Entity::update);
-            flameAroundLeft.forEach(Entity::update);
-            flameAroundRight.forEach(Entity::update);
-            flameAroundCenter.update();
+
         }
     }
 }
