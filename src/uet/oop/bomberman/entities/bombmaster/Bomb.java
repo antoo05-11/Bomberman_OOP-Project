@@ -2,6 +2,7 @@ package uet.oop.bomberman.entities.bombmaster;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import uet.oop.bomberman.CollisionManager;
 import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.Map;
 import uet.oop.bomberman.entities.Bomber;
@@ -35,7 +36,7 @@ public class Bomb extends Entity {
     protected List<Entity> flameAroundLeft = new ArrayList<>();
     protected List<Entity> flameAroundRight = new ArrayList<>();
 
-    boolean checkRight, checkLeft, checkUp, checkDown;
+
     /**
      * Timer for counting 3 seconds before exploding.
      */
@@ -95,12 +96,14 @@ public class Bomb extends Entity {
             if (nearTile instanceof Wall) {
                 if (bombStatus == BombStatus.EXPLODED) {
                     distance = (double) y / Sprite.SCALED_SIZE - (double) flameAroundTop.get(i).getY() / Sprite.SCALED_SIZE;
+                    map.convertMapToGraph();
                     for (int j = flameAroundTop.size() - 1; j >= distance - 1; j--) flameAroundTop.remove(j);
                 }
                 return;
             } else if (nearTile instanceof Brick) {
                 if (bombStatus == BombStatus.EXPLODED) {
                     itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile, xTile));
+                    map.convertMapToGraph();
                     distance = (double) y / Sprite.SCALED_SIZE - (double) flameAroundTop.get(i).getY() / Sprite.SCALED_SIZE;
                     for (int j = flameAroundTop.size() - 1; j >= distance - 1; j--) flameAroundTop.remove(j);
                 }

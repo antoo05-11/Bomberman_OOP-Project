@@ -121,7 +121,6 @@ public abstract class Enemy extends Entity {
             if (((Bomb) i).insideBombRange_Pixel(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2)
                     && ((Bomb) i).getBombStatus() == Bomb.BombStatus.EXPLODED) {
                 enemyStatus = EnemyStatus.DEAD;
-                break;
             }
         }
     }
