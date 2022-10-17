@@ -30,16 +30,21 @@ public class Map {
 
     private final List<List<Entity>> mapInfo = new ArrayList<>(); //Can be changed.
     int LEVEL;
-    Graph graph ;
+    private Graph graph;
 
     public Map(int LEVEL) {
         this.LEVEL = LEVEL;
         readMapFromFile();
+        convertMapToGraph();
+    }
 
+    public Graph getGraph() {
+        return graph;
     }
 
     /**
-     * Read map.
+     * Read map, add still objects to mapInfo such as wall, brick, grass.
+     * Bomber and other enemies are added to entities list in GameController class.
      */
     public void readMapFromFile() {
         File file = new File("res/levels/Level" + (LEVEL + 1) + ".txt");
@@ -76,7 +81,7 @@ public class Map {
                         break;
                     case '2':
                         mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
-                        Enemy oneal = new Oneal(j, i, Sprite.oneal_right1.getFxImage(), new CollisionManager(this, Oneal.WIDTH, Oneal.HEIGHT));
+                        Enemy oneal = new Oneal(j, i, Sprite.oneal_right1.getFxImage(), new CollisionManager(this, Oneal.WIDTH, Oneal.HEIGHT), GameController.entities.get(LEVEL).get(0));
                         GameController.entities.get(LEVEL).add(oneal);
                         break;
                     default:
@@ -88,6 +93,9 @@ public class Map {
         scanner.close();
     }
 
+    /**
+     * Render still
+     */
     public void mapRender(GraphicsContext gc) {
         for (int i = 0; i < mapInfo.size(); i++) {
             for (int j = 0; j < mapInfo.get(i).size(); j++) {
@@ -100,12 +108,18 @@ public class Map {
         return mapInfo.get(y / Sprite.SCALED_SIZE).get(x / Sprite.SCALED_SIZE);
     }
 
+    /**
+     * Read map again and refresh entities list in GameController class.
+     */
     public void reset() {
         mapInfo.clear();
         GameController.entities.get(LEVEL).clear();
         readMapFromFile();
     }
 
+    /**
+     * Get a random item and replace current position by Grass.
+     */
     public Entity randomItem(int rowPos, int columnPos) {
         Entity newItem = null;
         Random random = new Random();
@@ -125,42 +139,45 @@ public class Map {
         return newItem;
     }
 
+    /**
+     * Replace any entity by other entity in mapInfo.
+     */
     public void replace(int rowPos, int columnPos, Entity newItem) {
         mapInfo.get(rowPos).set(columnPos, newItem);
     }
 
-    public Graph convertToGraph(Vertice onealVertice) {
-        //TODO: read from mapinfo to graph
-
+    /**
+     * Read from mapInfo to graph.
+     * Add all cells on map and add adj vertices into Graph.
+     */
+    public void convertMapToGraph() {
         List<Vertice> verticesList = new ArrayList<>();
-
-        //Add bomber pos and oneal pos as first and second vertice.
-        Vertice bomberVertice = new Vertice((GameController.entities.get(LEVEL).get(0).getX()+Bomber.WIDTH/2)/Sprite.SCALED_SIZE,
-                (GameController.entities.get(LEVEL).get(0).getY()+Bomber.HEIGHT/2)/Sprite.SCALED_SIZE);
-        verticesList.add(bomberVertice);
-        verticesList.add(onealVertice);
-
-        //Then add all vertice from mapInfo list.
-        for (int i = 1; i < mapInfo.size() - 1; i++) {
-            for (int j = 1; j < mapInfo.get(i).size() - 1; j++) {
-                if (mapInfo.get(i).get(j) instanceof Grass) {
-                    Vertice vertice = new Vertice(j, i);
-                    if (vertice.isAVerticeInGraph(mapInfo) && !vertice.equals(bomberVertice) && !vertice.equals(onealVertice)) {
-                        verticesList.add(vertice);
-                    }
-                }
+        for (int i = 0; i < mapInfo.size(); i++) {
+            for (int j = 0; j < mapInfo.get(i).size(); j++) {
+                verticesList.add(new Vertice(j, i));
             }
         }
-
-        Graph graph = new Graph(verticesList.size(), verticesList);
-
-
-        //Finally let graph complete itself.
-        graph.complete(mapInfo);
-
-        //System.out.println(graph);
-        return graph;
+        graph = new Graph(verticesList);
+        for (int i = 0; i < verticesList.size() - 1; i++) {
+            for (int j = i + 1; j < verticesList.size(); j++) {
+                boolean isAdj = false;
+                int x1 = verticesList.get(i).getxTilePos();
+                int x2 = verticesList.get(j).getxTilePos();
+                int y1 = verticesList.get(i).getyTilePos();
+                int y2 = verticesList.get(j).getyTilePos();
+                if (mapInfo.get(y1).get(x1) instanceof Grass
+                        && mapInfo.get(y2).get(x2) instanceof Grass) {
+                    if (x1 == x2) {
+                        if (y1 == y2 + 1) isAdj = true;
+                        else if (y1 == y2 - 1) isAdj = true;
+                    } else if (y1 == y2) {
+                        if (x1 == x2 + 1) isAdj = true;
+                        else if (x1 == x2 - 1) isAdj = true;
+                    }
+                }
+                if (isAdj) graph.addAdjVertice(i, j);
+            }
+        }
     }
-
 
 }

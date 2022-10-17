@@ -2,9 +2,6 @@ package uet.oop.bomberman.entities.enemiesmaster;
 
 import javafx.scene.image.Image;
 import uet.oop.bomberman.CollisionManager;
-import uet.oop.bomberman.graphics.Sprite;
-
-import java.util.Random;
 
 public class Balloom extends Enemy {
     public Balloom(int xUnit, int yUnit, Image img, CollisionManager collisionManager) {
@@ -15,6 +12,6 @@ public class Balloom extends Enemy {
 
     @Override
     public void move() {
-        super.move();
+        randomMoving();
     }
 }

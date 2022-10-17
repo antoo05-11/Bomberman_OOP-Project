@@ -2,17 +2,17 @@ package uet.oop.bomberman;
 
 import javafx.animation.AnimationTimer;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.enemiesmaster.Balloom;
+import uet.oop.bomberman.entities.enemiesmaster.Enemy;
 import uet.oop.bomberman.entities.enemiesmaster.Oneal;
 import uet.oop.bomberman.entities.itemmaster.Item;
 import uet.oop.bomberman.scenemaster.LobbyScene;
 import uet.oop.bomberman.scenemaster.PlayScene;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class GameController {
     /**
@@ -72,6 +72,7 @@ public class GameController {
      * Game characters, bombs and items.
      */
     public static List<List<Entity>> entities = new ArrayList<>();
+    public static List<Entity> bombsList = new ArrayList<>();
 
     /**
      * Run game engine.
@@ -86,16 +87,42 @@ public class GameController {
      * Update entities list include Oneal, balloom
      */
     public void updateEntities() {
-        for (Entity i : entities.get(LEVEL)) {
-            if (i instanceof Oneal) {
-                if (((Oneal) i).getOnealStatus() == Oneal.OnealStatus.CONNECTED) {
-                    for (Entity j : entities.get(LEVEL)) {
-                        if (!i.equals(j) && j instanceof Oneal) {
-                            ((Oneal) j).setOnealStatus(Oneal.OnealStatus.INVALID);
+
+        for (int i = entities.get(LEVEL).size() - 1; i >= 0; i--) {
+            //Remove enemies died by bomb out of list.
+            if (entities.get(LEVEL).get(i) instanceof Enemy) {
+                if (((Enemy) entities.get(LEVEL).get(i)).getEnemyStatus() == Enemy.EnemyStatus.DEAD) {
+                    if (entities.get(LEVEL).get(i) instanceof Oneal) {
+                        for (Entity k : entities.get(LEVEL)) {
+                            if (k instanceof Oneal) ((Oneal) k).setOnealStatus(Oneal.OnealStatus.NOT_CONNECTED);
                         }
                     }
-                    break;
+                    entities.get(LEVEL).remove(i);
                 }
+            }
+        }
+
+        //If existing an oneal chasing bomber, all other oneals will run random move and has INVALID status
+        Queue<Pair> dis = new PriorityQueue<>(Comparator.comparingDouble(o -> (int) o.getValue()));
+
+        for (int i = 1; i < entities.get(LEVEL).size(); i++) {
+            if (entities.get(LEVEL).get(i) instanceof Oneal) {
+                if (((Oneal) entities.get(LEVEL).get(i)).getOnealStatus() == Oneal.OnealStatus.CONNECTED) {
+                    dis.add(new Pair(i, ((Oneal) entities.get(LEVEL).get(i)).getDistanceToBomber()));
+                }
+            }
+        }
+
+        if (!dis.isEmpty())
+            for (Entity j : entities.get(LEVEL)) {
+                if (!j.equals(entities.get(LEVEL).get((Integer) dis.peek().getKey())) && j instanceof Oneal) {
+                    ((Oneal) j).setOnealStatus(Oneal.OnealStatus.INVALID);
+                }
+            }
+
+        for(Entity i : entities.get(LEVEL)) {
+            if(i instanceof Oneal) {
+                System.out.println(((Oneal)i).getOnealStatus());
             }
         }
     }

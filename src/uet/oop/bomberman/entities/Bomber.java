@@ -5,6 +5,7 @@ import javafx.scene.input.KeyCode;
 import uet.oop.bomberman.CollisionManager;
 import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.entities.bombmaster.Bomb;
+import uet.oop.bomberman.entities.enemiesmaster.Enemy;
 import uet.oop.bomberman.entities.itemmaster.Item;
 import uet.oop.bomberman.entities.stillobjectmaster.Brick;
 import uet.oop.bomberman.entities.stillobjectmaster.StillObjects;
@@ -13,6 +14,8 @@ import uet.oop.bomberman.graphics.Sprite;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import static uet.oop.bomberman.GameController.*;
 
 public class Bomber extends Entity {
     /**
@@ -38,7 +41,7 @@ public class Bomber extends Entity {
     public boolean goDown = false;
     private KeyCode latestDirectKey = KeyCode.RIGHT;
     boolean bombed = false;
-    public List<Entity> bombsList = new LinkedList<>();
+    //public List<Entity> bombsList = new LinkedList<>();
     public List<Entity> itemsList = new ArrayList<>();
     Entity newBomb;
     CollisionManager collisionManager;
@@ -51,6 +54,7 @@ public class Bomber extends Entity {
         setSprite(Sprite.player_right.getFxImage());
         this.collisionManager = collisionManager;
     }
+
     public void saveKeyEvent(KeyCode keyCode, boolean isPress) {
         if (keyCode.isArrowKey()) {
             switch (keyCode) {
@@ -78,9 +82,12 @@ public class Bomber extends Entity {
     }
 
     private void updateBomberStatus() {
+        //System.out.println(entities.get(LEVEL).size());
+
         /**
          * Died by bomb.
          */
+
         for (Entity i : bombsList) {
             if (((Bomb) i).insideBombRange_Pixel(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2)
                     && ((Bomb) i).getBombStatus() == Bomb.BombStatus.EXPLODED) {
@@ -88,6 +95,14 @@ public class Bomber extends Entity {
                 indexOfSprite = 0;
                 break;
             }
+        }
+
+        /**
+         * Died because of colliding with oneal and balloom.
+         */
+        for (int i = 1; i < GameController.entities.get(GameController.LEVEL).size(); i++) {
+            if (((Enemy) GameController.entities.get(GameController.LEVEL).get(i)).collideBomber(x, y))
+                bomberStatus = BomberStatus.DEAD;
         }
     }
 
@@ -214,9 +229,8 @@ public class Bomber extends Entity {
 
     private void updateItemsList() {
         itemsList.forEach(Entity::update);
-        for(Entity i : itemsList) {
-            if(((Item)i).insideItem_Pixel(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2))
-            {
+        for (Entity i : itemsList) {
+            if (((Item) i).insideItem_Pixel(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2)) {
                 itemsList.remove(i);
                 break;
             }
@@ -239,24 +253,28 @@ public class Bomber extends Entity {
 
                 if (nearTile instanceof Brick) {
                     itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile + 1, xTile));
+                    collisionManager.getMap().convertMapToGraph();
                 }
 
                 nearTile = GameController.mapList.get(GameController.LEVEL)
                         .getEntityAt(xTile * Sprite.SCALED_SIZE, (yTile - 1) * Sprite.SCALED_SIZE);
                 if (nearTile instanceof Brick) {
                     itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile - 1, xTile));
+                    collisionManager.getMap().convertMapToGraph();
                 }
 
                 nearTile = GameController.mapList.get(GameController.LEVEL)
                         .getEntityAt((xTile + 1) * Sprite.SCALED_SIZE, yTile * Sprite.SCALED_SIZE);
                 if (nearTile instanceof Brick) {
                     itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile, xTile + 1));
+                    collisionManager.getMap().convertMapToGraph();
                 }
 
                 nearTile = GameController.mapList.get(GameController.LEVEL)
                         .getEntityAt((xTile - 1) * Sprite.SCALED_SIZE, yTile * Sprite.SCALED_SIZE);
                 if (nearTile instanceof Brick) {
                     itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile, xTile - 1));
+                    collisionManager.getMap().convertMapToGraph();
                 }
             }
         }
@@ -269,7 +287,7 @@ public class Bomber extends Entity {
             for (Entity i : bombsList) {
                 i.render(gc);
             }
-            for(Entity i : itemsList) {
+            for (Entity i : itemsList) {
                 i.render(gc);
             }
             super.render(gc);
