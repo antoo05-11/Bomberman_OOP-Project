@@ -5,7 +5,7 @@ import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class Item extends Entity {
-    public boolean pickUp = false;
+    public static boolean pickUp = false;
     public Item(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }

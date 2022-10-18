@@ -242,6 +242,7 @@ public class Bomber extends Entity {
             {
                 i.update();
                 itemsList.remove(i);
+
                 break;
             }
         }
@@ -279,6 +280,9 @@ public class Bomber extends Entity {
                 GameController.gameStatus = GameStatus.GAME_LOSE;
             }
             itemsList.clear();
+            SPEED = 2;
+            MAX_BOMB = 1;
+            BOMB_RADIUS = 1;
         }
     }
 }

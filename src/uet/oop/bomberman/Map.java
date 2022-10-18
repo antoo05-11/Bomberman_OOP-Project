@@ -31,7 +31,7 @@ public class Map {
     private final List<List<Entity>> mapInfo = new ArrayList<>(); //Can be changed.
     int LEVEL;
     private Graph graph;
-
+    protected int[][] listItem = new int[HEIGHT][WIDTH];
     public Map(int LEVEL) {
         this.LEVEL = LEVEL;
         readMapFromFile();
@@ -84,6 +84,18 @@ public class Map {
                         Enemy oneal = new Oneal(j, i, Sprite.oneal_right1.getFxImage(), new CollisionManager(this, Oneal.WIDTH, Oneal.HEIGHT), GameController.entities.get(LEVEL).get(0));
                         GameController.entities.get(LEVEL).add(oneal);
                         break;
+                    case 'b':
+                        mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
+                        listItem[i][j] = BombItem.code;
+                        break;
+                    case 'f':
+                        mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
+                        listItem[i][j] = FlameItem.code;
+                        break;
+                    case 's':
+                        mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
+                        listItem[i][j] = SpeedItem.code;
+                        break;
                     default:
                         mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
                         break;
@@ -108,6 +120,9 @@ public class Map {
         return mapInfo.get(y / Sprite.SCALED_SIZE).get(x / Sprite.SCALED_SIZE);
     }
 
+    public int getItem(int xPos, int yPos){
+        return listItem[yPos][xPos];
+    }
     /**
      * Read map again and refresh entities list in GameController class.
      */

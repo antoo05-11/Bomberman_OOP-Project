@@ -7,8 +7,8 @@ import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.Map;
 import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.stillobjectmaster.Brick;
-import uet.oop.bomberman.entities.stillobjectmaster.Wall;
+import uet.oop.bomberman.entities.itemmaster.*;
+import uet.oop.bomberman.entities.stillobjectmaster.*;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.ArrayList;
@@ -65,23 +65,15 @@ public class Bomb extends Entity {
         bombStatus = BombStatus.NotExplodedYet;
         flameAroundCenter = new FlameAround(x, y, FlameAround.FlameType.CENTER, map);
         for (int i = 1; i < Bomber.BOMB_RADIUS; i++) {
-            Entity flameTop = new FlameAround(x, y - i, FlameAround.FlameType.VERTICAL, map);
-            Entity flameDown = new FlameAround(x, y + i, FlameAround.FlameType.VERTICAL, map);
-            Entity flameLeft = new FlameAround(x - i, y, FlameAround.FlameType.HORIZON, map);
-            Entity flameRight = new FlameAround(x + i, y, FlameAround.FlameType.HORIZON, map);
-            flameAroundTop.add(flameTop);
-            flameAroundDown.add(flameDown);
-            flameAroundLeft.add(flameLeft);
-            flameAroundRight.add(flameRight);
+            flameAroundTop.add(new FlameAround(x, y - i, FlameAround.FlameType.VERTICAL, map));
+            flameAroundDown.add(new FlameAround(x, y + i, FlameAround.FlameType.VERTICAL, map));
+            flameAroundLeft.add(new FlameAround(x - i, y, FlameAround.FlameType.HORIZON, map));
+            flameAroundRight.add(new FlameAround(x + i, y, FlameAround.FlameType.HORIZON, map));
         }
-        Entity flameTopLast = new FlameAround(x, y - Bomber.BOMB_RADIUS, FlameAround.FlameType.TOP, map);
-        Entity flameDownLast = new FlameAround(x, y + Bomber.BOMB_RADIUS, FlameAround.FlameType.DOWN, map);
-        Entity flameLeftLast = new FlameAround(x - Bomber.BOMB_RADIUS, y, FlameAround.FlameType.LEFT, map);
-        Entity flameRightLast = new FlameAround(x + Bomber.BOMB_RADIUS, y, FlameAround.FlameType.RIGHT, map);
-        flameAroundTop.add(flameTopLast);
-        flameAroundDown.add(flameDownLast);
-        flameAroundLeft.add(flameLeftLast);
-        flameAroundRight.add(flameRightLast);
+        flameAroundTop.add(new FlameAround(x, y - Bomber.BOMB_RADIUS, FlameAround.FlameType.TOP, map));
+        flameAroundDown.add(new FlameAround(x, y + Bomber.BOMB_RADIUS, FlameAround.FlameType.DOWN, map));
+        flameAroundLeft.add(new FlameAround(x - Bomber.BOMB_RADIUS, y, FlameAround.FlameType.LEFT, map));
+        flameAroundRight.add(new FlameAround(x + Bomber.BOMB_RADIUS, y, FlameAround.FlameType.RIGHT, map));
     }
 
     boolean checkUp = true;
@@ -91,23 +83,28 @@ public class Bomb extends Entity {
             int yTile = flameAroundTop.get(i).getY() / Sprite.SCALED_SIZE;
 
             double distance;
-            Entity nearTile = GameController.mapList.get(GameController.LEVEL)
+            Entity nearTile = map
                     .getEntityAt(xTile * Sprite.SCALED_SIZE, yTile * Sprite.SCALED_SIZE);
 
             if (nearTile instanceof Wall) {
                 checkUp = false;
                 if (bombStatus == BombStatus.EXPLODED) {
                     distance = (double) y / Sprite.SCALED_SIZE - (double) flameAroundTop.get(i).getY() / Sprite.SCALED_SIZE;
-                    for (int j = flameAroundTop.size() - 1; j >= distance - 1; j--) flameAroundTop.remove(j);
+                    for (int j = flameAroundTop.size() - 1; j >= distance; j--) flameAroundTop.remove(j);
                 }
                 return;
             } else if (nearTile instanceof Brick) {
                 checkUp = false;
                 if (bombStatus == BombStatus.EXPLODED) {
-                    itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile, xTile));
+                    if (!setItem(xTile, yTile)){
+                        map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
+                    }else {
+                        itemsList.add(addItem(xTile, yTile));
+                        map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
+                    }
                     map.convertMapToGraph();
                     distance = (double) y / Sprite.SCALED_SIZE - (double) flameAroundTop.get(i).getY() / Sprite.SCALED_SIZE;
-                    for (int j = flameAroundTop.size() - 1; j >= distance - 1; j--) flameAroundTop.remove(j);
+                    for (int j = flameAroundTop.size() - 1; j >= distance; j--) flameAroundTop.remove(j);
                 }
                 return;
             }
@@ -121,23 +118,28 @@ public class Bomb extends Entity {
             int yTile = flameAroundDown.get(i).getY() / Sprite.SCALED_SIZE;
 
             double distance;
-            Entity nearTile = GameController.mapList.get(GameController.LEVEL)
+            Entity nearTile = map
                     .getEntityAt(xTile * Sprite.SCALED_SIZE, yTile * Sprite.SCALED_SIZE);
 
             if (nearTile instanceof Wall) {
                 checkDown = false;
                 if (bombStatus == BombStatus.EXPLODED) {
                     distance = (double) flameAroundDown.get(i).getY() / Sprite.SCALED_SIZE - (double) y / Sprite.SCALED_SIZE;
-                    for (int j = flameAroundDown.size() - 1; j >= distance - 1; j--) flameAroundDown.remove(j);
+                    for (int j = flameAroundDown.size() - 1; j >= distance; j--) flameAroundDown.remove(j);
                 }
                 return;
             } else if (nearTile instanceof Brick) {
                 checkDown = false;
                 if (bombStatus == BombStatus.EXPLODED) {
-                    itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile, xTile));
+                    if (!setItem(xTile, yTile)){
+                        map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
+                    }else {
+                        itemsList.add(addItem(xTile, yTile));
+                        map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
+                    }
                     map.convertMapToGraph();
                     distance = (double) flameAroundDown.get(i).getY() / Sprite.SCALED_SIZE - (double) y / Sprite.SCALED_SIZE;
-                    for (int j = flameAroundDown.size() - 1; j >= distance - 1; j--) flameAroundDown.remove(j);
+                    for (int j = flameAroundDown.size() - 1; j >= distance; j--) flameAroundDown.remove(j);
                 }
                 return;
             }
@@ -151,23 +153,28 @@ public class Bomb extends Entity {
             int yTile = flameAroundLeft.get(i).getY() / Sprite.SCALED_SIZE;
 
             double distance;
-            Entity nearTile = GameController.mapList.get(GameController.LEVEL)
+            Entity nearTile = map
                     .getEntityAt(Math.max(xTile * Sprite.SCALED_SIZE, 0), yTile * Sprite.SCALED_SIZE);
 
             if (nearTile instanceof Wall) {
                 checkLeft = false;
                 if (bombStatus == BombStatus.EXPLODED) {
                     distance = (double) x / Sprite.SCALED_SIZE - (double) flameAroundLeft.get(i).getX() / Sprite.SCALED_SIZE;
-                    for (int j = flameAroundLeft.size() - 1; j >= distance - 1; j--) flameAroundLeft.remove(j);
+                    for (int j = flameAroundLeft.size() - 1; j >= distance; j--) flameAroundLeft.remove(j);
                 }
                 return;
             } else if (nearTile instanceof Brick) {
                 checkLeft = false;
                 if (bombStatus == BombStatus.EXPLODED) {
-                    itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile, xTile));
+                    if (!setItem(xTile, yTile)){
+                        map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
+                    }else {
+                        itemsList.add(addItem(xTile, yTile));
+                        map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
+                    }
                     map.convertMapToGraph();
                     distance = (double) x / Sprite.SCALED_SIZE - (double) flameAroundLeft.get(i).getX() / Sprite.SCALED_SIZE;
-                    for (int j = flameAroundLeft.size() - 1; j >= distance - 1; j--) flameAroundLeft.remove(j);
+                    for (int j = flameAroundLeft.size() - 1; j >= distance; j--) flameAroundLeft.remove(j);
                 }
                 return;
             }
@@ -181,30 +188,59 @@ public class Bomb extends Entity {
             int yTile = flameAroundRight.get(i).getY() / Sprite.SCALED_SIZE;
 
             double distance;
-            Entity nearTile = GameController.mapList.get(GameController.LEVEL)
+            Entity nearTile = map
                     .getEntityAt(Math.max(xTile * Sprite.SCALED_SIZE, 0), yTile * Sprite.SCALED_SIZE);
 
             if (nearTile instanceof Wall) {
                 checkRight = false;
                 if (bombStatus == BombStatus.EXPLODED) {
                     distance = (double) flameAroundRight.get(i).getX() / Sprite.SCALED_SIZE - (double) x / Sprite.SCALED_SIZE;
-                    for (int j = flameAroundRight.size() - 1; j >= distance - 1; j--) flameAroundRight.remove(j);
+                    for (int j = flameAroundRight.size() - 1; j >= distance; j--) flameAroundRight.remove(j);
                 }
                 return;
             } else if (nearTile instanceof Brick) {
                 checkRight = false;
                 if (bombStatus == BombStatus.EXPLODED) {
-                    itemsList.add(GameController.mapList.get(GameController.LEVEL).randomItem(yTile, xTile));
+                    if (!setItem(xTile, yTile)){
+                        map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
+                    }else {
+                        itemsList.add(addItem(xTile, yTile));
+                        map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
+                    }
                     map.convertMapToGraph();
                     distance = (double) flameAroundRight.get(i).getX() / Sprite.SCALED_SIZE - (double) x / Sprite.SCALED_SIZE;
-                    for (int j = flameAroundRight.size() - 1; j >= distance - 1; j--) flameAroundRight.remove(j);
+                    for (int j = flameAroundRight.size() - 1; j >= distance; j--) flameAroundRight.remove(j);
                 }
                 return;
             }
         }
 
     }
-
+    public Entity addItem(int xTile, int yTile){
+        switch (map.getItem(xTile, yTile)){
+            case SpeedItem.code:
+                 return new SpeedItem(xTile, yTile, Sprite.powerup_speed.getFxImage());
+            case FlameItem.code:
+                return new FlameItem(xTile, yTile, Sprite.powerup_flames.getFxImage());
+            case BombItem.code:
+                return new BombItem(xTile, yTile, Sprite.powerup_bombs.getFxImage());
+        }
+        return null;
+    }
+    public boolean setItem(int xTile, int yTile){
+        switch (map.getItem(xTile, yTile)){
+            case SpeedItem.code:
+                map.replace(yTile, xTile, new SpeedItem(xTile, yTile, Sprite.powerup_speed.getFxImage()));
+                return true;
+            case FlameItem.code:
+                map.replace(yTile, xTile, new FlameItem(xTile, yTile, Sprite.powerup_flames.getFxImage()));
+                return true;
+            case BombItem.code:
+                map.replace(yTile, xTile, new BombItem(xTile, yTile, Sprite.powerup_bombs.getFxImage()));
+                return true;
+        }
+        return false;
+    }
     public BombStatus getBombStatus() {
         return bombStatus;
     }
