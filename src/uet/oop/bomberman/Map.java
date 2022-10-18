@@ -127,7 +127,6 @@ public class Map {
      * Read map again and refresh entities list in GameController class.
      */
     public void reset() {
-        graph = null;
         GameController.entities.get(LEVEL).clear();
         GameController.bombsList.clear();
         GameController.itemsList.clear();

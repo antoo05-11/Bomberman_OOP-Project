@@ -3,6 +3,8 @@ package uet.oop.bomberman;
 import javafx.animation.AnimationTimer;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import uet.oop.bomberman.audiomaster.Audio;
+import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.bombmaster.Bomb;
@@ -13,6 +15,10 @@ import uet.oop.bomberman.entities.itemmaster.Item;
 import uet.oop.bomberman.scenemaster.LobbyScene;
 import uet.oop.bomberman.scenemaster.PlayScene;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import java.io.IOException;
 import java.util.*;
 
 public class GameController {
@@ -31,7 +37,7 @@ public class GameController {
     /**
      * Constructor.
      */
-    public GameController(Stage stage) {
+    public GameController(Stage stage) throws LineUnavailableException {
         this.stage = stage;
         loadMap();
     }
@@ -54,7 +60,6 @@ public class GameController {
      * Scene control.
      */
     private Stage stage;
-
     private LobbyScene lobbyScene = new LobbyScene();
     private PlayScene playScene = new PlayScene();
 
@@ -77,6 +82,11 @@ public class GameController {
     public static List<Entity> itemsList = new ArrayList<>();
 
     /**
+     * Audio controller.
+     */
+
+    public static AudioController audioController = new AudioController();
+    /**
      * Run game engine.
      */
     public void run() {
@@ -89,7 +99,6 @@ public class GameController {
      * Update entities list include Oneal, balloom
      */
     public void updateEntities() {
-
         for (int i = entities.get(LEVEL).size() - 1; i >= 0; i--) {
             //Remove enemies died by bomb out of list.
             if (entities.get(LEVEL).get(i) instanceof Enemy) {
@@ -126,13 +135,17 @@ public class GameController {
 
     public void update() {
         if (gameStatus == GameStatus.GAME_PLAYING) {
-            if (!stage.getScene().equals(playScene)) stage.setScene(playScene.getScene());
+            if (!stage.getScene().equals(playScene.getScene())) {
+                stage.setScene(playScene.getScene());
+                audioController.playAlone(AudioController.AudioName.PLAYING, -1);
+            }
             entities.get(LEVEL).forEach(Entity::update);
             updateEntities();
         } else if (gameStatus == GameStatus.GAME_LOBBY) {
-            if (!stage.getScene().equals(lobbyScene)) {
+            if (!stage.getScene().equals(lobbyScene.getScene())) {
                 stage.setScene(lobbyScene.getScene());
             }
+            audioController.playAlone(AudioController.AudioName.LOBBY, -1);
         }
         else if(gameStatus == GameStatus.GAME_LOSE) {
             reset(); //Reset all game specs before go out.
@@ -151,6 +164,8 @@ public class GameController {
     }
 
     private void reset() {
+        playScene = new PlayScene();
+        lobbyScene = new LobbyScene();
         for (int i = 0; i <= LEVEL; i++) {
             mapList.get(LEVEL).reset(); //Reset played map in map list.
         }
