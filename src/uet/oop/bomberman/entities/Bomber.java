@@ -55,7 +55,7 @@ public class Bomber extends Entity {
     int indexOfSprite = 0;
     public static int SPEED = 2;
     public static int MAX_BOMB = 3;
-    public static int BOMB_RADIUS = 1;
+    public static int BOMB_RADIUS = 3;
 
     void reset() {
         SPEED = 2;
@@ -250,6 +250,7 @@ public class Bomber extends Entity {
                 audioController.playParallel(AudioController.AudioName.EAT_ITEM, 1);
                 i.update();
                 itemsList.remove(i);
+
                 break;
             }
         }
@@ -287,6 +288,9 @@ public class Bomber extends Entity {
                 GameController.gameStatus = GameStatus.GAME_LOSE;
             }
             itemsList.clear();
+            SPEED = 2;
+            MAX_BOMB = 1;
+            BOMB_RADIUS = 1;
         }
     }
 }
