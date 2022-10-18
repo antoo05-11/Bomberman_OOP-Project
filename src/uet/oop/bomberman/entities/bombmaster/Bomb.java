@@ -5,6 +5,8 @@ import javafx.scene.image.Image;
 import uet.oop.bomberman.CollisionManager;
 import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.Map;
+
+import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.stillobjectmaster.Brick;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static uet.oop.bomberman.GameController.audioController;
 import static uet.oop.bomberman.GameController.itemsList;
 
 
@@ -49,6 +52,7 @@ public class Bomb extends Entity {
             i++;
             if ((waitForExplodingTime - i) <= 0) {
                 bombStatus = BombStatus.EXPLODED;
+                audioController.playParallel(AudioController.AudioName.EXPLODING, 1);
                 timer.cancel();
                 indexOfSprite = 0;
             }
@@ -229,6 +233,7 @@ public class Bomb extends Entity {
             super.render(gc);
         }
         if (bombStatus == BombStatus.EXPLODED) {
+
             flameAroundTop.forEach(g -> g.render(gc));
             flameAroundDown.forEach(g -> g.render(gc));
             flameAroundLeft.forEach(g -> g.render(gc));

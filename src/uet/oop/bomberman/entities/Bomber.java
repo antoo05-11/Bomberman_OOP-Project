@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import uet.oop.bomberman.CollisionManager;
 import uet.oop.bomberman.GameController;
+import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.entities.bombmaster.Bomb;
 import uet.oop.bomberman.entities.enemiesmaster.Enemy;
 import uet.oop.bomberman.entities.itemmaster.Item;
@@ -56,10 +57,17 @@ public class Bomber extends Entity {
     public static int MAX_BOMB = 3;
     public static int BOMB_RADIUS = 1;
 
-    public Bomber(int x, int y, CollisionManager collisionManager) {
-        super(x, y, null);
+    void reset() {
+        SPEED = 2;
+        BOMB_RADIUS = 1;
+        MAX_BOMB = 3;
         bomberStatus = BomberStatus.ALIVE;
         setSprite(Sprite.player_right.getFxImage());
+    }
+
+    public Bomber(int x, int y, CollisionManager collisionManager) {
+        super(x, y, null);
+        reset();
         this.collisionManager = collisionManager;
     }
 
@@ -237,9 +245,9 @@ public class Bomber extends Entity {
     }
 
     private void updateItemsList() {
-        for(Entity i : itemsList) {
-            if(((Item)i).insideItem_Pixel(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2))
-            {
+        for (Entity i : itemsList) {
+            if (((Item) i).insideItem_Pixel(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2)) {
+                audioController.playParallel(AudioController.AudioName.EAT_ITEM, 1);
                 i.update();
                 itemsList.remove(i);
                 break;
