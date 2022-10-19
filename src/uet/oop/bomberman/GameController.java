@@ -78,7 +78,7 @@ public class GameController {
      * Game characters, bombs and items.
      */
     public static List<List<Entity>> entities = new ArrayList<>();
-    public static List<Entity> bombsList = new ArrayList<>();
+    public static List<Entity> bombsList = new LinkedList<>();
     public static List<Entity> itemsList = new ArrayList<>();
 
     /**

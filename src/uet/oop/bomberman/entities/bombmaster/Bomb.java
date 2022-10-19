@@ -9,14 +9,12 @@ import uet.oop.bomberman.Map;
 import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.enemiesmaster.Enemy;
 import uet.oop.bomberman.entities.itemmaster.*;
 import uet.oop.bomberman.entities.stillobjectmaster.*;
 import uet.oop.bomberman.graphics.Sprite;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 import static uet.oop.bomberman.GameController.audioController;
 import static uet.oop.bomberman.GameController.itemsList;
@@ -199,7 +197,7 @@ public class Bomb extends Entity {
                 checkRight = false;
                 if (bombStatus == BombStatus.EXPLODED) {
                     distance = (double) flameAroundRight.get(i).getX() / Sprite.SCALED_SIZE - (double) x / Sprite.SCALED_SIZE;
-                    for (int j = flameAroundRight.size() - 1; j >= distance; j--) flameAroundRight.remove(j);
+                    for (int j = flameAroundRight.size() - 1; j >= distance ; j--) flameAroundRight.remove(j);
                 }
                 return;
             } else if (nearTile instanceof Brick) {
@@ -213,7 +211,7 @@ public class Bomb extends Entity {
                     }
                     map.convertMapToGraph();
                     distance = (double) flameAroundRight.get(i).getX() / Sprite.SCALED_SIZE - (double) x / Sprite.SCALED_SIZE;
-                    for (int j = flameAroundRight.size() - 1; j >= distance; j--) flameAroundRight.remove(j);
+                    for (int j = flameAroundRight.size() - 1; j >= distance ; j--) flameAroundRight.remove(j);
                 }
                 return;
             }
@@ -259,14 +257,29 @@ public class Bomb extends Entity {
     public boolean insideBombRange_Pixel(int xPos, int yPos) {
         int xTile = xPos / Sprite.SCALED_SIZE;
         int yTile = yPos / Sprite.SCALED_SIZE;
-        int xBombTile = x / Sprite.SCALED_SIZE;
-        int yBombTile = y / Sprite.SCALED_SIZE;
-        for (int i = 1; i <= Bomber.BOMB_RADIUS; i++) {
-            if ((xTile == xBombTile && yTile == yBombTile)
-                    || (xTile == xBombTile && yTile + i == yBombTile && checkDown)
-                    || (xTile == xBombTile && yTile - i == yBombTile && checkUp)
-                    || (xTile == xBombTile + i && yTile == yBombTile && checkRight)
-                    || (xTile == xBombTile - i && yTile == yBombTile && checkLeft)) return true;
+        int xFlameTile;
+        int yFlameTile;
+        if (bombStatus == BombStatus.EXPLODED){
+            for (Entity i : flameAroundLeft){
+                xFlameTile = i.getX() / Sprite.SCALED_SIZE;
+                yFlameTile = i.getY() / Sprite.SCALED_SIZE;
+                if (xFlameTile == xTile && yFlameTile == yTile) return true;
+            }
+            for (Entity i : flameAroundTop){
+                xFlameTile = i.getX() / Sprite.SCALED_SIZE;
+                yFlameTile = i.getY() / Sprite.SCALED_SIZE;
+                if (xFlameTile == xTile && yFlameTile == yTile) return true;
+            }
+            for (Entity i : flameAroundRight){
+                xFlameTile = i.getX() / Sprite.SCALED_SIZE;
+                yFlameTile = i.getY() / Sprite.SCALED_SIZE;
+                if (xFlameTile == xTile && yFlameTile == yTile) return true;
+            }
+            for (Entity i : flameAroundDown){
+                xFlameTile = i.getX() / Sprite.SCALED_SIZE;
+                yFlameTile = i.getY() / Sprite.SCALED_SIZE;
+                if (xFlameTile == xTile && yFlameTile == yTile) return true;
+            }
         }
         return false;
     }

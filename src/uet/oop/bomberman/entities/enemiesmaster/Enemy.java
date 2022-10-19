@@ -85,28 +85,28 @@ public abstract class Enemy extends Entity {
             indexOfSprite = 0;
         } else {
             if (dir == "LEFT") {
-                x--;
+                x -= SPEED;
                 setSprite(Sprite.movingSprite(
                         leftSprites[0],
                         leftSprites[1],
                         leftSprites[2], indexOfSprite, 20).getFxImage());
             }
             if (dir == "RIGHT") {
-                x++;
+                x += SPEED;
                 setSprite(Sprite.movingSprite(
                         rightSprites[0],
                         rightSprites[1],
                         rightSprites[2], indexOfSprite, 20).getFxImage());
             }
             if (dir == "UP") {
-                y--;
+                y -= SPEED;
                 setSprite(Sprite.movingSprite(
                         rightSprites[0],
                         rightSprites[1],
                         rightSprites[2], indexOfSprite, 20).getFxImage());
             }
             if (dir == "DOWN") {
-                y++;
+                y += SPEED;
                 setSprite(Sprite.movingSprite(
                         leftSprites[0],
                         leftSprites[1],
