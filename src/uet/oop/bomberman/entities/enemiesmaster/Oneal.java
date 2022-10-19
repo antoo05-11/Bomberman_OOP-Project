@@ -48,7 +48,7 @@ public class Oneal extends Enemy {
         // Case 1: left
         if (src.getxTilePos() >= dst.getxTilePos()) {
             if (x > dst.getxTilePos() * Sprite.SCALED_SIZE) {
-                if (!collisionManager.collide(x, y, "LEFT")) {
+                if (!collisionManager.collide(x, y, "LEFT", SPEED)) {
                     setSprite(Sprite.movingSprite(
                             leftSprites[0],
                             leftSprites[1],
@@ -60,7 +60,7 @@ public class Oneal extends Enemy {
         // Case 2: right
         if (src.getxTilePos() <= dst.getxTilePos()) {
             if (x < dst.getxTilePos() * Sprite.SCALED_SIZE) {
-                if (!collisionManager.collide(x, y, "RIGHT")) {
+                if (!collisionManager.collide(x, y, "RIGHT", SPEED)) {
                     setSprite(Sprite.movingSprite(
                             rightSprites[0],
                             rightSprites[1],
@@ -73,7 +73,7 @@ public class Oneal extends Enemy {
         // Case 3: up
         if (src.getyTilePos() >= dst.getyTilePos()) {
             if (y > dst.getyTilePos() * Sprite.SCALED_SIZE) {
-                if (!collisionManager.collide(x, y, "UP")) {
+                if (!collisionManager.collide(x, y, "UP", SPEED)) {
                     setSprite(Sprite.movingSprite(
                             rightSprites[0],
                             rightSprites[1],
@@ -86,17 +86,12 @@ public class Oneal extends Enemy {
         // Case 4: down
         if (src.getyTilePos() <= dst.getyTilePos()) {
             if (y < dst.getyTilePos() * Sprite.SCALED_SIZE) {
-                if (!collisionManager.collide(x, y, "DOWN")) {
-                    try {
-                        setSprite(Sprite.movingSprite(
-                                leftSprites[0],
-                                leftSprites[1],
-                                leftSprites[2], indexOfSprite, 20).getFxImage());
-                        y += SPEED;
-                    }
-                    catch (NullPointerException e) {
-                        System.out.println("lỗi");
-                    }
+                if (!collisionManager.collide(x, y, "DOWN", SPEED)) {
+                    setSprite(Sprite.movingSprite(
+                            leftSprites[0],
+                            leftSprites[1],
+                            leftSprites[2], indexOfSprite, 20).getFxImage());
+                    y += SPEED;
                 }
             }
         }

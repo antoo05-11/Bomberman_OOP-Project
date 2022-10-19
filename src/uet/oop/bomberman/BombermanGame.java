@@ -1,9 +1,13 @@
 package uet.oop.bomberman;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import javax.sound.sampled.LineUnavailableException;
+import java.io.IOException;
+import java.util.Scanner;
 
 public class BombermanGame extends Application {
     public static final int WIDTH = 31;
@@ -14,8 +18,12 @@ public class BombermanGame extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws LineUnavailableException {
-        GameController gameController = new GameController(stage);
+    public void start(Stage stage) throws LineUnavailableException, IOException {
+//        FXMLLoader fxmlLoader = new FXMLLoader(BombermanGame.class.getResource("/LobbyScene.fxml"));
+//        Scene scene = new Scene(fxmlLoader.load());
+//        stage.setScene(scene);
+//        stage.show();
+       GameController gameController = new GameController(stage);
         gameController.run();
     }
 }

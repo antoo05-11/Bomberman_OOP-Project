@@ -13,11 +13,10 @@ public class CollisionManager {
     private int CENTER_OBJECT_HEIGHT;
     private int CENTER_OBJECT_WIDTH;
 
-
-    public CollisionManager(Map map, int width, int height) {
+    public CollisionManager(Map map, int objectWidth, int objectHeight) {
         this.map = map;
-        CENTER_OBJECT_WIDTH = width;
-        CENTER_OBJECT_HEIGHT = height;
+        CENTER_OBJECT_WIDTH = objectWidth;
+        CENTER_OBJECT_HEIGHT = objectHeight;
     }
 
     public Map getMap() {
@@ -29,21 +28,26 @@ public class CollisionManager {
     public Entity downLeft;
     public Entity downRight;
 
-    public boolean collide(int x, int y, String dir) {
+    /**
+     * Check if object collides with wall in map.
+     * x and y are pixel position of object,
+     * dir and speed is updated continually.
+     */
+    public boolean collide(int x, int y, String dir, int OBJECT_SPEED) {
         int curX = x;
         int curY = y;
         switch (dir) {
             case "UP":
-                curY -= Bomber.SPEED;
+                curY -= OBJECT_SPEED;
                 break;
             case "DOWN":
-                curY += Bomber.SPEED;
+                curY += OBJECT_SPEED;
                 break;
             case "LEFT":
-                curX -= Bomber.SPEED;
+                curX -= OBJECT_SPEED;
                 break;
             case "RIGHT":
-                curX += Bomber.SPEED;
+                curX += OBJECT_SPEED;
                 break;
             default:
         }

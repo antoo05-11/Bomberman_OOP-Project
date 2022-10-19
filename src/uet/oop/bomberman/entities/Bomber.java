@@ -3,6 +3,7 @@ package uet.oop.bomberman.entities;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.CollisionManager;
 import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.audiomaster.AudioController;
@@ -18,7 +19,6 @@ import uet.oop.bomberman.graphics.Sprite;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 
 import static uet.oop.bomberman.GameController.*;
 
@@ -165,7 +165,7 @@ public class Bomber extends Entity {
                     Sprite.player_down_1,
                     Sprite.player_down_2, indexOfSprite, 20).getFxImage()
             );
-            if (!collisionManager.collide(x, y, "DOWN")) y += SPEED;
+            if (!collisionManager.collide(x, y, "DOWN", SPEED)) y += SPEED;
             else {
                 if (!goUp && !goLeft && !goRight) {
                     if ((x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - x < 11
@@ -184,7 +184,7 @@ public class Bomber extends Entity {
                     Sprite.player_left_1,
                     Sprite.player_left_2, indexOfSprite, 20).getFxImage()
             );
-            if (!collisionManager.collide(x, y, "LEFT")) x -= SPEED;
+            if (!collisionManager.collide(x, y, "LEFT", SPEED)) x -= SPEED;
             else {
                 if (!goUp && !goDown && !goRight) {
                     if ((y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - y < 11
@@ -202,7 +202,7 @@ public class Bomber extends Entity {
                     Sprite.player_up,
                     Sprite.player_up_1,
                     Sprite.player_up_2, indexOfSprite, 20).getFxImage());
-            if (!collisionManager.collide(x, y, "UP")) y -= SPEED;
+            if (!collisionManager.collide(x, y, "UP", SPEED)) y -= SPEED;
             else {
                 if (!goDown && !goLeft && !goRight) {
                     if ((x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - x < 11
@@ -221,7 +221,7 @@ public class Bomber extends Entity {
                     Sprite.player_right_1,
                     Sprite.player_right_2, indexOfSprite, 20).getFxImage()
             );
-            if (!collisionManager.collide(x, y, "RIGHT")) x += SPEED;
+            if (!collisionManager.collide(x, y, "RIGHT", SPEED)) x += SPEED;
             else {
                 if (!goUp && !goLeft && !goDown) {
                     if ((y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - y < 11
@@ -245,8 +245,10 @@ public class Bomber extends Entity {
     }
 
     private void updateItemsList() {
+        int Bomber_xPixel = entities.get(LEVEL).get(0).getX();
+        int Bomber_yPixel = entities.get(LEVEL).get(0).getY();
         for (Entity i : itemsList) {
-            if (((Item) i).insideItem_Pixel(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2)) {
+            if (((Item) i).insideItem_Pixel(Bomber_xPixel + Bomber.WIDTH / 2, Bomber_yPixel + Bomber.HEIGHT / 2)) {
                 audioController.playParallel(AudioController.AudioName.EAT_ITEM, 1);
                 i.update();
                 itemsList.remove(i);
@@ -277,9 +279,9 @@ public class Bomber extends Entity {
         if (bomberStatus == BomberStatus.ALIVE) {
             moving();
             setBomb();
+            updateBomberStatus();
             updateBombsList();
             updateItemsList();
-            updateBomberStatus();
         }
         if (bomberStatus == BomberStatus.DEAD) {
             indexOfSprite++;

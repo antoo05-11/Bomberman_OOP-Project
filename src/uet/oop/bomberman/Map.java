@@ -27,11 +27,30 @@ import static uet.oop.bomberman.BombermanGame.HEIGHT;
 import static uet.oop.bomberman.BombermanGame.WIDTH;
 
 public class Map {
+    private int widthTile;
+    private int heightTile;
+
+    public int getHeightTile() {
+        return heightTile;
+    }
+
+    public int getWidthTile() {
+        return widthTile;
+    }
+
+    public int getWidthPixel() {
+        return widthTile * Sprite.SCALED_SIZE;
+    }
+
+    public int getHeightPixel() {
+        return heightTile * Sprite.SCALED_SIZE;
+    }
 
     private final List<List<Entity>> mapInfo = new ArrayList<>(); //Can be changed.
     int LEVEL;
     private Graph graph;
     protected int[][] listItem = new int[HEIGHT][WIDTH];
+
     public Map(int LEVEL) {
         this.LEVEL = LEVEL;
         readMapFromFile();
@@ -54,14 +73,17 @@ public class Map {
         } catch (FileNotFoundException e) {
             System.out.println("No file exist");
         }
-
-        scanner.nextLine(); //Read first line in Level.txt.
         String rowString = ""; //Save info of a row into string.
+        rowString = scanner.nextLine(); //Read first line in Level.txt.
 
-        for (int i = 0; i < HEIGHT; i++) {
+        String[] specs = rowString.split(" "); //Line 1 splits: LEVEL, WIDTH, HEIGHT.
+        widthTile = Integer.parseInt(specs[2]);
+        heightTile = Integer.parseInt(specs[1]);
+
+        for (int i = 0; i < heightTile; i++) {
             rowString = scanner.nextLine();
             mapInfo.add(new ArrayList<>());
-            for (int j = 0; j < WIDTH; j++) {
+            for (int j = 0; j < widthTile; j++) {
                 switch (rowString.charAt(j)) {
                     case 'p':
                         mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
@@ -120,9 +142,10 @@ public class Map {
         return mapInfo.get(y / Sprite.SCALED_SIZE).get(x / Sprite.SCALED_SIZE);
     }
 
-    public int getItem(int xPos, int yPos){
+    public int getItem(int xPos, int yPos) {
         return listItem[yPos][xPos];
     }
+
     /**
      * Read map again and refresh entities list in GameController class.
      */

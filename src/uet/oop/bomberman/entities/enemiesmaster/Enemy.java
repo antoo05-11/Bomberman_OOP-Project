@@ -79,7 +79,7 @@ public abstract class Enemy extends Entity {
                     break;
             }
         }
-        if (collisionManager.collide(x, y, dir)) {
+        if (collisionManager.collide(x, y, dir, SPEED)) {
             //System.out.println(this.getClass());
             goNext = false;
             indexOfSprite = 0;
