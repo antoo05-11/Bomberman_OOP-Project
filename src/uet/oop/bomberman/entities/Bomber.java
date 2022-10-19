@@ -47,7 +47,7 @@ public class Bomber extends Entity {
     private boolean bombed = false;
     private KeyCode latestDirectKey = KeyCode.RIGHT;
 
-    public List<Entity> bombsList = new LinkedList<>();
+    //public List<Entity> bombsList = new LinkedList<>();
 
     Entity newBomb;
     CollisionManager collisionManager;
@@ -59,7 +59,7 @@ public class Bomber extends Entity {
 
     void reset() {
         SPEED = 2;
-        BOMB_RADIUS = 1;
+        BOMB_RADIUS = 3;
         MAX_BOMB = 3;
         bomberStatus = BomberStatus.ALIVE;
         setSprite(Sprite.player_right.getFxImage());
@@ -120,6 +120,7 @@ public class Bomber extends Entity {
                 bomberStatus = BomberStatus.DEAD;
         }
     }
+
 
     private void setBomb() {
         if (bombed) {
@@ -285,7 +286,8 @@ public class Bomber extends Entity {
         }
         if (bomberStatus == BomberStatus.DEAD) {
             indexOfSprite++;
-            setSprite(Sprite.movingSprite(Sprite.player_dead1, Sprite.player_dead2, Sprite.player_dead3, indexOfSprite, 20).getFxImage());
+            setSprite(Sprite.movingSprite(Sprite.player_dead1, Sprite.player_dead2,
+                    Sprite.player_dead3, indexOfSprite, 20).getFxImage());
             if (indexOfSprite == 20) {
                 GameController.gameStatus = GameStatus.GAME_LOSE;
             }
