@@ -204,7 +204,8 @@ public class Bomb extends Entity {
                 checkRight = false;
                 if (bombStatus == BombStatus.EXPLODED) {
                     if (!setItem(xTile, yTile)){
-                        map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
+                        //map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
+                        ((Brick) nearTile).destroyBrick(xTile, yTile);
                     }else {
                         itemsList.add(addItem(xTile, yTile));
                         map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
@@ -280,6 +281,9 @@ public class Bomb extends Entity {
                 yFlameTile = i.getY() / Sprite.SCALED_SIZE;
                 if (xFlameTile == xTile && yFlameTile == yTile) return true;
             }
+            xFlameTile = flameAroundCenter.getX() / Sprite.SCALED_SIZE;
+            yFlameTile = flameAroundCenter.getY() / Sprite.SCALED_SIZE;
+            return xFlameTile == xTile && yFlameTile == yTile;
         }
         return false;
     }
@@ -294,17 +298,11 @@ public class Bomb extends Entity {
             super.render(gc);
         }
         if (bombStatus == BombStatus.EXPLODED) {
-
             flameAroundTop.forEach(g -> g.render(gc));
             flameAroundDown.forEach(g -> g.render(gc));
             flameAroundLeft.forEach(g -> g.render(gc));
             flameAroundRight.forEach(g -> g.render(gc));
             flameAroundCenter.render(gc);
-            flameAroundTop.forEach(Entity::update);
-            flameAroundDown.forEach(Entity::update);
-            flameAroundLeft.forEach(Entity::update);
-            flameAroundRight.forEach(Entity::update);
-            flameAroundCenter.update();
         }
     }
 
@@ -321,7 +319,11 @@ public class Bomb extends Entity {
         }
         if (bombStatus == BombStatus.EXPLODED) {
             bombStatus = ((FlameAround) flameAroundCenter).getStatus();
-
+            flameAroundTop.forEach(Entity::update);
+            flameAroundDown.forEach(Entity::update);
+            flameAroundLeft.forEach(Entity::update);
+            flameAroundRight.forEach(Entity::update);
+            flameAroundCenter.update();
         }
     }
 }

@@ -136,9 +136,8 @@ public abstract class Enemy extends Entity {
     }
 
     public boolean collideBomber(int xPixel, int yPixel) {
-        boolean check = true;
-        if (xPixel + Bomber.WIDTH < x || xPixel > x + Sprite.SCALED_SIZE) check = false;
-        if (yPixel + Bomber.HEIGHT < y || yPixel > y + Sprite.SCALED_SIZE) check = false;
-        return check;
+        if (xPixel + Bomber.WIDTH < x || xPixel > x + Sprite.SCALED_SIZE) return false;
+        if (yPixel + Bomber.HEIGHT < y || yPixel > y + Sprite.SCALED_SIZE) return false;
+        return true;
     }
 }
