@@ -116,8 +116,11 @@ public class Bomber extends Entity {
          * Died because of colliding with oneal and balloom.
          */
         for (int i = 1; i < GameController.entities.get(GameController.LEVEL).size(); i++) {
-            if (((Enemy) GameController.entities.get(GameController.LEVEL).get(i)).collideBomber(x, y))
+            if (((Enemy) GameController.entities.get(GameController.LEVEL).get(i)).collideBomber(x, y)) {
                 bomberStatus = BomberStatus.DEAD;
+                indexOfSprite = 0;
+                break;
+            }
         }
     }
 
