@@ -74,6 +74,7 @@ public class Map {
             System.out.println("No file exist");
         }
         String rowString = ""; //Save info of a row into string.
+        assert scanner != null;
         rowString = scanner.nextLine(); //Read first line in Level.txt.
 
         String[] specs = rowString.split(" "); //Line 1 splits: LEVEL, WIDTH, HEIGHT.

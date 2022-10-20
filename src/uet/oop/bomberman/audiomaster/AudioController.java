@@ -1,17 +1,8 @@
 package uet.oop.bomberman.audiomaster;
 
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 public class AudioController {
+    private boolean isMuted = false; //If isMuted is true, controller will stop all playing music.
+
     public enum AudioName {
         LOBBY,
         PLAYING,
@@ -35,19 +26,37 @@ public class AudioController {
     }
 
     public void playParallel(AudioName audioName, int time) {
-        Audio audio = audiosList[audioName.ordinal()].copyAudio();
-        audio.play(time);
+        if (!isMuted) {
+            Audio audio = audiosList[audioName.ordinal()].copyAudio();
+            audio.play(time);
+        }
     }
 
+    public boolean isMuted() {
+        return isMuted;
+    }
 
-    public void playAlone(AudioName audioName, int time) {
-        for (int i = 0; i < audiosList.length; i++) {
-            if (i != audioName.ordinal()) {
-                if (audiosList[i] != null) {
-                    audiosList[i].stop();
-                }
+    public void setMuted(boolean isMuted) {
+        this.isMuted = isMuted;
+        if (isMuted) {
+            for (Audio i : audiosList) {
+                if (i != null)
+                    i.stop();
             }
         }
-        audiosList[audioName.ordinal()].play(time);
     }
+
+    public void playAlone(AudioName audioName, int time) {
+        if (!isMuted) {
+            for (int i = 0; i < audiosList.length; i++) {
+                if (i != audioName.ordinal()) {
+                    if (audiosList[i] != null) {
+                        audiosList[i].stop();
+                    }
+                }
+            }
+            audiosList[audioName.ordinal()].play(time);
+        }
+    }
+
 }
