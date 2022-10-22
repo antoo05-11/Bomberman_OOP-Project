@@ -8,6 +8,7 @@ import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.entities.CanBePassedThrough;
 import uet.oop.bomberman.entities.CannotBePassedThrough;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.stillobject.Portal;
 import uet.oop.bomberman.entities.stillobject.bomb.Bomb;
 import uet.oop.bomberman.entities.movingobject.enemies.Enemy;
 import uet.oop.bomberman.entities.stillobject.item.Item;
@@ -248,12 +249,23 @@ public class Bomber extends MovingObject {
                 audioController.playParallel(AudioController.AudioName.EAT_ITEM, 1);
                 i.update();
                 itemsList.remove(i);
-
                 break;
             }
         }
     }
 
+    private void updatePortal(){
+        if(mapList.get(LEVEL).getEntityAt(x +  Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2) instanceof Portal){
+            if (LEVEL == MAX_LEVEL){
+                System.out.println("WIN");
+            }else if (entities.get(LEVEL).size() == 1){
+                reset();
+                itemsList.clear();
+                bombsList.clear();
+                LEVEL++;
+            }
+        }
+    }
     @Override
     public void render(GraphicsContext gc) {
         if (bomberStatus == BomberStatus.ALIVE) {
@@ -278,6 +290,7 @@ public class Bomber extends MovingObject {
             updateBomberStatus();
             updateBombsList();
             updateItemsList();
+            updatePortal();
         }
         if (bomberStatus == BomberStatus.DEAD) {
             indexOfSprite++;

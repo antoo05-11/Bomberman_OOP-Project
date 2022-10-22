@@ -6,6 +6,7 @@ import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.movingobject.enemies.Balloom;
 import uet.oop.bomberman.entities.movingobject.enemies.Enemy;
 import uet.oop.bomberman.entities.movingobject.enemies.Oneal;
+import uet.oop.bomberman.entities.stillobject.Portal;
 import uet.oop.bomberman.entities.stillobject.item.BombItem;
 import uet.oop.bomberman.entities.stillobject.item.FlameItem;
 import uet.oop.bomberman.entities.stillobject.item.SpeedItem;
@@ -50,6 +51,7 @@ public class Map {
     int LEVEL;
     private Graph graph;
     protected int[][] listItem = new int[HEIGHT][WIDTH];
+    protected int[][] listPortal = new int[HEIGHT][WIDTH];
 
     public Map(int LEVEL) {
         this.LEVEL = LEVEL;
@@ -96,6 +98,10 @@ public class Map {
                         break;
                     case '*':
                         mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
+                        break;
+                    case 'x':
+                        mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
+                        listPortal[i][j] = Portal.code;
                         break;
                     case '1':
                         mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
@@ -145,6 +151,10 @@ public class Map {
 
     public int getItem(int xPos, int yPos) {
         return listItem[yPos][xPos];
+    }
+
+    public int getPortal(int xPos, int yPos){
+        return listPortal[yPos][xPos];
     }
 
     /**
