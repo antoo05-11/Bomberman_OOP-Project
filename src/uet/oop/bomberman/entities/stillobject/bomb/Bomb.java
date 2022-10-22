@@ -1,17 +1,18 @@
-package uet.oop.bomberman.entities.bombmaster;
+package uet.oop.bomberman.entities.stillobject.bomb;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import uet.oop.bomberman.CollisionManager;
-import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.Map;
 
 import uet.oop.bomberman.audiomaster.AudioController;
-import uet.oop.bomberman.entities.Bomber;
+import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.enemiesmaster.Enemy;
-import uet.oop.bomberman.entities.itemmaster.*;
-import uet.oop.bomberman.entities.stillobjectmaster.*;
+import uet.oop.bomberman.entities.stillobject.Brick;
+import uet.oop.bomberman.entities.stillobject.Grass;
+import uet.oop.bomberman.entities.stillobject.item.BombItem;
+import uet.oop.bomberman.entities.stillobject.item.FlameItem;
+import uet.oop.bomberman.entities.stillobject.item.SpeedItem;
+import uet.oop.bomberman.entities.stillobject.Wall;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.*;

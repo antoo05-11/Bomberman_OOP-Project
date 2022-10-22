@@ -1,28 +1,21 @@
-package uet.oop.bomberman.entities;
+package uet.oop.bomberman.entities.movingobject;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
-import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.CollisionManager;
 import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.audiomaster.AudioController;
-import uet.oop.bomberman.entities.bombmaster.Bomb;
-import uet.oop.bomberman.entities.enemiesmaster.Enemy;
-import uet.oop.bomberman.entities.itemmaster.Item;
-import uet.oop.bomberman.entities.itemmaster.SpeedItem;
-import uet.oop.bomberman.entities.stillobjectmaster.Brick;
-import uet.oop.bomberman.entities.stillobjectmaster.Grass;
-import uet.oop.bomberman.entities.stillobjectmaster.StillObjects;
+import uet.oop.bomberman.entities.CanBePassedThrough;
+import uet.oop.bomberman.entities.CannotBePassedThrough;
+import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.stillobject.bomb.Bomb;
+import uet.oop.bomberman.entities.movingobject.enemies.Enemy;
+import uet.oop.bomberman.entities.stillobject.item.Item;
 import uet.oop.bomberman.graphics.Sprite;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 import static uet.oop.bomberman.GameController.*;
 
-public class Bomber extends Entity {
+public class Bomber extends MovingObject {
     /**
      * Bomber status
      */
@@ -35,8 +28,8 @@ public class Bomber extends Entity {
     /**
      * Bomber size
      */
-    public static final int HEIGHT = 30;
-    public static final int WIDTH = 20;
+    public static final int HEIGHT = Sprite.SCALED_SIZE * 30 / 32;
+    public static final int WIDTH = Sprite.SCALED_SIZE * 20 / 32;
     /**
      * Direction check and bombed check.
      */
@@ -98,7 +91,6 @@ public class Bomber extends Entity {
     }
 
     private void updateBomberStatus() {
-
         /**
          * Died by bomb.
          */
@@ -133,7 +125,7 @@ public class Bomber extends Entity {
                         Sprite.bomb.getFxImage(), collisionManager.getMap());
                 boolean checkRepeated = false;
                 for (Entity i : bombsList) {
-                    if (i.x == newBomb.x && i.y == newBomb.y) {
+                    if (i.getX() == newBomb.getX() && i.getY() == newBomb.getY()) {
                         checkRepeated = true;
                         break;
                     }
@@ -173,10 +165,10 @@ public class Bomber extends Entity {
             else {
                 if (!goUp && !goLeft && !goRight) {
                     if ((x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - x < 11
-                            && !(collisionManager.downRight instanceof StillObjects)) {
+                            && !(collisionManager.downRight instanceof CannotBePassedThrough)) {
                         x = (x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
                     } else if (x + WIDTH - ((x + WIDTH) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 11
-                            && !(collisionManager.downLeft instanceof StillObjects)) {
+                            && !(collisionManager.downLeft instanceof CannotBePassedThrough)) {
                         x = ((x + WIDTH) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - WIDTH - 1;
                     }
                 }
@@ -192,10 +184,10 @@ public class Bomber extends Entity {
             else {
                 if (!goUp && !goDown && !goRight) {
                     if ((y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - y < 11
-                            && !(collisionManager.downLeft instanceof StillObjects)) {
+                            && !(collisionManager.downLeft instanceof CannotBePassedThrough)) {
                         y = (y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
                     } else if (y + HEIGHT - ((y + HEIGHT) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 11
-                            && !(collisionManager.topLeft instanceof StillObjects)) {
+                            && !(collisionManager.topLeft instanceof CannotBePassedThrough)) {
                         y = ((y + 30) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - HEIGHT - 1;
                     }
                 }
@@ -210,10 +202,10 @@ public class Bomber extends Entity {
             else {
                 if (!goDown && !goLeft && !goRight) {
                     if ((x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - x < 11
-                            && !(collisionManager.topRight instanceof StillObjects)) {
+                            && !(collisionManager.topRight instanceof CannotBePassedThrough)) {
                         x = (x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
                     } else if (x + WIDTH - ((x + WIDTH) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 11
-                            && !(collisionManager.topLeft instanceof StillObjects)) {
+                            && !(collisionManager.topLeft instanceof CannotBePassedThrough)) {
                         x = ((x + 20) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - WIDTH - 1;
                     }
                 }
@@ -229,10 +221,10 @@ public class Bomber extends Entity {
             else {
                 if (!goUp && !goLeft && !goDown) {
                     if ((y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - y < 11
-                            && !(collisionManager.downRight instanceof StillObjects)) {
+                            && !(collisionManager.downRight instanceof CannotBePassedThrough)) {
                         y = (y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
                     } else if (y + HEIGHT - ((y + HEIGHT) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 11
-                            && !(collisionManager.topRight instanceof StillObjects)) {
+                            && !(collisionManager.topRight instanceof CannotBePassedThrough)) {
                         y = ((y + HEIGHT) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - HEIGHT - 1;
                     }
                 }

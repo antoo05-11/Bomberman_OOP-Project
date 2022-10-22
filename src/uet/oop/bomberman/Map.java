@@ -1,17 +1,17 @@
 package uet.oop.bomberman;
 
 import javafx.scene.canvas.GraphicsContext;
-import uet.oop.bomberman.entities.Bomber;
+import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.enemiesmaster.Balloom;
-import uet.oop.bomberman.entities.enemiesmaster.Enemy;
-import uet.oop.bomberman.entities.enemiesmaster.Oneal;
-import uet.oop.bomberman.entities.itemmaster.BombItem;
-import uet.oop.bomberman.entities.itemmaster.FlameItem;
-import uet.oop.bomberman.entities.itemmaster.SpeedItem;
-import uet.oop.bomberman.entities.stillobjectmaster.Brick;
-import uet.oop.bomberman.entities.stillobjectmaster.Grass;
-import uet.oop.bomberman.entities.stillobjectmaster.Wall;
+import uet.oop.bomberman.entities.movingobject.enemies.Balloom;
+import uet.oop.bomberman.entities.movingobject.enemies.Enemy;
+import uet.oop.bomberman.entities.movingobject.enemies.Oneal;
+import uet.oop.bomberman.entities.stillobject.item.BombItem;
+import uet.oop.bomberman.entities.stillobject.item.FlameItem;
+import uet.oop.bomberman.entities.stillobject.item.SpeedItem;
+import uet.oop.bomberman.entities.stillobject.Brick;
+import uet.oop.bomberman.entities.stillobject.Grass;
+import uet.oop.bomberman.entities.stillobject.Wall;
 import uet.oop.bomberman.graph_mapmaster.Graph;
 import uet.oop.bomberman.graph_mapmaster.Vertice;
 import uet.oop.bomberman.graphics.Sprite;

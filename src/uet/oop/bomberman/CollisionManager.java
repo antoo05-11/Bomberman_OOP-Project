@@ -1,10 +1,7 @@
 package uet.oop.bomberman;
 
-import uet.oop.bomberman.entities.Bomber;
+import uet.oop.bomberman.entities.CannotBePassedThrough;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.enemiesmaster.Enemy;
-import uet.oop.bomberman.entities.itemmaster.Item;
-import uet.oop.bomberman.entities.stillobjectmaster.StillObjects;
 
 public class CollisionManager {
     private Map map;
@@ -55,7 +52,7 @@ public class CollisionManager {
         topRight = map.getEntityAt(curX + CENTER_OBJECT_WIDTH, curY);
         downLeft = map.getEntityAt(curX, curY + CENTER_OBJECT_HEIGHT);
         downRight = map.getEntityAt(curX + CENTER_OBJECT_WIDTH, curY + CENTER_OBJECT_HEIGHT);
-        return topLeft instanceof StillObjects || topRight instanceof StillObjects
-                || downLeft instanceof StillObjects || downRight instanceof StillObjects;
+        return topLeft instanceof CannotBePassedThrough || topRight instanceof CannotBePassedThrough
+                || downLeft instanceof CannotBePassedThrough || downRight instanceof CannotBePassedThrough;
     }
 }

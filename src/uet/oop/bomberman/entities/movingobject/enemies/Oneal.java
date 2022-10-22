@@ -1,4 +1,4 @@
-package uet.oop.bomberman.entities.enemiesmaster;
+package uet.oop.bomberman.entities.movingobject.enemies;
 
 import javafx.scene.image.Image;
 import uet.oop.bomberman.CollisionManager;
@@ -115,6 +115,12 @@ public class Oneal extends Enemy {
             }
         }
 
+    }
+
+    @Override
+    public void update() {
+        //randomSpeed(Bomber.SPEED-1,Bomber.SPEED+1);
+        super.update();
     }
 
     public int getDistanceToBomber() {

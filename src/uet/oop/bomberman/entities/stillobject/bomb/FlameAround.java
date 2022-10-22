@@ -1,12 +1,13 @@
-package uet.oop.bomberman.entities.bombmaster;
+package uet.oop.bomberman.entities.stillobject.bomb;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import uet.oop.bomberman.Map;
+import uet.oop.bomberman.entities.CanBePassedThrough;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.stillobjectmaster.Grass;
+import uet.oop.bomberman.entities.stillobject.Grass;
+import uet.oop.bomberman.entities.stillobject.StillObject;
 import uet.oop.bomberman.graphics.Sprite;
 
-public class FlameAround extends Entity {
+public class FlameAround extends StillObject implements CanBePassedThrough {
 
     int indexOfSprite = 0;
 

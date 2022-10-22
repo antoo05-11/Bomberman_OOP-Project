@@ -1,10 +1,11 @@
-package uet.oop.bomberman.entities.itemmaster;
+package uet.oop.bomberman.entities.stillobject.item;
 
 import javafx.scene.image.Image;
-import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.CanBePassedThrough;
+import uet.oop.bomberman.entities.stillobject.StillObject;
 import uet.oop.bomberman.graphics.Sprite;
 
-public class Item extends Entity {
+public abstract class Item extends StillObject implements CanBePassedThrough {
     public static boolean pickUp = false;
     public Item(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);

@@ -1,11 +1,11 @@
-package uet.oop.bomberman.entities.stillobjectmaster;
+package uet.oop.bomberman.entities.stillobject;
 
 import javafx.scene.image.Image;
 import uet.oop.bomberman.GameController;
-import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.CannotBePassedThrough;
 import uet.oop.bomberman.graphics.Sprite;
 
-public class Brick extends Entity implements StillObjects{
+public class Brick extends StillObject implements CannotBePassedThrough {
     int indexOfSprite = 0;
     public Brick(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);

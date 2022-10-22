@@ -1,17 +1,18 @@
-package uet.oop.bomberman.entities.enemiesmaster;
+package uet.oop.bomberman.entities.movingobject.enemies;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.CollisionManager;
-import uet.oop.bomberman.entities.Bomber;
+import uet.oop.bomberman.entities.movingobject.Bomber;
+import uet.oop.bomberman.entities.CanBePassedThrough;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.bombmaster.Bomb;
+import uet.oop.bomberman.entities.stillobject.bomb.Bomb;
+import uet.oop.bomberman.entities.movingobject.MovingObject;
 import uet.oop.bomberman.graphics.Sprite;
 
 import static uet.oop.bomberman.GameController.bombsList;
 
-public abstract class Enemy extends Entity {
-
+public abstract class Enemy extends MovingObject {
     public Enemy(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
@@ -23,6 +24,7 @@ public abstract class Enemy extends Entity {
     public int indexOfSprite;
     Sprite[] leftSprites = new Sprite[3];
     Sprite[] rightSprites = new Sprite[3];
+
     public enum EnemyStatus {
         ALIVE,
         DEAD
@@ -33,6 +35,7 @@ public abstract class Enemy extends Entity {
     }
 
     EnemyStatus enemyStatus = EnemyStatus.ALIVE;
+
     public Enemy(int xUnit, int yUnit, Image img, CollisionManager collisionManager) {
         super(xUnit, yUnit, img);
         this.collisionManager = collisionManager;
@@ -115,7 +118,9 @@ public abstract class Enemy extends Entity {
             goNext = true;
         }
     }
+
     public abstract void move();
+
     private void updateEnemyStatus() {
         for (Entity i : bombsList) {
             if (((Bomb) i).insideBombRange_Pixel(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2)
@@ -124,20 +129,26 @@ public abstract class Enemy extends Entity {
             }
         }
     }
+
     @Override
     public void update() {
+
         updateEnemyStatus();
-        if(enemyStatus == EnemyStatus.ALIVE) move();
+        if (enemyStatus == EnemyStatus.ALIVE) move();
     }
 
     @Override
     public void render(GraphicsContext gc) {
-        if(enemyStatus == EnemyStatus.ALIVE) super.render(gc);
+        if (enemyStatus == EnemyStatus.ALIVE) super.render(gc);
     }
 
     public boolean collideBomber(int xPixel, int yPixel) {
         if (xPixel + Bomber.WIDTH < x || xPixel > x + Sprite.SCALED_SIZE) return false;
         if (yPixel + Bomber.HEIGHT < y || yPixel > y + Sprite.SCALED_SIZE) return false;
         return true;
+    }
+
+    public void randomSpeed(int x, int y) {
+        SPEED = ((int) (Math.random() * (y - x)) + x);
     }
 }

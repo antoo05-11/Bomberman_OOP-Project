@@ -1,7 +1,7 @@
-package uet.oop.bomberman.entities.itemmaster;
+package uet.oop.bomberman.entities.stillobject.item;
 
 import javafx.scene.image.Image;
-import uet.oop.bomberman.entities.Bomber;
+import uet.oop.bomberman.entities.movingobject.Bomber;
 
 public class FlameItem extends Item{
     public static final int code = 2;

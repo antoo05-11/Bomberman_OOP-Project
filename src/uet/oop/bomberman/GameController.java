@@ -5,27 +5,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import uet.oop.bomberman.audiomaster.Audio;
 import uet.oop.bomberman.audiomaster.AudioController;
-import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.bombmaster.Bomb;
-import uet.oop.bomberman.entities.enemiesmaster.Balloom;
-import uet.oop.bomberman.entities.enemiesmaster.Enemy;
-import uet.oop.bomberman.entities.enemiesmaster.Oneal;
-import uet.oop.bomberman.entities.itemmaster.Item;
-import uet.oop.bomberman.graphics.Sprite;
+import uet.oop.bomberman.entities.movingobject.enemies.Enemy;
+import uet.oop.bomberman.entities.movingobject.enemies.Oneal;
+import uet.oop.bomberman.scenemaster.SceneController;
 
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-
-import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -37,7 +24,8 @@ public class GameController {
         GAME_LOBBY,
         GAME_PLAYING,
         WIN_ALL,
-        GAME_LOSE
+        GAME_LOSE,
+        GAME_PAUSE
     }
 
     public static GameStatus gameStatus = GameStatus.GAME_LOBBY;
@@ -58,7 +46,7 @@ public class GameController {
      */
     public final static List<Map> mapList = new ArrayList<>();
     public static int LEVEL = 0;
-    private static final int MAX_LEVEL = 0;
+    private static final int MAX_LEVEL = 1;
 
     private void loadMap() {
         for (int i = 0; i <= MAX_LEVEL; i++) {
@@ -102,7 +90,7 @@ public class GameController {
      */
     public void run() {
         try {
-            stage.setScene(new Scene(FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/LobbyScene.fxml")))));
+            stage.setScene(new Scene(FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/UI_fxml/LobbyScene.fxml")))));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -195,7 +183,6 @@ public class GameController {
 
         } else if (gameStatus == GameStatus.GAME_LOBBY) {
             reset();
-
         } else if (gameStatus == GameStatus.GAME_LOSE) {
             reset(); //Reset all game specs before go out.
             gameStatus = GameStatus.GAME_LOBBY;
@@ -215,7 +202,7 @@ public class GameController {
     private void reset() {
         if (!isReset) {
             try {
-                stage.setScene(new Scene(FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/LobbyScene.fxml")))));
+                stage.setScene(new Scene(FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/UI_fxml/LobbyScene.fxml")))));
             } catch (Exception e) {
                 e.printStackTrace();
             }

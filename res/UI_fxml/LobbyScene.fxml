@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.embed.swing.SwingNode?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -8,73 +7,70 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uet.oop.bomberman.SceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uet.oop.bomberman.scenemaster.LobbyController">
    <children>
       <ImageView fitHeight="406.0" fitWidth="700.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@lobbyTexture/2.png" />
+            <Image url="@../lobbyTexture/2.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="306.0" fitWidth="263.0" layoutX="80.0" layoutY="76.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@lobbyTexture/3.png" />
+            <Image url="@../lobbyTexture/3.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="217.0" fitWidth="354.0" layoutX="33.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@lobbyTexture/1.png" />
+            <Image url="@../lobbyTexture/1.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="376.0" fitWidth="307.0" layoutX="373.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@lobbyTexture/4.png" />
+            <Image url="@../lobbyTexture/4.png" />
          </image>
       </ImageView>
       <VBox alignment="CENTER" layoutX="430.0" layoutY="57.0" prefHeight="269.0" prefWidth="205.0" AnchorPane.rightAnchor="64.66666666666663">
          <children>
-            <Button fx:id="playButton" mnemonicParsing="false" onAction="#switchToPlayingScene" onMouseEntered="#setEffect" onMouseExited="#removeEffect" prefHeight="56.0" prefWidth="144.0" style="-fx-background-color: transparent;">
+            <Button fx:id="playButton" focusTraversable="false" mnemonicParsing="false" onMouseClicked="#clickPlayButton" onMouseEntered="#setEffect" onMouseExited="#removeEffect" prefHeight="56.0" prefWidth="144.0" style="-fx-background-color: transparent;">
                <graphic>
                   <ImageView fitHeight="61.0" fitWidth="147.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@lobbyTexture/5.png" />
+                        <Image url="@../lobbyTexture/5.png" />
                      </image>
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="musicButton" mnemonicParsing="false" onMouseClicked="#setMusic" onMouseEntered="#setEffect" onMouseExited="#removeEffect" style="-fx-background-color: transparent;" textFill="TRANSPARENT">
+            <Button fx:id="audioButton" focusTraversable="false" mnemonicParsing="false" onMouseClicked="#clickAudioButton" onMouseEntered="#setEffect" onMouseExited="#removeEffect" style="-fx-background-color: transparent;" textFill="TRANSPARENT">
                <font>
                   <Font size="1.0" />
                </font>
                <graphic>
                   <ImageView fitHeight="59.0" fitWidth="137.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@lobbyTexture/6.png" />
+                        <Image url="@../lobbyTexture/6.png" />
                      </image>
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="quitButton" mnemonicParsing="false" onMouseEntered="#setEffect" onMouseExited="#removeEffect" style="-fx-background-color: transparent;">
+            <Button fx:id="quitButton" focusTraversable="false" mnemonicParsing="false" onMouseClicked="#clickQuitButton" onMouseEntered="#setEffect" onMouseExited="#removeEffect" style="-fx-background-color: transparent;">
                <graphic>
                   <ImageView fitHeight="60.0" fitWidth="161.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@lobbyTexture/7.png" />
+                        <Image url="@../lobbyTexture/7.png" />
                      </image>
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="rankButton" mnemonicParsing="false" onMouseEntered="#setEffect" onMouseExited="#removeEffect" style="-fx-background-color: transparent;">
+            <Button fx:id="rankButton" focusTraversable="false" mnemonicParsing="false" onMouseDragged="#clickRankButton" onMouseEntered="#setEffect" onMouseExited="#removeEffect" style="-fx-background-color: transparent;">
                <graphic>
                   <ImageView fitHeight="63.0" fitWidth="107.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@lobbyTexture/8.png" />
+                        <Image url="@../lobbyTexture/8.png" />
                      </image>
                   </ImageView>
                </graphic>
             </Button>
          </children>
       </VBox>
-      <SwingNode />
-      <SwingNode />
-      <SwingNode />
    </children>
 </AnchorPane>

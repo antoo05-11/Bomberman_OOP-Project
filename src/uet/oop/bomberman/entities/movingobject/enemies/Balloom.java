@@ -1,4 +1,4 @@
-package uet.oop.bomberman.entities.enemiesmaster;
+package uet.oop.bomberman.entities.movingobject.enemies;
 
 import javafx.scene.image.Image;
 import uet.oop.bomberman.CollisionManager;
