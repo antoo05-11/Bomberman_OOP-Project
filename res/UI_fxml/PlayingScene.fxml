@@ -11,19 +11,19 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uet.oop.bomberman.scenemaster.PlayingController">
+<StackPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uet.oop.bomberman.scenemaster.PlayingController">
    <children>
       <VBox prefHeight="200.0" prefWidth="100.0">
          <children>
             <HBox alignment="CENTER" prefHeight="30.0" prefWidth="700.0" style="-fx-background-color: grey;">
                <children>
-                  <Text fx:id="levelText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="LEVEL 5 " textAlignment="CENTER" wrappingWidth="111.36654663085938">
+                  <Text fx:id="levelText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="LEVEL 5 " textAlignment="CENTER" wrappingWidth="146.03320741653442">
                      <font>
                         <Font name="Kristen ITC" size="20.0" />
                      </font>
                   </Text>
-                  <ProgressBar fx:id="progressBar" prefHeight="18.0" prefWidth="218.0" progress="0.45" style="-fx-background-color: grey;" />
-                  <HBox alignment="CENTER" prefHeight="35.0" prefWidth="73.0">
+                  <ProgressBar fx:id="progressBar" prefHeight="18.0" prefWidth="267.0" progress="0.45" style="-fx-background-color: grey;" />
+                  <HBox alignment="CENTER" prefHeight="36.0" prefWidth="98.0">
                      <children>
                         <ImageView fitHeight="30.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -56,7 +56,7 @@
                         </ImageView>
                      </children>
                   </HBox>
-                  <StackPane prefHeight="35.0" prefWidth="59.0">
+                  <StackPane prefHeight="36.0" prefWidth="65.0">
                      <children>
                         <Button fx:id="audioButton" focusTraversable="false" mnemonicParsing="false" style="-fx-background-color: transparent;">
                            <graphic>
@@ -70,7 +70,7 @@
                         <Line fx:id="muteLine" endX="100.0" startX="69.4206771850586" startY="-17.717830657958984" strokeWidth="2.0" />
                      </children>
                   </StackPane>
-                  <Button fx:id="pauseButton" focusTraversable="false" mnemonicParsing="false" style="-fx-background-color: transparent;">
+                  <Button fx:id="pauseButton" focusTraversable="false" mnemonicParsing="false" prefHeight="36.0" prefWidth="51.0" style="-fx-background-color: transparent;">
                      <graphic>
                         <ImageView fitHeight="31.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -79,7 +79,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="quitButton" focusTraversable="false" mnemonicParsing="false" onMouseClicked="#clickQuitButton" prefHeight="35.0" prefWidth="52.0" style="-fx-background-color: transparent;">
+                  <Button fx:id="quitButton" focusTraversable="false" mnemonicParsing="false" onMouseClicked="#clickQuitButton" prefHeight="35.0" prefWidth="57.0" style="-fx-background-color: transparent;">
                      <graphic>
                         <ImageView fitHeight="26.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
                            <image>

@@ -3,8 +3,8 @@ package uet.oop.bomberman.entities.movingobject.enemies;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.CollisionManager;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.graph_mapmaster.Graph;
-import uet.oop.bomberman.graph_mapmaster.Vertice;
+import uet.oop.bomberman.map_graph.Graph;
+import uet.oop.bomberman.map_graph.Vertice;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.List;

@@ -22,11 +22,52 @@ public abstract class Enemy extends MovingObject {
     private String dir = "";
     private boolean goNext = false;
     public int indexOfSprite;
-    Sprite[] leftSprites = new Sprite[3];
-    Sprite[] rightSprites = new Sprite[3];
+    Sprite[] leftSprites;
+    Sprite[] rightSprites;
+    Sprite[] deadSprites;
+
+    public void loadSprite() {
+        if (this instanceof Balloom) {
+            leftSprites = new Sprite[3];
+            rightSprites = new Sprite[3];
+            deadSprites = new Sprite[1];
+            leftSprites[0] = Sprite.balloom_left1;
+            leftSprites[1] = Sprite.balloom_left2;
+            leftSprites[2] = Sprite.balloom_left3;
+            rightSprites[0] = Sprite.balloom_right1;
+            rightSprites[1] = Sprite.balloom_right2;
+            rightSprites[2] = Sprite.balloom_right3;
+            deadSprites[0] = Sprite.balloom_dead;
+        }
+        if (this instanceof Oneal) {
+            leftSprites = new Sprite[3];
+            rightSprites = new Sprite[3];
+            deadSprites = new Sprite[1];
+            leftSprites[0] = Sprite.oneal_left1;
+            leftSprites[1] = Sprite.oneal_left2;
+            leftSprites[2] = Sprite.oneal_left3;
+            rightSprites[0] = Sprite.oneal_right1;
+            rightSprites[1] = Sprite.oneal_right2;
+            rightSprites[2] = Sprite.oneal_right3;
+            deadSprites[0] = Sprite.oneal_dead;
+        }
+        if (this instanceof Doll) {
+            leftSprites = new Sprite[3];
+            rightSprites = new Sprite[3];
+            deadSprites = new Sprite[1];
+            leftSprites[0] = Sprite.doll_left1;
+            leftSprites[1] = Sprite.doll_left2;
+            leftSprites[2] = Sprite.doll_left3;
+            rightSprites[0] = Sprite.doll_right1;
+            rightSprites[1] = Sprite.doll_right2;
+            rightSprites[2] = Sprite.doll_right3;
+            deadSprites[0] = Sprite.doll_dead;
+        }
+    }
 
     public enum EnemyStatus {
         ALIVE,
+        MORIBUND,
         DEAD
     }
 
@@ -40,28 +81,14 @@ public abstract class Enemy extends MovingObject {
         super(xUnit, yUnit, img);
         this.collisionManager = collisionManager;
         this.SPEED = 1;
+        loadSprite();
     }
 
     /**
      * Random moving for all enemies.
      */
     public void randomMoving() {
-        if (this instanceof Balloom) {
-            leftSprites[0] = Sprite.balloom_left1;
-            leftSprites[1] = Sprite.balloom_left2;
-            leftSprites[2] = Sprite.balloom_left3;
-            rightSprites[0] = Sprite.balloom_right1;
-            rightSprites[1] = Sprite.balloom_right2;
-            rightSprites[2] = Sprite.balloom_right3;
-        }
-        if (this instanceof Oneal) {
-            leftSprites[0] = Sprite.oneal_left1;
-            leftSprites[1] = Sprite.oneal_left2;
-            leftSprites[2] = Sprite.oneal_left3;
-            rightSprites[0] = Sprite.oneal_right1;
-            rightSprites[1] = Sprite.oneal_right2;
-            rightSprites[2] = Sprite.oneal_right3;
-        }
+
         indexOfSprite++;
         if (!goNext) {
             int rand = (int) (Math.random() * 8);
@@ -125,21 +152,30 @@ public abstract class Enemy extends MovingObject {
         for (Entity i : bombsList) {
             if (((Bomb) i).insideBombRange_Pixel(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2)
                     && ((Bomb) i).getBombStatus() == Bomb.BombStatus.EXPLODED) {
-                enemyStatus = EnemyStatus.DEAD;
+                enemyStatus = EnemyStatus.MORIBUND;
+                indexOfSprite = 0;
             }
         }
     }
 
     @Override
     public void update() {
-
-        updateEnemyStatus();
-        if (enemyStatus == EnemyStatus.ALIVE) move();
+        if (enemyStatus == EnemyStatus.ALIVE) {
+            updateEnemyStatus();
+        }
+        if (enemyStatus == EnemyStatus.ALIVE) {
+            move();
+        }
+        if (enemyStatus == EnemyStatus.MORIBUND) {
+            if (indexOfSprite == 20) enemyStatus = EnemyStatus.DEAD;
+            else setSprite(deadSprites[indexOfSprite%deadSprites.length].getFxImage());
+            indexOfSprite++;
+        }
     }
 
     @Override
     public void render(GraphicsContext gc) {
-        if (enemyStatus == EnemyStatus.ALIVE) super.render(gc);
+        if (enemyStatus != EnemyStatus.DEAD) super.render(gc);
     }
 
     public boolean collideBomber(int xPixel, int yPixel) {

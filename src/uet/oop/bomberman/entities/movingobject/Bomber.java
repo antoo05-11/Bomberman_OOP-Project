@@ -30,6 +30,7 @@ public class Bomber extends MovingObject {
      */
     public static final int HEIGHT = Sprite.SCALED_SIZE * 30 / 32;
     public static final int WIDTH = Sprite.SCALED_SIZE * 20 / 32;
+    private static final int FIX_SIZE = Sprite.SCALED_SIZE * 11 / 32;
     /**
      * Direction check and bombed check.
      */
@@ -164,10 +165,10 @@ public class Bomber extends MovingObject {
             if (!collisionManager.collide(x, y, "DOWN", SPEED)) y += SPEED;
             else {
                 if (!goUp && !goLeft && !goRight) {
-                    if ((x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - x < 11
+                    if ((x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - x < FIX_SIZE
                             && !(collisionManager.downRight instanceof CannotBePassedThrough)) {
                         x = (x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
-                    } else if (x + WIDTH - ((x + WIDTH) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 11
+                    } else if (x + WIDTH - ((x + WIDTH) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < FIX_SIZE
                             && !(collisionManager.downLeft instanceof CannotBePassedThrough)) {
                         x = ((x + WIDTH) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - WIDTH - 1;
                     }
@@ -183,12 +184,12 @@ public class Bomber extends MovingObject {
             if (!collisionManager.collide(x, y, "LEFT", SPEED)) x -= SPEED;
             else {
                 if (!goUp && !goDown && !goRight) {
-                    if ((y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - y < 11
+                    if ((y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - y < FIX_SIZE
                             && !(collisionManager.downLeft instanceof CannotBePassedThrough)) {
                         y = (y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
-                    } else if (y + HEIGHT - ((y + HEIGHT) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 11
+                    } else if (y + HEIGHT - ((y + HEIGHT) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < FIX_SIZE
                             && !(collisionManager.topLeft instanceof CannotBePassedThrough)) {
-                        y = ((y + 30) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - HEIGHT - 1;
+                        y = ((y + HEIGHT) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - HEIGHT - 1;
                     }
                 }
             }
@@ -201,12 +202,12 @@ public class Bomber extends MovingObject {
             if (!collisionManager.collide(x, y, "UP", SPEED)) y -= SPEED;
             else {
                 if (!goDown && !goLeft && !goRight) {
-                    if ((x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - x < 11
+                    if ((x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - x < FIX_SIZE
                             && !(collisionManager.topRight instanceof CannotBePassedThrough)) {
                         x = (x / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
-                    } else if (x + WIDTH - ((x + WIDTH) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 11
+                    } else if (x + WIDTH - ((x + WIDTH) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < FIX_SIZE
                             && !(collisionManager.topLeft instanceof CannotBePassedThrough)) {
-                        x = ((x + 20) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - WIDTH - 1;
+                        x = ((x + WIDTH) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - WIDTH - 1;
                     }
                 }
             }
@@ -220,10 +221,10 @@ public class Bomber extends MovingObject {
             if (!collisionManager.collide(x, y, "RIGHT", SPEED)) x += SPEED;
             else {
                 if (!goUp && !goLeft && !goDown) {
-                    if ((y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - y < 11
+                    if ((y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE - y < FIX_SIZE
                             && !(collisionManager.downRight instanceof CannotBePassedThrough)) {
                         y = (y / Sprite.SCALED_SIZE + 1) * Sprite.SCALED_SIZE;
-                    } else if (y + HEIGHT - ((y + HEIGHT) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < 11
+                    } else if (y + HEIGHT - ((y + HEIGHT) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE < FIX_SIZE
                             && !(collisionManager.topRight instanceof CannotBePassedThrough)) {
                         y = ((y + HEIGHT) / Sprite.SCALED_SIZE) * Sprite.SCALED_SIZE - HEIGHT - 1;
                     }

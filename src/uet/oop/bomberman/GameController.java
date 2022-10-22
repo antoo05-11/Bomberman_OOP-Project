@@ -11,6 +11,7 @@ import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.movingobject.enemies.Enemy;
 import uet.oop.bomberman.entities.movingobject.enemies.Oneal;
+import uet.oop.bomberman.map_graph.Map;
 import uet.oop.bomberman.scenemaster.SceneController;
 
 import java.util.*;
@@ -30,7 +31,7 @@ public class GameController {
 
     public static GameStatus gameStatus = GameStatus.GAME_LOBBY;
 
-    public static Canvas playingCanvas = new Canvas(700, 370);
+    public static Canvas playingCanvas = new Canvas(SceneController.SCREEN_WIDTH, SceneController.SCREEN_HEIGHT - 30);
     private final GraphicsContext gc = playingCanvas.getGraphicsContext2D();
 
     /**
@@ -44,7 +45,7 @@ public class GameController {
     /**
      * Map control.
      */
-    public final static List<Map> mapList = new ArrayList<>();
+    public final static List<uet.oop.bomberman.map_graph.Map> mapList = new ArrayList<>();
     public static int LEVEL = 0;
     private static final int MAX_LEVEL = 1;
 
@@ -191,7 +192,7 @@ public class GameController {
 
     private void render() {
         if (gameStatus == GameStatus.GAME_PLAYING) {
-            gc.clearRect(0, 0, 700, 370);
+            gc.clearRect(0, 0, playingCanvas.getWidth(), playingCanvas.getHeight());
             mapList.get(LEVEL).mapRender(gc);
             entities.get(LEVEL).forEach(g -> g.render(gc));
         } else if (gameStatus == GameStatus.GAME_LOBBY) {

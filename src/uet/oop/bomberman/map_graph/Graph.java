@@ -1,4 +1,4 @@
-package uet.oop.bomberman.graph_mapmaster;
+package uet.oop.bomberman.map_graph;
 
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.graphics.Sprite;
