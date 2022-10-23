@@ -1,9 +1,12 @@
 package uet.oop.bomberman;
 
 import javafx.scene.canvas.GraphicsContext;
+import uet.oop.bomberman.CollisionManager;
+import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.movingobject.enemies.Balloom;
+import uet.oop.bomberman.entities.movingobject.enemies.Doll;
 import uet.oop.bomberman.entities.movingobject.enemies.Enemy;
 import uet.oop.bomberman.entities.movingobject.enemies.Oneal;
 import uet.oop.bomberman.entities.stillobject.Portal;
@@ -13,9 +16,9 @@ import uet.oop.bomberman.entities.stillobject.item.SpeedItem;
 import uet.oop.bomberman.entities.stillobject.Brick;
 import uet.oop.bomberman.entities.stillobject.Grass;
 import uet.oop.bomberman.entities.stillobject.Wall;
-import uet.oop.bomberman.graph_mapmaster.Graph;
-import uet.oop.bomberman.graph_mapmaster.Vertice;
 import uet.oop.bomberman.graphics.Sprite;
+import uet.oop.bomberman.map_graph.Graph;
+import uet.oop.bomberman.map_graph.Vertice;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -105,14 +108,18 @@ public class Map {
                         break;
                     case '1':
                         mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
-                        Enemy ballom = new Balloom(j, i, Sprite.balloom_left1.getFxImage(), new CollisionManager(this, Balloom.WIDTH, Balloom.HEIGHT));
-                        GameController.entities.get(LEVEL).add(ballom);
+                        Enemy balloom = new Balloom(j, i, Sprite.balloom_left1.getFxImage(), new CollisionManager(this, Balloom.WIDTH, Balloom.HEIGHT));
+                        GameController.entities.get(LEVEL).add(balloom);
                         break;
                     case '2':
                         mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
                         Enemy oneal = new Oneal(j, i, Sprite.oneal_right1.getFxImage(), new CollisionManager(this, Oneal.WIDTH, Oneal.HEIGHT), GameController.entities.get(LEVEL).get(0));
                         GameController.entities.get(LEVEL).add(oneal);
                         break;
+                    case '3':
+                        mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
+                        Enemy doll = new Doll(j, i, Sprite.doll_right1.getFxImage(), new CollisionManager(this, Doll.WIDTH, Doll.HEIGHT));
+                        GameController.entities.get(LEVEL).add(doll);
                     case 'b':
                         mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
                         listItem[i][j] = BombItem.code;

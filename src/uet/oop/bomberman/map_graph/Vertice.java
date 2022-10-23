@@ -1,10 +1,4 @@
-package uet.oop.bomberman.graph_mapmaster;
-
-import uet.oop.bomberman.entities.CannotBePassedThrough;
-import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.stillobject.Grass;
-
-import java.util.List;
+package uet.oop.bomberman.map_graph;
 
 public class Vertice {
     /**

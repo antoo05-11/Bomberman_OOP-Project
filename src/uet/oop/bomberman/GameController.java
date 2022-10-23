@@ -30,7 +30,7 @@ public class GameController {
 
     public static GameStatus gameStatus = GameStatus.GAME_LOBBY;
 
-    public static Canvas playingCanvas = new Canvas(700, 370);
+    public static Canvas playingCanvas = new Canvas(SceneController.SCREEN_WIDTH, SceneController.SCREEN_HEIGHT - 30);
     private final GraphicsContext gc = playingCanvas.getGraphicsContext2D();
 
     /**
@@ -191,7 +191,7 @@ public class GameController {
 
     private void render() {
         if (gameStatus == GameStatus.GAME_PLAYING) {
-            gc.clearRect(0, 0, 700, 370);
+            gc.clearRect(0, 0, playingCanvas.getWidth(), playingCanvas.getHeight());
             mapList.get(LEVEL).mapRender(gc);
             entities.get(LEVEL).forEach(g -> g.render(gc));
         } else if (gameStatus == GameStatus.GAME_LOBBY) {
