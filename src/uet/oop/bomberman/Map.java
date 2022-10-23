@@ -1,4 +1,4 @@
-package uet.oop.bomberman.map_graph;
+package uet.oop.bomberman;
 
 import javafx.scene.canvas.GraphicsContext;
 import uet.oop.bomberman.CollisionManager;
@@ -16,6 +16,8 @@ import uet.oop.bomberman.entities.stillobject.Brick;
 import uet.oop.bomberman.entities.stillobject.Grass;
 import uet.oop.bomberman.entities.stillobject.Wall;
 import uet.oop.bomberman.graphics.Sprite;
+import uet.oop.bomberman.map_graph.Graph;
+import uet.oop.bomberman.map_graph.Vertice;
 
 import java.io.File;
 import java.io.FileNotFoundException;

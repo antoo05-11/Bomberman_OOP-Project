@@ -11,7 +11,6 @@ import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.movingobject.enemies.Enemy;
 import uet.oop.bomberman.entities.movingobject.enemies.Oneal;
-import uet.oop.bomberman.map_graph.Map;
 import uet.oop.bomberman.scenemaster.SceneController;
 
 import java.util.*;
@@ -45,7 +44,7 @@ public class GameController {
     /**
      * Map control.
      */
-    public final static List<uet.oop.bomberman.map_graph.Map> mapList = new ArrayList<>();
+    public final static List<Map> mapList = new ArrayList<>();
     public static int LEVEL = 0;
     private static final int MAX_LEVEL = 1;
 

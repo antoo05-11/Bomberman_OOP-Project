@@ -2,7 +2,6 @@ package uet.oop.bomberman;
 
 import uet.oop.bomberman.entities.CannotBePassedThrough;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.map_graph.Map;
 
 public class CollisionManager {
     private Map map;

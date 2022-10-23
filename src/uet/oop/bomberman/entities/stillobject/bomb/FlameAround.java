@@ -1,6 +1,6 @@
 package uet.oop.bomberman.entities.stillobject.bomb;
 import javafx.scene.canvas.GraphicsContext;
-import uet.oop.bomberman.map_graph.Map;
+import uet.oop.bomberman.Map;
 import uet.oop.bomberman.entities.CanBePassedThrough;
 import uet.oop.bomberman.entities.stillobject.Grass;
 import uet.oop.bomberman.entities.stillobject.StillObject;
