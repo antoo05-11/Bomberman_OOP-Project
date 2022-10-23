@@ -9,6 +9,7 @@ import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.stillobject.Brick;
 import uet.oop.bomberman.entities.stillobject.Grass;
+import uet.oop.bomberman.entities.stillobject.Portal;
 import uet.oop.bomberman.entities.stillobject.item.BombItem;
 import uet.oop.bomberman.entities.stillobject.item.FlameItem;
 import uet.oop.bomberman.entities.stillobject.item.SpeedItem;
@@ -17,8 +18,7 @@ import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.*;
 
-import static uet.oop.bomberman.GameController.audioController;
-import static uet.oop.bomberman.GameController.itemsList;
+import static uet.oop.bomberman.GameController.*;
 
 
 public class Bomb extends Entity {
@@ -99,11 +99,15 @@ public class Bomb extends Entity {
             } else if (nearTile instanceof Brick) {
                 checkUp = false;
                 if (bombStatus == BombStatus.EXPLODED) {
-                    if (!setItem(xTile, yTile)){
+                    if (!setItem(xTile, yTile) || !setPortal(xTile, yTile)){
                         map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
-                    }else {
+                    }
+                    if (setItem(xTile, yTile)){
                         itemsList.add(addItem(xTile, yTile));
                         map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
+                    }
+                    if (setPortal(xTile, yTile)){
+                        map.replace(yTile, xTile, new Portal(xTile, yTile, Sprite.portal.getFxImage()));
                     }
                     map.convertMapToGraph();
                     distance = (double) y / Sprite.SCALED_SIZE - (double) flameAroundTop.get(i).getY() / Sprite.SCALED_SIZE;
@@ -134,11 +138,15 @@ public class Bomb extends Entity {
             } else if (nearTile instanceof Brick) {
                 checkDown = false;
                 if (bombStatus == BombStatus.EXPLODED) {
-                    if (!setItem(xTile, yTile)){
+                    if (!setItem(xTile, yTile) || !setPortal(xTile, yTile)){
                         map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
-                    }else {
+                    }
+                    if (setItem(xTile, yTile)){
                         itemsList.add(addItem(xTile, yTile));
                         map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
+                    }
+                    if (setPortal(xTile, yTile)){
+                        map.replace(yTile, xTile, new Portal(xTile, yTile, Sprite.portal.getFxImage()));
                     }
                     map.convertMapToGraph();
                     distance = (double) flameAroundDown.get(i).getY() / Sprite.SCALED_SIZE - (double) y / Sprite.SCALED_SIZE;
@@ -169,11 +177,15 @@ public class Bomb extends Entity {
             } else if (nearTile instanceof Brick) {
                 checkLeft = false;
                 if (bombStatus == BombStatus.EXPLODED) {
-                    if (!setItem(xTile, yTile)){
+                    if (!setItem(xTile, yTile) || !setPortal(xTile, yTile)){
                         map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
-                    }else {
+                    }
+                    if (setItem(xTile, yTile)){
                         itemsList.add(addItem(xTile, yTile));
                         map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
+                    }
+                    if (setPortal(xTile, yTile)){
+                        map.replace(yTile, xTile, new Portal(xTile, yTile, Sprite.portal.getFxImage()));
                     }
                     map.convertMapToGraph();
                     distance = (double) x / Sprite.SCALED_SIZE - (double) flameAroundLeft.get(i).getX() / Sprite.SCALED_SIZE;
@@ -204,12 +216,15 @@ public class Bomb extends Entity {
             } else if (nearTile instanceof Brick) {
                 checkRight = false;
                 if (bombStatus == BombStatus.EXPLODED) {
-                    if (!setItem(xTile, yTile)){
-                        //map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
-                        ((Brick) nearTile).destroyBrick(xTile, yTile);
-                    }else {
+                    if (!setItem(xTile, yTile) || !setPortal(xTile, yTile)){
+                        map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
+                    }
+                    if (setItem(xTile, yTile)){
                         itemsList.add(addItem(xTile, yTile));
                         map.replace(yTile, xTile, new Grass(xTile, yTile, Sprite.grass.getFxImage()));
+                    }
+                    if (setPortal(xTile, yTile)){
+                        map.replace(yTile, xTile, new Portal(xTile, yTile, Sprite.portal.getFxImage()));
                     }
                     map.convertMapToGraph();
                     distance = (double) flameAroundRight.get(i).getX() / Sprite.SCALED_SIZE - (double) x / Sprite.SCALED_SIZE;
@@ -220,7 +235,11 @@ public class Bomb extends Entity {
         }
 
     }
-    public Entity addItem(int xTile, int yTile){
+
+    private boolean setPortal(int xTile, int yTile){
+        return map.getPortal(xTile, yTile) == 4;
+    }
+    private Entity addItem(int xTile, int yTile){
         switch (map.getItem(xTile, yTile)){
             case SpeedItem.code:
                  return new SpeedItem(xTile, yTile, Sprite.powerup_speed.getFxImage());
@@ -231,7 +250,7 @@ public class Bomb extends Entity {
         }
         return null;
     }
-    public boolean setItem(int xTile, int yTile){
+    private boolean setItem(int xTile, int yTile){
         switch (map.getItem(xTile, yTile)){
             case SpeedItem.code:
                 map.replace(yTile, xTile, new SpeedItem(xTile, yTile, Sprite.powerup_speed.getFxImage()));
