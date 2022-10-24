@@ -79,6 +79,7 @@ public class PlayingController implements SceneController, Initializable {
                 public void handle(ActionEvent event) {
                     GameController.gameStatus = GAME_PAUSE;
                     root.getChildren().get(0).setEffect(new BoxBlur());
+                    root.getChildren().get(0).setDisable(true);
                     continueButton.setVisible(true);
                     continueButton.setDisable(false);
                 }
@@ -88,6 +89,7 @@ public class PlayingController implements SceneController, Initializable {
                 @Override
                 public void handle(ActionEvent event) {
                     root.getChildren().get(0).setEffect(null);
+                    root.getChildren().get(0).setDisable(false);
                     continueButton.setVisible(false);
                     continueButton.setDisable(true);
                     GameController.gameStatus = GAME_PLAYING;

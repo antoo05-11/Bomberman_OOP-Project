@@ -2,7 +2,7 @@ package uet.oop.bomberman.entities.stillobject.bomb;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import uet.oop.bomberman.Map;
+import uet.oop.bomberman.map_graph.Map;
 
 import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.entities.movingobject.Bomber;
