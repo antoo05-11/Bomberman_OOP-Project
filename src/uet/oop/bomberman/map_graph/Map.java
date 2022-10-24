@@ -120,6 +120,7 @@ public class Map {
                         mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
                         Enemy doll = new Doll(j, i, Sprite.doll_right1.getFxImage(), new CollisionManager(this, Doll.WIDTH, Doll.HEIGHT));
                         GameController.entities.get(LEVEL).add(doll);
+                        break;
                     case 'b':
                         mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
                         listItem[i][j] = BombItem.code;
