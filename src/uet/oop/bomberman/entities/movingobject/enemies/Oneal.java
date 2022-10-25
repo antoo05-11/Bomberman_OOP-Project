@@ -10,8 +10,7 @@ import uet.oop.bomberman.graphics.Sprite;
 import java.util.List;
 
 public class Oneal extends Enemy {
-    public static final int WIDTH = 30;
-    public static final int HEIGHT = 30;
+
     OnealStatus onealStatus;
 
     public enum OnealStatus {
@@ -48,7 +47,8 @@ public class Oneal extends Enemy {
         // Case 1: left
         if (src.getxTilePos() >= dst.getxTilePos()) {
             if (x > dst.getxTilePos() * Sprite.SCALED_SIZE) {
-                if (!collisionManager.collide(x, y, "LEFT", SPEED)) {
+                if (!collisionManager.collide(x, y, "LEFT", SPEED)
+                        && !collisionManager.collidebBomb(x, y, "LEFT", SPEED)) {
                     setSprite(Sprite.movingSprite(
                             leftSprites[0],
                             leftSprites[1],
@@ -60,7 +60,8 @@ public class Oneal extends Enemy {
         // Case 2: right
         if (src.getxTilePos() <= dst.getxTilePos()) {
             if (x < dst.getxTilePos() * Sprite.SCALED_SIZE) {
-                if (!collisionManager.collide(x, y, "RIGHT", SPEED)) {
+                if (!collisionManager.collide(x, y, "RIGHT", SPEED)
+                        && !collisionManager.collidebBomb(x, y, "RIGHT", SPEED)) {
                     setSprite(Sprite.movingSprite(
                             rightSprites[0],
                             rightSprites[1],
@@ -73,7 +74,8 @@ public class Oneal extends Enemy {
         // Case 3: up
         if (src.getyTilePos() >= dst.getyTilePos()) {
             if (y > dst.getyTilePos() * Sprite.SCALED_SIZE) {
-                if (!collisionManager.collide(x, y, "UP", SPEED)) {
+                if (!collisionManager.collide(x, y, "UP", SPEED)
+                        && !collisionManager.collidebBomb(x, y, "UP", SPEED)) {
                     setSprite(Sprite.movingSprite(
                             rightSprites[0],
                             rightSprites[1],
@@ -86,7 +88,8 @@ public class Oneal extends Enemy {
         // Case 4: down
         if (src.getyTilePos() <= dst.getyTilePos()) {
             if (y < dst.getyTilePos() * Sprite.SCALED_SIZE) {
-                if (!collisionManager.collide(x, y, "DOWN", SPEED)) {
+                if (!collisionManager.collide(x, y, "DOWN", SPEED)
+                        && !collisionManager.collidebBomb(x, y, "DOWN", SPEED)) {
                     setSprite(Sprite.movingSprite(
                             leftSprites[0],
                             leftSprites[1],

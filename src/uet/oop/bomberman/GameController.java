@@ -179,8 +179,6 @@ public class GameController {
             //Update all list.
             updateMapCamera();
             updateEntitiesList();
-            //updateBombsList();
-            //updateItemsList();
 
         } else if (gameStatus == GameStatus.GAME_LOBBY) {
             reset();

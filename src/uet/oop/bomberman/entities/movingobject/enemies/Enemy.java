@@ -4,7 +4,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.CollisionManager;
 import uet.oop.bomberman.entities.movingobject.Bomber;
-import uet.oop.bomberman.entities.CanBePassedThrough;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.stillobject.bomb.Bomb;
 import uet.oop.bomberman.entities.movingobject.MovingObject;
@@ -13,6 +12,8 @@ import uet.oop.bomberman.graphics.Sprite;
 import static uet.oop.bomberman.GameController.bombsList;
 
 public abstract class Enemy extends MovingObject {
+    public static final int WIDTH = 30;
+    public static final int HEIGHT = 30;
     public Enemy(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
@@ -20,7 +21,7 @@ public abstract class Enemy extends MovingObject {
     CollisionManager collisionManager;
     protected int SPEED;
     private String dir = "";
-    private boolean goNext = false;
+    private boolean changeDirection = false;
     public int indexOfSprite;
     Sprite[] leftSprites;
     Sprite[] rightSprites;
@@ -90,8 +91,8 @@ public abstract class Enemy extends MovingObject {
     public void randomMoving() {
 
         indexOfSprite++;
-        if (!goNext) {
-            int rand = (int) (Math.random() * 8);
+        if (!changeDirection) {
+            int rand = (int) (Math.random() * 10);
             switch (rand % 4) {
                 case 0:
                     dir = "LEFT";
@@ -109,40 +110,40 @@ public abstract class Enemy extends MovingObject {
                     break;
             }
         }
-        if (collisionManager.collide(x, y, dir, SPEED)) {
-            //System.out.println(this.getClass());
-            goNext = false;
+        if (collisionManager.collide(x, y, dir, SPEED)
+                || collisionManager.collidebBomb(x, y, dir, SPEED)) {
+            changeDirection = false;
             indexOfSprite = 0;
         } else {
-            if (dir == "LEFT") {
+            if (dir.equals("LEFT")) {
                 x -= SPEED;
                 setSprite(Sprite.movingSprite(
                         leftSprites[0],
                         leftSprites[1],
                         leftSprites[2], indexOfSprite, 20).getFxImage());
             }
-            if (dir == "RIGHT") {
+            if (dir.equals("RIGHT")) {
                 x += SPEED;
                 setSprite(Sprite.movingSprite(
                         rightSprites[0],
                         rightSprites[1],
                         rightSprites[2], indexOfSprite, 20).getFxImage());
             }
-            if (dir == "UP") {
+            if (dir.equals("UP")) {
                 y -= SPEED;
                 setSprite(Sprite.movingSprite(
                         rightSprites[0],
                         rightSprites[1],
                         rightSprites[2], indexOfSprite, 20).getFxImage());
             }
-            if (dir == "DOWN") {
+            if (dir.equals("DOWN")) {
                 y += SPEED;
                 setSprite(Sprite.movingSprite(
                         leftSprites[0],
                         leftSprites[1],
                         leftSprites[2], indexOfSprite, 20).getFxImage());
             }
-            goNext = true;
+            changeDirection = true;
         }
     }
 

@@ -51,6 +51,7 @@ public class Bomber extends MovingObject {
     public static int SPEED = 2;
     public static int MAX_BOMB = 3;
     public static int BOMB_RADIUS = 1;
+    protected int life = 3;
 
     void reset() {
         SPEED = 2;
@@ -64,6 +65,7 @@ public class Bomber extends MovingObject {
         super(x, y, null);
         reset();
         this.collisionManager = collisionManager;
+        this.life = 3;
     }
 
     public void saveKeyEvent(KeyCode keyCode, boolean isPress) {
@@ -297,7 +299,12 @@ public class Bomber extends MovingObject {
             indexOfSprite++;
             setSprite(Sprite.movingSprite(Sprite.player_dead1, Sprite.player_dead2,
                     Sprite.player_dead3, indexOfSprite, 20).getFxImage());
-            if (indexOfSprite == 20) {
+            if (indexOfSprite == 30) {
+                /*indexOfSprite = 0;
+                x = Sprite.SCALED_SIZE;
+                y = Sprite.SCALED_SIZE;
+                setSprite(Sprite.player_right.getFxImage());
+                bomberStatus = BomberStatus.ALIVE;*/
                 GameController.gameStatus = GameStatus.GAME_LOSE;
             }
             itemsList.clear();

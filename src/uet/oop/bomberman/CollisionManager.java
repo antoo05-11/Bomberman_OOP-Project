@@ -2,12 +2,14 @@ package uet.oop.bomberman;
 
 import uet.oop.bomberman.entities.CannotBePassedThrough;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.stillobject.bomb.Bomb;
+import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.map_graph.Map;
+
+import static uet.oop.bomberman.GameController.bombsList;
 
 public class CollisionManager {
     private Map map;
-    private static final int FIX_WIDTH = 5;
-    private static final int FIX_HEIGHT = 5;
     private int CENTER_OBJECT_HEIGHT;
     private int CENTER_OBJECT_WIDTH;
 
@@ -47,7 +49,6 @@ public class CollisionManager {
             case "RIGHT":
                 curX += OBJECT_SPEED;
                 break;
-            default:
         }
         topLeft = map.getEntityAt(curX, curY);
         topRight = map.getEntityAt(curX + CENTER_OBJECT_WIDTH, curY);
@@ -55,5 +56,39 @@ public class CollisionManager {
         downRight = map.getEntityAt(curX + CENTER_OBJECT_WIDTH, curY + CENTER_OBJECT_HEIGHT);
         return topLeft instanceof CannotBePassedThrough || topRight instanceof CannotBePassedThrough
                 || downLeft instanceof CannotBePassedThrough || downRight instanceof CannotBePassedThrough;
+    }
+
+    public boolean collidebBomb(int x, int y, String dir, int OBJECT_SPEED){
+        int curX = x, curY = y;
+        switch (dir) {
+            case "UP":
+                curY -= OBJECT_SPEED;
+                break;
+            case "DOWN":
+                curY += OBJECT_SPEED;
+                break;
+            case "LEFT":
+                curX -= OBJECT_SPEED;
+                break;
+            case "RIGHT":
+                curX += OBJECT_SPEED;
+                break;
+        }
+        int xTile = curX / Sprite.SCALED_SIZE;
+        int yTile = curY / Sprite.SCALED_SIZE;
+        int widthTile = (curX + CENTER_OBJECT_WIDTH) / Sprite.SCALED_SIZE;
+        int heightTile = (curY + CENTER_OBJECT_WIDTH) / Sprite.SCALED_SIZE;
+
+        for (Entity b : bombsList){
+            int xBomb = (b.getX() + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE;
+            int yBomb = (b.getY() + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE;
+            if ((xTile == xBomb && yTile == yBomb)
+                    || (widthTile == xBomb && yTile == yBomb)
+                    || (xTile == xBomb && heightTile == yBomb)
+                    || (widthTile == xBomb && heightTile == yBomb)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
