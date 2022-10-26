@@ -12,17 +12,19 @@ public class AudioController {
         LOSE,
         WIN,
         CHOOSE,
-        DIE
+        DIE,
+        CLICK_BUTTON
     }
 
     Audio[] audiosList;
 
     public AudioController() {
-        audiosList = new Audio[5];
+        audiosList = new Audio[10];
         audiosList[AudioName.LOBBY.ordinal()] = new Audio("res/audio/Title Screen.wav");
         audiosList[AudioName.PLAYING.ordinal()] = new Audio("res/audio/playing.wav");
         audiosList[AudioName.EXPLODING.ordinal()] = new Audio("res/audio/exploding.wav");
         audiosList[AudioName.EAT_ITEM.ordinal()] = new Audio("res/audio/eatItem.wav");
+        audiosList[AudioName.CLICK_BUTTON.ordinal()] = new Audio("res/audio/clickButton.wav");
     }
 
     public void playParallel(AudioName audioName, int time) {
