@@ -69,7 +69,7 @@ public class GameController {
      */
     public final static List<Map> mapList = new ArrayList<>();
     public static int LEVEL = 0;
-    public static final int MAX_LEVEL = 1;
+    public static final int MAX_LEVEL = 3;
 
     private void loadMap() {
         for (int i = 0; i <= MAX_LEVEL; i++) {

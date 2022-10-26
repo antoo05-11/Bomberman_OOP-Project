@@ -5,12 +5,13 @@ import uet.oop.bomberman.entities.movingobject.Bomber;
 
 public class BombItem extends Item{
     public static final int code = 1;
+    private int bonus = 1;
     public BombItem(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
 
     @Override
     public void update() {
-        Bomber.MAX_BOMB++;
+        Bomber.MAX_BOMB += bonus = 1;;
     }
 }

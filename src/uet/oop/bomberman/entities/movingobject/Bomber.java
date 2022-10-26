@@ -60,6 +60,7 @@ public class Bomber extends MovingObject {
     public static int SPEED = 2;
     public static int MAX_BOMB = 3;
     public static int BOMB_RADIUS = 1;
+    protected int life = 3;
 
     void reset() {
         SPEED = 3;
@@ -73,6 +74,7 @@ public class Bomber extends MovingObject {
         super(x, y, null);
         reset();
         this.collisionManager = collisionManager;
+        this.life = 3;
     }
 
     public void saveKeyEvent(KeyCode keyCode, boolean isPress) {
