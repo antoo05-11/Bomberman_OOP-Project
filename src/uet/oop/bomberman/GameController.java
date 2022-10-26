@@ -1,21 +1,31 @@
 package uet.oop.bomberman;
 
-import javafx.animation.AnimationTimer;
+import javafx.animation.*;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.Pair;
 import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.entities.movingobject.enemies.Enemy;
 import uet.oop.bomberman.entities.movingobject.enemies.Oneal;
 import uet.oop.bomberman.map_graph.Map;
+import uet.oop.bomberman.scenemaster.LobbyController;
+import uet.oop.bomberman.scenemaster.PlayingController;
 import uet.oop.bomberman.scenemaster.SceneController;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameController {
     /**
@@ -23,7 +33,10 @@ public class GameController {
      */
     public enum GameStatus {
         GAME_LOBBY,
+        GAME_START,
         GAME_PLAYING,
+        LOAD_CURRENT_LEVEL,
+        WIN_ONE,
         WIN_ALL,
         GAME_LOSE,
         GAME_PAUSE
@@ -33,6 +46,15 @@ public class GameController {
 
     public static Canvas playingCanvas = new Canvas(SceneController.SCREEN_WIDTH, SceneController.SCREEN_HEIGHT - 30);
     private final GraphicsContext gc = playingCanvas.getGraphicsContext2D();
+
+    private LobbyController lobbyController;
+    private PlayingController playingController;
+    private Scene lobbyScene;
+    private Scene playingScene;
+
+    public Stage getStage() {
+        return stage;
+    }
 
     /**
      * Constructor.
@@ -45,7 +67,7 @@ public class GameController {
     /**
      * Map control.
      */
-    public final static List<uet.oop.bomberman.map_graph.Map> mapList = new ArrayList<>();
+    public final static List<Map> mapList = new ArrayList<>();
     public static int LEVEL = 0;
     public static final int MAX_LEVEL = 1;
 
@@ -87,15 +109,82 @@ public class GameController {
     public static AudioController audioController = new AudioController();
 
     /**
+     * Timer controller.
+     */
+    public static final int MAX_TIME = 180 * 1000; // 180 seconds to millis.
+    private Timeline timeline;
+
+    public void runTimer() {
+        timeline = new Timeline();
+        timeline.stop();
+        IntegerProperty timeSeconds =
+                new SimpleIntegerProperty(MAX_TIME);
+        playingController.getProgressBar().progressProperty().bind(
+                timeSeconds.divide(MAX_TIME * 1.0).subtract(1).multiply(-1));
+
+        timeSeconds.set((MAX_TIME + 1));
+
+        timeline.getKeyFrames().add(
+                new KeyFrame(Duration.millis(MAX_TIME),
+                        new KeyValue(timeSeconds, 0))
+        );
+        timeline.playFromStart();
+
+        AtomicInteger timerCounter = new AtomicInteger(3);
+        Timeline nextLevelTimeline = new Timeline();
+        nextLevelTimeline.stop();
+        KeyFrame kf = new KeyFrame(Duration.seconds(0),
+                event -> {
+                    System.out.println(timerCounter.get());
+                    timerCounter.decrementAndGet();
+                    if (timerCounter.get() < 0) {
+                        playingController.getNextLevelBox().setVisible(false);
+                        nextLevelTimeline.stop();
+                    }
+                });
+        nextLevelTimeline.getKeyFrames().addAll(kf, new KeyFrame(Duration.seconds(1)));
+        nextLevelTimeline.setCycleCount(Animation.INDEFINITE);
+        nextLevelTimeline.playFromStart();
+    }
+
+    /**
      * Run game engine.
      */
     public void run() {
+        FXMLLoader fxmlLoader1 = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/UI_fxml/LobbyScene.fxml")));
+        FXMLLoader fxmlLoader2 = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/UI_fxml/PlayingScene.fxml")));
         try {
-            stage.setScene(new Scene(FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/UI_fxml/LobbyScene.fxml")))));
-        } catch (Exception e) {
-            e.printStackTrace();
+            lobbyScene = new Scene(fxmlLoader1.load());
+            playingScene = new Scene(fxmlLoader2.load());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
+        lobbyController = (fxmlLoader1).getController();
+        playingController = (fxmlLoader2).getController();
+
+        playingScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                GameController.entities.get(GameController.LEVEL).get(0).saveKeyEvent(event.getCode(), true);
+            }
+        });
+        playingScene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                GameController.entities.get(GameController.LEVEL).get(0).saveKeyEvent(event.getCode(), false);
+            }
+        });
+
+        lobbyController.setPlayingScene(playingScene);
+        playingController.setLobbyScene(lobbyScene);
+
+        lobbyController.setGameController(this);
+        playingController.setGameController(this);
+
+        stage.setScene(lobbyScene);
         stage.show();
+
         timer.start();
     }
 
@@ -172,21 +261,50 @@ public class GameController {
      * Update all specs of game, set scenes.
      */
     public void update() {
-        if (gameStatus == GameStatus.GAME_PLAYING) {
-            isReset = false;
-            audioController.playAlone(AudioController.AudioName.PLAYING, -1);
-            entities.get(LEVEL).forEach(Entity::update);
-            //Update all list.
-            updateMapCamera();
-            updateEntitiesList();
-            //updateBombsList();
-            //updateItemsList();
-
-        } else if (gameStatus == GameStatus.GAME_LOBBY) {
-            reset();
-        } else if (gameStatus == GameStatus.GAME_LOSE) {
-            reset(); //Reset all game specs before go out.
-            gameStatus = GameStatus.GAME_LOBBY;
+        switch (gameStatus) {
+            case GAME_LOBBY:
+                resetAllLevel();
+                break;
+            case GAME_START:
+                runTimer();
+                playingController.getNextLevelBox().setVisible(true);
+                playingController.updateStatus();
+                gameStatus = GameStatus.GAME_PLAYING;
+                break;
+            case GAME_PLAYING:
+                if (timeline.getStatus() == Animation.Status.STOPPED) {
+                    gameStatus = GameStatus.GAME_LOSE;
+                }
+                playingController.updateStatus();
+                isReset = false;
+                audioController.playAlone(AudioController.AudioName.PLAYING, -1);
+                entities.get(LEVEL).forEach(Entity::update);
+                //Update all list.
+                updateMapCamera();
+                updateEntitiesList();
+                //updateBombsList();
+                //updateItemsList();
+                break;
+            case LOAD_CURRENT_LEVEL:
+                resetCurrentLevel();
+                gameStatus = GameStatus.GAME_PLAYING;
+                break;
+            case WIN_ONE:
+                if (LEVEL <= MAX_LEVEL) {
+                    gameStatus = GameStatus.GAME_START;
+                }
+                break;
+            case WIN_ALL:
+                break;
+            case GAME_LOSE:
+                resetAllLevel();
+                stage.setScene(lobbyScene);
+                gameStatus = GameStatus.GAME_LOBBY;
+                break;
+            case GAME_PAUSE:
+                break;
+            default:
+                break;
         }
     }
 
@@ -200,21 +318,27 @@ public class GameController {
         }
     }
 
-    private void reset() {
-        if (!isReset) {
-            try {
-                stage.setScene(new Scene(FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/UI_fxml/LobbyScene.fxml")))));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            stage.show();
-            for (int i = 0; i <= LEVEL; i++) {
-                mapList.get(LEVEL).reset(); //Reset played map in map list.
-            }
+    private void resetCurrentLevel() {
+        int numOfLives = ((Bomber) entities.get(LEVEL).get(0)).getNumOfLives();
+        mapList.get(LEVEL).reset();
+        runTimer();
+        ((Bomber) entities.get(LEVEL).get(0)).setNumOfLives(numOfLives);
+    }
+
+    private void resetAllLevel() {
+        for (int i = 0; i <= LEVEL; i++) {
+            mapList.get(LEVEL).reset(); //Reset played map in map list.
         }
-        isReset = true;
         LEVEL = 0;
         //Only when resetting(go to lobby scene), lobby music is started
         audioController.playAlone(AudioController.AudioName.LOBBY, -1);
+    }
+
+    public int getMaxBombs() {
+        return Bomber.MAX_BOMB;
+    }
+
+    public int getNumOfLives() {
+        return ((Bomber) entities.get(LEVEL).get(0)).getNumOfLives();
     }
 }

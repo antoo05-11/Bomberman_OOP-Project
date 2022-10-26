@@ -1,8 +1,6 @@
 package uet.oop.bomberman.scenemaster;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -19,25 +17,35 @@ import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.Effect;
 import javafx.scene.effect.Glow;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.GameController;
+import uet.oop.bomberman.entities.movingobject.Bomber;
 
 import java.net.URL;
+import java.sql.Time;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static uet.oop.bomberman.GameController.GameStatus.GAME_PAUSE;
 import static uet.oop.bomberman.GameController.GameStatus.GAME_PLAYING;
-public class PlayingController implements SceneController, Initializable {
+
+public class PlayingController extends SceneController implements Initializable {
     @FXML
     private Text levelText;
     @FXML
     private ProgressBar progressBar;
+
+    public ProgressBar getProgressBar() {
+        return progressBar;
+    }
+
     @FXML
     private Button audioButton;
     @FXML
@@ -50,28 +58,35 @@ public class PlayingController implements SceneController, Initializable {
     private StackPane root;
     @FXML
     private Button continueButton;
-    private Scene scene;
-    private Stage stage;
+    private Scene lobbyScene;
+    private FadeTransition ft = new FadeTransition();
+    @FXML
+    private VBox nextLevelBox;
+    @FXML
+    private Text stageText;
+    public VBox getNextLevelBox() {
+        return nextLevelBox;
+    }
+
+
+    @FXML
+    Text maxBombs;
+    Timeline timeline;
+
+    @FXML
+    private HBox livesImg;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        URL playingURL;
-        playingURL = BombermanGame.class.getResource("/UI_fxml/PlayingScene.fxml");
+        URL playingURL = BombermanGame.class.getResource("/UI_fxml/PlayingScene.fxml");
         if (location.equals(playingURL)) {
-            // Set level text.
-            levelText.setText("LEVEL " + (GameController.LEVEL + 1));
+            //Add playing canvas from gameController
+            ((VBox) (((StackPane) root).getChildren().get(0))).getChildren().add(GameController.playingCanvas);
+
+            levelText.setText("LEVEL " + gameController.LEVEL);
 
             // Set status of mute line for audio button.
             muteLine.setVisible(GameController.audioController.isMuted());
-
-            // Set status for progress bar.
-            Timeline timeline = new Timeline(
-                    new KeyFrame(Duration.ZERO, new KeyValue(progressBar.progressProperty(), 0)),
-                    new KeyFrame(Duration.minutes(1), e -> {
-                        //time out
-                    }, new KeyValue(progressBar.progressProperty(), 1))
-            );
-            timeline.play();
 
             //Click pause button
             pauseButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -114,17 +129,22 @@ public class PlayingController implements SceneController, Initializable {
         Optional<ButtonType> buttonType = alert.showAndWait();
         if (buttonType.get() == ButtonType.YES) {
             GameController.gameStatus = GameController.GameStatus.GAME_LOBBY;
-            URL url = BombermanGame.class.getResource("/UI_fxml/LobbyScene.fxml");
-            FXMLLoader fxmlLoader = new FXMLLoader(url);
-            try {
-                scene = new Scene(fxmlLoader.load());
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-            stage = (Stage) (((Node) (event.getSource())).getScene().getWindow());
-            stage.setScene(scene);
-            stage.show();
+            stage.setScene(lobbyScene);
+        } else GameController.gameStatus = GAME_PLAYING;
+    }
+
+    public void updateStatus() {
+        stageText.setText("STAGE " + (GameController.LEVEL + 1));
+        levelText.setText("STAGE " + (GameController.LEVEL + 1));
+        maxBombs.setText(Integer.toString(gameController.getMaxBombs()));
+        for(int i = 0; i < gameController.getNumOfLives(); i++)
+        livesImg.getChildren().get(i).setVisible(true);
+        for(int i = gameController.getNumOfLives(); i < 3; i++) {
+            livesImg.getChildren().get(i).setVisible(false);
         }
-        else GameController.gameStatus = GAME_PLAYING;
+    }
+
+    public void setLobbyScene(Scene lobbyScene) {
+        this.lobbyScene = lobbyScene;
     }
 }
