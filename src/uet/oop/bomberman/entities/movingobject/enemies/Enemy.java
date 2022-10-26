@@ -20,8 +20,8 @@ public abstract class Enemy extends MovingObject {
 
     CollisionManager collisionManager;
     protected int SPEED;
-    private String dir = "";
-    private boolean changeDirection = false;
+    protected String dir = "";
+    protected boolean changeDirection = false;
     public int indexOfSprite;
     Sprite[] leftSprites;
     Sprite[] rightSprites;
