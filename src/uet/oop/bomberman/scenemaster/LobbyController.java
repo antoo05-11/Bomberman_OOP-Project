@@ -20,12 +20,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.GameController;
+import uet.oop.bomberman.audiomaster.AudioController;
 
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class LobbyController implements SceneController, Initializable {
+public class LobbyController extends SceneController implements Initializable {
     @FXML
     private Button playButton;
     @FXML
@@ -35,16 +36,15 @@ public class LobbyController implements SceneController, Initializable {
     @FXML
     private Button rankButton;
 
-    private Scene scene;
-    private Parent root;
-    private Stage stage;
+    private Scene playingScene;
 
+    public void setPlayingScene(Scene playingScene) {
+        this.playingScene = playingScene;
+    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
     }
-
-
     @FXML
     public void setEffect(MouseEvent event) {
         Effect shadow = new Glow();
@@ -58,35 +58,8 @@ public class LobbyController implements SceneController, Initializable {
 
     @FXML
     public void clickPlayButton(MouseEvent event) {
-        GameController.gameStatus = GameController.GameStatus.GAME_PLAYING;
-        URL url = BombermanGame.class.getResource("/UI_fxml/PlayingScene.fxml");
-        FXMLLoader fxmlLoader = new FXMLLoader(url);
-        try {
-            root = fxmlLoader.load();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        ((VBox)(((StackPane) root).getChildren().get(0))).getChildren().add(GameController.playingCanvas);
-
-        scene = new Scene(root);
-
-        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                GameController.entities.get(GameController.LEVEL).get(0).saveKeyEvent(event.getCode(), true);
-            }
-        });
-        scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                GameController.entities.get(GameController.LEVEL).get(0).saveKeyEvent(event.getCode(), false);
-            }
-        });
-
-        stage = (Stage) (((Node) (event.getSource())).getScene().getWindow());
-        stage.setScene(scene);
-        stage.show();
+        GameController.gameStatus = GameController.GameStatus.GAME_START;
+        stage.setScene(playingScene);
     }
 
     @FXML
@@ -101,6 +74,15 @@ public class LobbyController implements SceneController, Initializable {
         if (result.get() == ButtonType.YES) {
             System.exit(0);
         }
+    }
+
+    @FXML
+    public void pressButton() {
+        GameController.audioController.playParallel(AudioController.AudioName.CLICK_BUTTON, 1);
+    }
+    @FXML
+    public void releaseButton() {
+
     }
 
     public void clickAudioButton(MouseEvent event) {

@@ -2,18 +2,15 @@ package uet.oop.bomberman.entities.stillobject.bomb;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import uet.oop.bomberman.entities.stillobject.*;
 import uet.oop.bomberman.map_graph.Map;
 
 import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.stillobject.Brick;
-import uet.oop.bomberman.entities.stillobject.Grass;
-import uet.oop.bomberman.entities.stillobject.Portal;
 import uet.oop.bomberman.entities.stillobject.item.BombItem;
 import uet.oop.bomberman.entities.stillobject.item.FlameItem;
 import uet.oop.bomberman.entities.stillobject.item.SpeedItem;
-import uet.oop.bomberman.entities.stillobject.Wall;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.*;
@@ -21,7 +18,7 @@ import java.util.*;
 import static uet.oop.bomberman.GameController.*;
 
 
-public class Bomb extends Entity {
+public class Bomb extends StillObject {
     public enum BombStatus {
         NotExplodedYet,
         EXPLODED,
