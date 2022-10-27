@@ -27,15 +27,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class LobbyController extends SceneController implements Initializable {
-    @FXML
-    private Button playButton;
-    @FXML
-    private Button audioButton;
-    @FXML
-    private Button quitButton;
-    @FXML
-    private Button rankButton;
-
     private Scene playingScene;
 
     public void setPlayingScene(Scene playingScene) {
@@ -45,17 +36,6 @@ public class LobbyController extends SceneController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
     }
-    @FXML
-    public void setEffect(MouseEvent event) {
-        Effect shadow = new Glow();
-        ((Button) event.getSource()).setEffect(shadow);
-    }
-
-    @FXML
-    public void removeEffect(MouseEvent event) {
-        ((Button) event.getSource()).setEffect(null);
-    }
-
     @FXML
     public void clickPlayButton(MouseEvent event) {
         GameController.gameStatus = GameController.GameStatus.GAME_START;
@@ -74,15 +54,6 @@ public class LobbyController extends SceneController implements Initializable {
         if (result.get() == ButtonType.YES) {
             System.exit(0);
         }
-    }
-
-    @FXML
-    public void pressButton() {
-        GameController.audioController.playParallel(AudioController.AudioName.CLICK_BUTTON, 1);
-    }
-    @FXML
-    public void releaseButton() {
-
     }
 
     public void clickAudioButton(MouseEvent event) {

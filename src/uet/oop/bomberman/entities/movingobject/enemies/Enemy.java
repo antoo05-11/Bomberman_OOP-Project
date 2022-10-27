@@ -117,31 +117,31 @@ public abstract class Enemy extends MovingObject {
         } else {
             if (dir.equals("LEFT")) {
                 x -= SPEED;
-                setSprite(Sprite.movingSprite(
+                setImg(Sprite.movingSprite(
                         leftSprites[0],
                         leftSprites[1],
-                        leftSprites[2], indexOfSprite, 20).getFxImage());
+                        leftSprites[2], indexOfSprite, 20));
             }
             if (dir.equals("RIGHT")) {
                 x += SPEED;
-                setSprite(Sprite.movingSprite(
+                setImg(Sprite.movingSprite(
                         rightSprites[0],
                         rightSprites[1],
-                        rightSprites[2], indexOfSprite, 20).getFxImage());
+                        rightSprites[2], indexOfSprite, 20));
             }
             if (dir.equals("UP")) {
                 y -= SPEED;
-                setSprite(Sprite.movingSprite(
+                setImg(Sprite.movingSprite(
                         rightSprites[0],
                         rightSprites[1],
-                        rightSprites[2], indexOfSprite, 20).getFxImage());
+                        rightSprites[2], indexOfSprite, 20));
             }
             if (dir.equals("DOWN")) {
                 y += SPEED;
-                setSprite(Sprite.movingSprite(
+                setImg(Sprite.movingSprite(
                         leftSprites[0],
                         leftSprites[1],
-                        leftSprites[2], indexOfSprite, 20).getFxImage());
+                        leftSprites[2], indexOfSprite, 20));
             }
             changeDirection = true;
         }
@@ -169,7 +169,7 @@ public abstract class Enemy extends MovingObject {
         }
         if (enemyStatus == EnemyStatus.MORIBUND) {
             if (indexOfSprite == 20) enemyStatus = EnemyStatus.DEAD;
-            else setSprite(deadSprites[indexOfSprite%deadSprites.length].getFxImage());
+            else setImg(deadSprites[indexOfSprite%deadSprites.length]);
             indexOfSprite++;
         }
     }

@@ -20,6 +20,7 @@ import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.map_graph.Graph;
 import uet.oop.bomberman.map_graph.Vertice;
 
+import javax.sound.sampled.Line;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -34,14 +35,6 @@ public class Map {
     private int widthTile;
     private int heightTile;
 
-    public int getHeightTile() {
-        return heightTile;
-    }
-
-    public int getWidthTile() {
-        return widthTile;
-    }
-
     public int getWidthPixel() {
         return widthTile * Sprite.SCALED_SIZE;
     }
@@ -50,9 +43,11 @@ public class Map {
         return heightTile * Sprite.SCALED_SIZE;
     }
 
-    private final List<List<Entity>> mapInfo = new ArrayList<>(); //Can be changed.
+    //private final List<List<Entity>> mapInfo = new ArrayList<>(); //Can be changed.
+    private Entity[][] mapInfo;
     int LEVEL;
     private Graph graph;
+    protected Entity[][] grassList = new Entity[HEIGHT][WIDTH];
     protected int[][] listItem = new int[HEIGHT][WIDTH];
     protected int[][] listPortal = new int[HEIGHT][WIDTH];
 
@@ -85,56 +80,63 @@ public class Map {
         String[] specs = rowString.split(" "); //Line 1 splits: LEVEL, WIDTH, HEIGHT.
         widthTile = Integer.parseInt(specs[2]);
         heightTile = Integer.parseInt(specs[1]);
-
+        mapInfo = new Entity[heightTile][widthTile];
         for (int i = 0; i < heightTile; i++) {
             rowString = scanner.nextLine();
-            mapInfo.add(new ArrayList<>());
+            // mapInfo.add(new ArrayList<>());
             for (int j = 0; j < widthTile; j++) {
+                grassList[i][j] = new Grass(j, i, Sprite.grass.getFxImage());
                 switch (rowString.charAt(j)) {
                     case 'p':
-                        mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
+                        //mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
                         Entity bomberman = new Bomber(j, i, new CollisionManager(this, Bomber.WIDTH, Bomber.HEIGHT));
                         GameController.entities.get(LEVEL).add(bomberman);
                         break;
                     case '#':
-                        mapInfo.get(i).add(new Wall(j, i, Sprite.wall.getFxImage()));
+                        //mapInfo.get(i).add(new Wall(j, i, Sprite.wall.getFxImage()));
+                        mapInfo[i][j] = new Wall(j, i, Sprite.wall.getFxImage());
                         break;
                     case '*':
-                        mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
+                        //mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
+                        mapInfo[i][j] = new Brick(j, i, Sprite.brick.getFxImage());
                         break;
                     case 'x':
-                        mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
+                        //mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
+                        mapInfo[i][j] = new Brick(j, i, Sprite.brick.getFxImage());
                         listPortal[i][j] = Portal.code;
                         break;
                     case '1':
-                        mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
+                        //mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
                         Enemy balloom = new Balloom(j, i, Sprite.balloom_left1.getFxImage(), new CollisionManager(this, Balloom.WIDTH, Balloom.HEIGHT));
                         GameController.entities.get(LEVEL).add(balloom);
                         break;
                     case '2':
-                        mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
+                        //mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
                         Enemy oneal = new Oneal(j, i, Sprite.oneal_right1.getFxImage(), new CollisionManager(this, Oneal.WIDTH, Oneal.HEIGHT), GameController.entities.get(LEVEL).get(0));
                         GameController.entities.get(LEVEL).add(oneal);
                         break;
                     case '3':
-                        mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
+                        //mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
                         Enemy doll = new Doll(j, i, Sprite.doll_right1.getFxImage(), new CollisionManager(this, Doll.WIDTH, Doll.HEIGHT));
                         GameController.entities.get(LEVEL).add(doll);
                         break;
                     case 'b':
-                        mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
+                        //mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
+                        mapInfo[i][j] = new Brick(j, i, Sprite.brick.getFxImage());
                         listItem[i][j] = BombItem.code;
                         break;
                     case 'f':
-                        mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
+                        //mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
+                        mapInfo[i][j] = new Brick(j, i, Sprite.brick.getFxImage());
                         listItem[i][j] = FlameItem.code;
                         break;
                     case 's':
-                        mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
+                        //mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
+                        mapInfo[i][j] = new Brick(j, i, Sprite.brick.getFxImage());
                         listItem[i][j] = SpeedItem.code;
                         break;
                     default:
-                        mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
+                        //mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
                         break;
                 }
             }
@@ -146,22 +148,35 @@ public class Map {
      * Render still
      */
     public void mapRender(GraphicsContext gc) {
-        for (int i = 0; i < mapInfo.size(); i++) {
-            for (int j = 0; j < mapInfo.get(i).size(); j++) {
-                mapInfo.get(i).get(j).render(gc);
+        for (int i = 0; i < HEIGHT; i++) {
+            for (int j = 0; j < WIDTH; j++) {
+                grassList[i][j].render(gc);
+            }
+        }
+//        for (int i = 0; i < mapInfo.size(); i++) {
+//            for (int j = 0; j < mapInfo.get(i).size(); j++) {
+//                //mapInfo.get(i).get(j).render(gc);
+//            }
+//        }
+        for (int i = 0; i < heightTile; i++) {
+            for (int j = 0; j < widthTile; j++) {
+                if (mapInfo[i][j] != null) {
+                    mapInfo[i][j].render(gc);
+                }
             }
         }
     }
 
     public Entity getEntityAt(int x, int y) {
-        return mapInfo.get(y / Sprite.SCALED_SIZE).get(x / Sprite.SCALED_SIZE);
+        //return mapInfo.get(y / Sprite.SCALED_SIZE).get(x / Sprite.SCALED_SIZE);
+        return mapInfo[y / Sprite.SCALED_SIZE][x / Sprite.SCALED_SIZE];
     }
 
     public int getItem(int xPos, int yPos) {
         return listItem[yPos][xPos];
     }
 
-    public int getPortal(int xPos, int yPos){
+    public int getPortal(int xPos, int yPos) {
         return listPortal[yPos][xPos];
     }
 
@@ -171,8 +186,7 @@ public class Map {
     public void reset() {
         GameController.entities.get(LEVEL).clear();
         GameController.bombsList.clear();
-        GameController.itemsList.clear();
-        mapInfo.clear();
+        mapInfo = null;
         readMapFromFile();
         convertMapToGraph();
     }
@@ -202,8 +216,9 @@ public class Map {
     /**
      * Replace any entity by other entity in mapInfo.
      */
-    public void replace(int rowPos, int columnPos, Entity newItem) {
-        mapInfo.get(rowPos).set(columnPos, newItem);
+    public void replace(int rowPos, int columnPos, Entity insertedObject) {
+        //mapInfo.get(rowPos).set(columnPos, newItem);
+        mapInfo[rowPos][columnPos] = insertedObject;
     }
 
     /**
@@ -212,8 +227,8 @@ public class Map {
      */
     public void convertMapToGraph() {
         List<Vertice> verticesList = new ArrayList<>();
-        for (int i = 0; i < mapInfo.size(); i++) {
-            for (int j = 0; j < mapInfo.get(i).size(); j++) {
+        for (int i = 0; i < heightTile; i++) {
+            for (int j = 0; j < widthTile; j++) {
                 verticesList.add(new Vertice(j, i));
             }
         }
@@ -225,8 +240,8 @@ public class Map {
                 int x2 = verticesList.get(j).getxTilePos();
                 int y1 = verticesList.get(i).getyTilePos();
                 int y2 = verticesList.get(j).getyTilePos();
-                if (mapInfo.get(y1).get(x1) instanceof Grass
-                        && mapInfo.get(y2).get(x2) instanceof Grass) {
+                if (mapInfo[y1][x1] == null
+                        && mapInfo[y2][x2] == null) {
                     if (x1 == x2) {
                         if (y1 == y2 + 1) isAdj = true;
                         else if (y1 == y2 - 1) isAdj = true;

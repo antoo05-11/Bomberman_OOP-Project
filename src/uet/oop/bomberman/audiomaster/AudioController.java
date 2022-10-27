@@ -28,7 +28,11 @@ public class AudioController {
     }
 
     public void playParallel(AudioName audioName, int time) {
-        if (!isMuted) {
+        if (!isMuted && audioName != AudioName.CLICK_BUTTON) {
+            Audio audio = audiosList[audioName.ordinal()].copyAudio();
+            audio.play(time);
+        }
+        else if(audioName == AudioName.CLICK_BUTTON) {
             Audio audio = audiosList[audioName.ordinal()].copyAudio();
             audio.play(time);
         }

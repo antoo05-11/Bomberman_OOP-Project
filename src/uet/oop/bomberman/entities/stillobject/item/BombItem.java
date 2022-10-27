@@ -12,6 +12,6 @@ public class BombItem extends Item{
 
     @Override
     public void update() {
-        Bomber.MAX_BOMB += bonus = 1;;
+        Bomber.MAX_BOMB += bonus = 1;
     }
 }

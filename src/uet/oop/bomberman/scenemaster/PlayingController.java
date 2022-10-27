@@ -1,37 +1,35 @@
 package uet.oop.bomberman.scenemaster;
 
-import javafx.animation.*;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.effect.BoxBlur;
-import javafx.scene.effect.Effect;
-import javafx.scene.effect.Glow;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.entities.movingobject.Bomber;
 
 import java.net.URL;
-import java.sql.Time;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static uet.oop.bomberman.GameController.GameStatus.GAME_PAUSE;
 import static uet.oop.bomberman.GameController.GameStatus.GAME_PLAYING;
@@ -41,11 +39,6 @@ public class PlayingController extends SceneController implements Initializable 
     private Text levelText;
     @FXML
     private ProgressBar progressBar;
-
-    public ProgressBar getProgressBar() {
-        return progressBar;
-    }
-
     @FXML
     private Button audioButton;
     @FXML
@@ -59,16 +52,12 @@ public class PlayingController extends SceneController implements Initializable 
     @FXML
     private Button continueButton;
     private Scene lobbyScene;
-    private FadeTransition ft = new FadeTransition();
     @FXML
     private VBox nextLevelBox;
     @FXML
     private Text stageText;
-    public VBox getNextLevelBox() {
-        return nextLevelBox;
-    }
-
-
+    @FXML
+    VBox playingBox;
     @FXML
     Text maxBombs;
     Timeline timeline;
@@ -80,8 +69,9 @@ public class PlayingController extends SceneController implements Initializable 
     public void initialize(URL location, ResourceBundle resources) {
         URL playingURL = BombermanGame.class.getResource("/UI_fxml/PlayingScene.fxml");
         if (location.equals(playingURL)) {
+
             //Add playing canvas from gameController
-            ((VBox) (((StackPane) root).getChildren().get(0))).getChildren().add(GameController.playingCanvas);
+            playingBox.getChildren().add(gameController.playingCanvas);
 
             levelText.setText("LEVEL " + gameController.LEVEL);
 
@@ -118,6 +108,19 @@ public class PlayingController extends SceneController implements Initializable 
                     muteLine.setVisible(GameController.audioController.isMuted());
                 }
             });
+            playingBox.getChildren().get(1).setOnKeyPressed(new EventHandler<KeyEvent>() {
+                @Override
+                public void handle(KeyEvent event) {
+                    ((Bomber)GameController.entities.get(GameController.LEVEL).get(0)).saveKeyEvent(event.getCode(), true);
+                }
+            });
+            playingBox.getChildren().get(1).setOnKeyReleased(new EventHandler<KeyEvent>() {
+                @Override
+                public void handle(KeyEvent event) {
+                    ((Bomber)GameController.entities.get(GameController.LEVEL).get(0)).saveKeyEvent(event.getCode(), false);
+                }
+            });
+            playingBox.getChildren().get(1).setFocusTraversable(true);
         }
     }
 
@@ -133,14 +136,67 @@ public class PlayingController extends SceneController implements Initializable 
         } else GameController.gameStatus = GAME_PLAYING;
     }
 
+    /**
+     * Start timer for game playing.
+     */
+    private void setUpTimeline() {
+        if (timeline != null) timeline.stop();
+        timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(progressBar.progressProperty(), 0)),
+                new KeyFrame(Duration.seconds(180), e -> {
+                    timeline.pause();
+                }, new KeyValue(progressBar.progressProperty(), 1))
+        );
+        timeline.setCycleCount(1);
+    }
+
+    /**
+     * Update status for all game events include timers, status bar.
+     */
     public void updateStatus() {
-        stageText.setText("STAGE " + (GameController.LEVEL + 1));
-        levelText.setText("STAGE " + (GameController.LEVEL + 1));
-        maxBombs.setText(Integer.toString(gameController.getMaxBombs()));
-        for(int i = 0; i < gameController.getNumOfLives(); i++)
-        livesImg.getChildren().get(i).setVisible(true);
-        for(int i = gameController.getNumOfLives(); i < 3; i++) {
-            livesImg.getChildren().get(i).setVisible(false);
+        switch (gameController.gameStatus) {
+            case GAME_START:
+                setUpTimeline();
+                nextLevelBox.setVisible(true);
+                playingBox.setDisable(true);
+                stageText.setText("STAGE " + (GameController.LEVEL + 1)); //Appear when start new level.
+
+                AtomicInteger timerCounter = new AtomicInteger(2);
+                Timeline nextLevelTimeline = new Timeline();
+                nextLevelTimeline.stop();
+                KeyFrame kf = new KeyFrame(Duration.seconds(0),
+                        event -> {
+                            timerCounter.decrementAndGet();
+                            if (timerCounter.get() <= 0) {
+                                nextLevelBox.setVisible(false);
+                                playingBox.setDisable(false);
+                                timeline.play();
+                                nextLevelTimeline.stop();
+                            }
+                        });
+                nextLevelTimeline.getKeyFrames().addAll(kf, new KeyFrame(Duration.seconds(1)));
+                nextLevelTimeline.setCycleCount(Animation.INDEFINITE);
+                nextLevelTimeline.play();
+                break;
+            case GAME_PLAYING:
+                if (timeline.getStatus() == Timeline.Status.PAUSED) {
+                    GameController.gameStatus = GameController.GameStatus.GAME_LOSE;
+                } else if (timeline.getStatus() == Timeline.Status.RUNNING) {
+
+                    levelText.setText("STAGE " + (GameController.LEVEL + 1)); //Appear in status bar.
+                    maxBombs.setText(Integer.toString(gameController.getMaxBombs()));
+                    for (int i = 0; i < gameController.getNumOfLives(); i++)
+                        livesImg.getChildren().get(i).setVisible(true);
+                    for (int i = gameController.getNumOfLives(); i < 3; i++) {
+                        livesImg.getChildren().get(i).setVisible(false);
+                    }
+                }
+                break;
+            case LOAD_CURRENT_LEVEL:
+                setUpTimeline();
+                timeline.play();
+                playingBox.setDisable(false);
+                break;
         }
     }
 

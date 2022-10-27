@@ -2,7 +2,6 @@ package uet.oop.bomberman.entities;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
 import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.graphics.Sprite;
 
@@ -28,10 +27,6 @@ public abstract class Entity {
 
     public abstract void update();
 
-    public void saveKeyEvent(KeyCode keyCode, boolean isPress) {
-
-    }
-
     public int getX() {
         return x;
     }
@@ -40,7 +35,7 @@ public abstract class Entity {
         return y;
     }
 
-    public void setSprite(Image img) {
-        this.img = img;
+    public void setImg(Sprite sprite) {
+        this.img = sprite.getFxImage();
     }
 }

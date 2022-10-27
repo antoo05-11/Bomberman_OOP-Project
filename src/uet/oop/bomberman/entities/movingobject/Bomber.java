@@ -67,7 +67,7 @@ public class Bomber extends MovingObject {
         BOMB_RADIUS = 1;
         MAX_BOMB = 3;
         bomberStatus = BomberStatus.ALIVE;
-        setSprite(Sprite.player_right.getFxImage());
+        setImg(Sprite.player_right);
     }
 
     public Bomber(int x, int y, CollisionManager collisionManager) {
@@ -155,24 +155,24 @@ public class Bomber extends MovingObject {
         else {
             switch (latestDirectKey) {
                 case LEFT:
-                    setSprite(Sprite.player_left.getFxImage());
+                    setImg(Sprite.player_left);
                     break;
                 case RIGHT:
-                    setSprite(Sprite.player_right.getFxImage());
+                    setImg(Sprite.player_right);
                     break;
                 case UP:
-                    setSprite(Sprite.player_up.getFxImage());
+                    setImg(Sprite.player_up);
                     break;
                 case DOWN:
-                    setSprite(Sprite.player_down.getFxImage());
+                    setImg(Sprite.player_down);
                     break;
             }
         }
         if (goDown) {
-            setSprite(Sprite.movingSprite(
+            setImg(Sprite.movingSprite(
                     Sprite.player_down,
                     Sprite.player_down_1,
-                    Sprite.player_down_2, indexOfSprite, 20).getFxImage()
+                    Sprite.player_down_2, indexOfSprite, 20)
             );
             if (!collisionManager.collide(x, y, "DOWN", SPEED)) y += SPEED;
             else {
@@ -188,10 +188,10 @@ public class Bomber extends MovingObject {
             }
         }
         if (goLeft) {
-            setSprite(Sprite.movingSprite(
+            setImg(Sprite.movingSprite(
                     Sprite.player_left,
                     Sprite.player_left_1,
-                    Sprite.player_left_2, indexOfSprite, 20).getFxImage()
+                    Sprite.player_left_2, indexOfSprite, 20)
             );
             if (!collisionManager.collide(x, y, "LEFT", SPEED)) x -= SPEED;
             else {
@@ -207,10 +207,10 @@ public class Bomber extends MovingObject {
             }
         }
         if (goUp) {
-            setSprite(Sprite.movingSprite(
+            setImg(Sprite.movingSprite(
                     Sprite.player_up,
                     Sprite.player_up_1,
-                    Sprite.player_up_2, indexOfSprite, 20).getFxImage());
+                    Sprite.player_up_2, indexOfSprite, 20));
             if (!collisionManager.collide(x, y, "UP", SPEED)) y -= SPEED;
             else {
                 if (!goDown && !goLeft && !goRight) {
@@ -225,10 +225,10 @@ public class Bomber extends MovingObject {
             }
         }
         if (goRight) {
-            setSprite(Sprite.movingSprite(
+            setImg(Sprite.movingSprite(
                     Sprite.player_right,
                     Sprite.player_right_1,
-                    Sprite.player_right_2, indexOfSprite, 20).getFxImage()
+                    Sprite.player_right_2, indexOfSprite, 20)
             );
             if (!collisionManager.collide(x, y, "RIGHT", SPEED)) {
                 x += SPEED;
@@ -257,13 +257,21 @@ public class Bomber extends MovingObject {
     private void updateItemsList() {
         int Bomber_xPixel = entities.get(LEVEL).get(0).getX();
         int Bomber_yPixel = entities.get(LEVEL).get(0).getY();
-        for (Entity i : itemsList) {
-            if (((Item) i).insideItem_Pixel(Bomber_xPixel + Bomber.WIDTH / 2, Bomber_yPixel + Bomber.HEIGHT / 2)) {
-                audioController.playParallel(AudioController.AudioName.EAT_ITEM, 1);
-                i.update();
-                itemsList.remove(i);
-                break;
-            }
+//        for (Entity i : itemsList) {
+//            if (((Item) i).insideItem_Pixel(Bomber_xPixel + Bomber.WIDTH / 2, Bomber_yPixel + Bomber.HEIGHT / 2)) {
+//                audioController.playParallel(AudioController.AudioName.EAT_ITEM, 1);
+//                i.update();
+//                itemsList.remove(i);
+//                break;
+//            }
+//        }
+        Entity checkItem = mapList.get(LEVEL).getEntityAt(Bomber_xPixel + Bomber.WIDTH / 2, Bomber_yPixel + Bomber.HEIGHT / 2);
+        if(checkItem instanceof Item) {
+            audioController.playParallel(AudioController.AudioName.EAT_ITEM, 1);
+            (checkItem).update();
+            int columnPos = (Bomber_xPixel + Bomber.WIDTH / 2)/Sprite.SCALED_SIZE;
+            int rowPos = (Bomber_yPixel + Bomber.HEIGHT / 2)/Sprite.SCALED_SIZE;
+            mapList.get(LEVEL).replace(rowPos,columnPos , null);
         }
     }
 
@@ -273,7 +281,6 @@ public class Bomber extends MovingObject {
                 System.out.println("WIN");
             } else if (entities.get(LEVEL).size() == 1) {
                 reset();
-                itemsList.clear();
                 bombsList.clear();
                 LEVEL++;
                 gameStatus = GameStatus.WIN_ONE;
@@ -285,9 +292,6 @@ public class Bomber extends MovingObject {
     public void render(GraphicsContext gc) {
         if (bomberStatus == BomberStatus.ALIVE) {
             for (Entity i : bombsList) {
-                i.render(gc);
-            }
-            for (Entity i : itemsList) {
                 i.render(gc);
             }
             super.render(gc);
@@ -309,8 +313,8 @@ public class Bomber extends MovingObject {
         }
         if (bomberStatus == BomberStatus.DEAD) {
             indexOfSprite++;
-            setSprite(Sprite.movingSprite(Sprite.player_dead1, Sprite.player_dead2,
-                    Sprite.player_dead3, indexOfSprite, 20).getFxImage());
+            setImg(Sprite.movingSprite(Sprite.player_dead1, Sprite.player_dead2,
+                    Sprite.player_dead3, indexOfSprite, 20));
             if (indexOfSprite == 20) {
                 numOfLives--;
                 if (numOfLives > 0) {
@@ -318,7 +322,6 @@ public class Bomber extends MovingObject {
                 } else
                     GameController.gameStatus = GameStatus.GAME_LOSE;
             }
-            itemsList.clear();
         }
     }
 }

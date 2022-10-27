@@ -49,10 +49,10 @@ public class Oneal extends Enemy {
             if (x > dst.getxTilePos() * Sprite.SCALED_SIZE) {
                 if (!collisionManager.collide(x, y, "LEFT", SPEED)
                         && !collisionManager.collidebBomb(x, y, "LEFT", SPEED)) {
-                    setSprite(Sprite.movingSprite(
+                    setImg(Sprite.movingSprite(
                             leftSprites[0],
                             leftSprites[1],
-                            leftSprites[2], indexOfSprite, 20).getFxImage());
+                            leftSprites[2], indexOfSprite, 20));
                     x -= SPEED;
                 }
             }
@@ -62,10 +62,10 @@ public class Oneal extends Enemy {
             if (x < dst.getxTilePos() * Sprite.SCALED_SIZE) {
                 if (!collisionManager.collide(x, y, "RIGHT", SPEED)
                         && !collisionManager.collidebBomb(x, y, "RIGHT", SPEED)) {
-                    setSprite(Sprite.movingSprite(
+                    setImg(Sprite.movingSprite(
                             rightSprites[0],
                             rightSprites[1],
-                            rightSprites[2], indexOfSprite, 20).getFxImage());
+                            rightSprites[2], indexOfSprite, 20));
                     x += SPEED;
                 }
             }
@@ -76,10 +76,10 @@ public class Oneal extends Enemy {
             if (y > dst.getyTilePos() * Sprite.SCALED_SIZE) {
                 if (!collisionManager.collide(x, y, "UP", SPEED)
                         && !collisionManager.collidebBomb(x, y, "UP", SPEED)) {
-                    setSprite(Sprite.movingSprite(
+                    setImg(Sprite.movingSprite(
                             rightSprites[0],
                             rightSprites[1],
-                            rightSprites[2], indexOfSprite, 20).getFxImage());
+                            rightSprites[2], indexOfSprite, 20));
                     y -= SPEED;
                 }
             }
@@ -90,10 +90,10 @@ public class Oneal extends Enemy {
             if (y < dst.getyTilePos() * Sprite.SCALED_SIZE) {
                 if (!collisionManager.collide(x, y, "DOWN", SPEED)
                         && !collisionManager.collidebBomb(x, y, "DOWN", SPEED)) {
-                    setSprite(Sprite.movingSprite(
+                    setImg(Sprite.movingSprite(
                             leftSprites[0],
                             leftSprites[1],
-                            leftSprites[2], indexOfSprite, 20).getFxImage());
+                            leftSprites[2], indexOfSprite, 20));
                     y += SPEED;
                 }
             }

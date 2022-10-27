@@ -1,8 +1,7 @@
 package uet.oop.bomberman;
 
-import javafx.animation.*;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.animation.AnimationTimer;
+import javafx.animation.Timeline;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -10,7 +9,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import javafx.util.Pair;
 import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.entities.Entity;
@@ -24,8 +22,8 @@ import uet.oop.bomberman.scenemaster.SceneController;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+
+import static uet.oop.bomberman.GameController.GameStatus.GAME_PLAYING;
 
 public class GameController {
     /**
@@ -101,8 +99,6 @@ public class GameController {
      */
     public static List<List<Entity>> entities = new ArrayList<>();
     public static List<Entity> bombsList = new LinkedList<>();
-    public static List<Entity> itemsList = new ArrayList<>();
-
     /**
      * Audio controller.
      */
@@ -114,38 +110,6 @@ public class GameController {
     public static final int MAX_TIME = 180 * 1000; // 180 seconds to millis.
     private Timeline timeline;
 
-    public void runTimer() {
-        timeline = new Timeline();
-        timeline.stop();
-        IntegerProperty timeSeconds =
-                new SimpleIntegerProperty(MAX_TIME);
-        playingController.getProgressBar().progressProperty().bind(
-                timeSeconds.divide(MAX_TIME * 1.0).subtract(1).multiply(-1));
-
-        timeSeconds.set((MAX_TIME + 1));
-
-        timeline.getKeyFrames().add(
-                new KeyFrame(Duration.millis(MAX_TIME),
-                        new KeyValue(timeSeconds, 0))
-        );
-        timeline.playFromStart();
-
-        AtomicInteger timerCounter = new AtomicInteger(3);
-        Timeline nextLevelTimeline = new Timeline();
-        nextLevelTimeline.stop();
-        KeyFrame kf = new KeyFrame(Duration.seconds(0),
-                event -> {
-                    System.out.println(timerCounter.get());
-                    timerCounter.decrementAndGet();
-                    if (timerCounter.get() < 0) {
-                        playingController.getNextLevelBox().setVisible(false);
-                        nextLevelTimeline.stop();
-                    }
-                });
-        nextLevelTimeline.getKeyFrames().addAll(kf, new KeyFrame(Duration.seconds(1)));
-        nextLevelTimeline.setCycleCount(Animation.INDEFINITE);
-        nextLevelTimeline.playFromStart();
-    }
 
     /**
      * Run game engine.
@@ -162,19 +126,6 @@ public class GameController {
 
         lobbyController = (fxmlLoader1).getController();
         playingController = (fxmlLoader2).getController();
-
-        playingScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                GameController.entities.get(GameController.LEVEL).get(0).saveKeyEvent(event.getCode(), true);
-            }
-        });
-        playingScene.setOnKeyReleased(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                GameController.entities.get(GameController.LEVEL).get(0).saveKeyEvent(event.getCode(), false);
-            }
-        });
 
         lobbyController.setPlayingScene(playingScene);
         playingController.setLobbyScene(lobbyScene);
@@ -261,21 +212,15 @@ public class GameController {
      * Update all specs of game, set scenes.
      */
     public void update() {
+        playingController.updateStatus();
         switch (gameStatus) {
             case GAME_LOBBY:
                 resetAllLevel();
                 break;
             case GAME_START:
-                runTimer();
-                playingController.getNextLevelBox().setVisible(true);
-                playingController.updateStatus();
-                gameStatus = GameStatus.GAME_PLAYING;
+                gameStatus = GAME_PLAYING;
                 break;
             case GAME_PLAYING:
-                if (timeline.getStatus() == Animation.Status.STOPPED) {
-                    gameStatus = GameStatus.GAME_LOSE;
-                }
-                playingController.updateStatus();
                 isReset = false;
                 audioController.playAlone(AudioController.AudioName.PLAYING, -1);
                 entities.get(LEVEL).forEach(Entity::update);
@@ -321,7 +266,7 @@ public class GameController {
     private void resetCurrentLevel() {
         int numOfLives = ((Bomber) entities.get(LEVEL).get(0)).getNumOfLives();
         mapList.get(LEVEL).reset();
-        runTimer();
+
         ((Bomber) entities.get(LEVEL).get(0)).setNumOfLives(numOfLives);
     }
 

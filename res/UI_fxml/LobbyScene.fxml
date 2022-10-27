@@ -29,9 +29,9 @@
             <Image url="@../lobbyTexture/4.png" />
          </image>
       </ImageView>
-      <VBox alignment="CENTER" layoutX="469.0" layoutY="65.0" prefHeight="269.0" prefWidth="205.0" AnchorPane.rightAnchor="125.66666666666663">
+      <VBox alignment="CENTER" layoutX="468.0" layoutY="51.0" prefHeight="269.0" prefWidth="205.0" spacing="10.0" AnchorPane.rightAnchor="126.66666666666663">
          <children>
-            <Button fx:id="playButton" focusTraversable="false" mnemonicParsing="false" onMouseClicked="#clickPlayButton" onMouseEntered="#setEffect" onMouseExited="#removeEffect" onMousePressed="#pressButton" prefHeight="56.0" prefWidth="144.0" style="-fx-background-color: transparent;">
+            <Button fx:id="playButton" focusTraversable="false" mnemonicParsing="false" onMouseClicked="#clickPlayButton" onMouseEntered="#enterButton" onMouseExited="#exitButton" onMousePressed="#pressButton" prefHeight="56.0" prefWidth="144.0" style="-fx-background-color: transparent;">
                <graphic>
                   <ImageView fitHeight="61.0" fitWidth="147.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -40,7 +40,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="audioButton" focusTraversable="false" mnemonicParsing="false" onMouseClicked="#clickAudioButton" onMouseEntered="#setEffect" onMouseExited="#removeEffect" onMousePressed="#pressButton" style="-fx-background-color: transparent;" textFill="TRANSPARENT">
+            <Button fx:id="audioButton" focusTraversable="false" mnemonicParsing="false" onMouseClicked="#clickAudioButton" onMouseEntered="#enterButton" onMouseExited="#exitButton" onMousePressed="#pressButton" style="-fx-background-color: transparent;" textFill="TRANSPARENT">
                <font>
                   <Font size="1.0" />
                </font>
@@ -52,7 +52,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="quitButton" focusTraversable="false" mnemonicParsing="false" onMouseClicked="#clickQuitButton" onMouseEntered="#setEffect" onMouseExited="#removeEffect" onMousePressed="#pressButton" onMouseReleased="#releaseButton" style="-fx-background-color: transparent;">
+            <Button fx:id="quitButton" focusTraversable="false" mnemonicParsing="false" onMouseClicked="#clickQuitButton" onMouseEntered="#enterButton" onMouseExited="#exitButton" onMousePressed="#pressButton" onMouseReleased="#releaseButton" style="-fx-background-color: transparent;">
                <graphic>
                   <ImageView fitHeight="60.0" fitWidth="161.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -61,7 +61,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="rankButton" focusTraversable="false" mnemonicParsing="false" onMouseDragged="#clickRankButton" onMouseEntered="#setEffect" onMouseExited="#removeEffect" onMousePressed="#pressButton" style="-fx-background-color: transparent;">
+            <Button fx:id="rankButton" focusTraversable="false" mnemonicParsing="false" onMouseDragged="#clickRankButton" onMouseEntered="#enterButton" onMouseExited="#exitButton" onMousePressed="#pressButton" style="-fx-background-color: transparent;">
                <graphic>
                   <ImageView fitHeight="63.0" fitWidth="107.0" pickOnBounds="true" preserveRatio="true">
                      <image>
