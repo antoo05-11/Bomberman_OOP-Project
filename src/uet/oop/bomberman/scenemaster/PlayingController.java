@@ -24,6 +24,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.GameController;
+import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.entities.movingobject.Bomber;
 
 import java.net.URL;
@@ -31,8 +32,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static uet.oop.bomberman.GameController.GameStatus.GAME_PAUSE;
-import static uet.oop.bomberman.GameController.GameStatus.GAME_PLAYING;
+import static uet.oop.bomberman.GameController.GameStatus.*;
 
 public class PlayingController extends SceneController implements Initializable {
     @FXML
@@ -62,6 +62,7 @@ public class PlayingController extends SceneController implements Initializable 
     Text maxBombs;
     Timeline timeline;
 
+
     @FXML
     private HBox livesImg;
 
@@ -76,7 +77,7 @@ public class PlayingController extends SceneController implements Initializable 
             levelText.setText("LEVEL " + gameController.LEVEL);
 
             // Set status of mute line for audio button.
-            muteLine.setVisible(GameController.audioController.isMuted());
+            muteLine.setVisible(gameController.audioController.isMuted());
 
             //Click pause button
             pauseButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -97,27 +98,35 @@ public class PlayingController extends SceneController implements Initializable 
                     root.getChildren().get(0).setDisable(false);
                     continueButton.setVisible(false);
                     continueButton.setDisable(true);
-                    GameController.gameStatus = GAME_PLAYING;
+                    GameController.gameStatus = GAME_UNPAUSE;
                 }
             });
+
             // Click audio button.
             audioButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                    GameController.audioController.setMuted(!GameController.audioController.isMuted());
-                    muteLine.setVisible(GameController.audioController.isMuted());
+                    gameController.audioController.setMuted(!gameController.audioController.isMuted());
+
+                    muteLine.setVisible(gameController.audioController.isMuted());
+                }
+            });
+            quitButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    GameController.gameStatus = GAME_LOSE;
                 }
             });
             playingBox.getChildren().get(1).setOnKeyPressed(new EventHandler<KeyEvent>() {
                 @Override
                 public void handle(KeyEvent event) {
-                    ((Bomber)GameController.entities.get(GameController.LEVEL).get(0)).saveKeyEvent(event.getCode(), true);
+                    ((Bomber) GameController.entities.get(GameController.LEVEL).get(0)).saveKeyEvent(event.getCode(), true);
                 }
             });
             playingBox.getChildren().get(1).setOnKeyReleased(new EventHandler<KeyEvent>() {
                 @Override
                 public void handle(KeyEvent event) {
-                    ((Bomber)GameController.entities.get(GameController.LEVEL).get(0)).saveKeyEvent(event.getCode(), false);
+                    ((Bomber) GameController.entities.get(GameController.LEVEL).get(0)).saveKeyEvent(event.getCode(), false);
                 }
             });
             playingBox.getChildren().get(1).setFocusTraversable(true);
@@ -125,14 +134,13 @@ public class PlayingController extends SceneController implements Initializable 
     }
 
     @FXML
-    public void clickQuitButton(MouseEvent event) {
+    public void clickQuitButton() {
         GameController.gameStatus = GAME_PAUSE;
         Alert alert = new Alert(Alert.AlertType.WARNING, "Do you want to quit?", ButtonType.YES, ButtonType.NO);
         alert.setHeaderText(null);
         Optional<ButtonType> buttonType = alert.showAndWait();
         if (buttonType.get() == ButtonType.YES) {
-            GameController.gameStatus = GameController.GameStatus.GAME_LOBBY;
-            stage.setScene(lobbyScene);
+            GameController.gameStatus = GAME_LOSE;
         } else GameController.gameStatus = GAME_PLAYING;
     }
 
@@ -143,7 +151,7 @@ public class PlayingController extends SceneController implements Initializable 
         if (timeline != null) timeline.stop();
         timeline = new Timeline(
                 new KeyFrame(Duration.ZERO, new KeyValue(progressBar.progressProperty(), 0)),
-                new KeyFrame(Duration.seconds(180), e -> {
+                new KeyFrame(Duration.seconds(20), e -> {
                     timeline.pause();
                 }, new KeyValue(progressBar.progressProperty(), 1))
         );
@@ -155,34 +163,37 @@ public class PlayingController extends SceneController implements Initializable 
      */
     public void updateStatus() {
         switch (gameController.gameStatus) {
-            case GAME_START:
-                setUpTimeline();
-                nextLevelBox.setVisible(true);
-                playingBox.setDisable(true);
-                stageText.setText("STAGE " + (GameController.LEVEL + 1)); //Appear when start new level.
 
-                AtomicInteger timerCounter = new AtomicInteger(2);
-                Timeline nextLevelTimeline = new Timeline();
-                nextLevelTimeline.stop();
-                KeyFrame kf = new KeyFrame(Duration.seconds(0),
-                        event -> {
-                            timerCounter.decrementAndGet();
-                            if (timerCounter.get() <= 0) {
-                                nextLevelBox.setVisible(false);
-                                playingBox.setDisable(false);
-                                timeline.play();
-                                nextLevelTimeline.stop();
-                            }
-                        });
-                nextLevelTimeline.getKeyFrames().addAll(kf, new KeyFrame(Duration.seconds(1)));
-                nextLevelTimeline.setCycleCount(Animation.INDEFINITE);
-                nextLevelTimeline.play();
+            case GAME_START:
+                if (timeline == null) {
+                    setUpTimeline();
+                    nextLevelBox.setVisible(true);
+                    playingBox.setDisable(true);
+                    stageText.setText("STAGE " + (GameController.LEVEL + 1)); //Appear when start new level.
+
+                    AtomicInteger timerCounter = new AtomicInteger(3);
+                    Timeline nextLevelTimeline = new Timeline();
+                    nextLevelTimeline.stop();
+                    nextLevelTimeline.getKeyFrames().addAll(new KeyFrame(Duration.seconds(0),
+                            event -> {
+                                timerCounter.decrementAndGet();
+                                if (timerCounter.get() <= 0) {
+                                    nextLevelBox.setVisible(false);
+                                    playingBox.setDisable(false);
+                                    timeline.playFromStart();
+                                    GameController.gameStatus = GAME_PLAYING;
+                                    nextLevelTimeline.stop();
+                                }
+                            }), new KeyFrame(Duration.seconds(1)));
+                    nextLevelTimeline.setCycleCount(Animation.INDEFINITE);
+                    nextLevelTimeline.play();
+                }
                 break;
             case GAME_PLAYING:
                 if (timeline.getStatus() == Timeline.Status.PAUSED) {
+                    timeline = null;
                     GameController.gameStatus = GameController.GameStatus.GAME_LOSE;
                 } else if (timeline.getStatus() == Timeline.Status.RUNNING) {
-
                     levelText.setText("STAGE " + (GameController.LEVEL + 1)); //Appear in status bar.
                     maxBombs.setText(Integer.toString(gameController.getMaxBombs()));
                     for (int i = 0; i < gameController.getNumOfLives(); i++)
@@ -192,15 +203,30 @@ public class PlayingController extends SceneController implements Initializable 
                     }
                 }
                 break;
-            case LOAD_CURRENT_LEVEL:
-                setUpTimeline();
+            case GAME_PAUSE:
+                timeline.pause();
+                break;
+            case GAME_UNPAUSE:
                 timeline.play();
+                break;
+            case LOAD_CURRENT_LEVEL:
+                timeline.playFromStart();
                 playingBox.setDisable(false);
+                break;
+            case GAME_LOSE:
+                gameController.resetAllLevel();
+                stage.setScene(lobbyScene);
+                timeline = null;
+                gameController.gameStatus = GameController.GameStatus.GAME_LOBBY;
                 break;
         }
     }
 
     public void setLobbyScene(Scene lobbyScene) {
         this.lobbyScene = lobbyScene;
+    }
+
+    public void resetTimeline() {
+        timeline = null;
     }
 }

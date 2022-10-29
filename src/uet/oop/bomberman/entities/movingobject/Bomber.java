@@ -282,7 +282,7 @@ public class Bomber extends MovingObject {
             } else if (entities.get(LEVEL).size() == 1) {
                 reset();
                 bombsList.clear();
-                LEVEL++;
+
                 gameStatus = GameStatus.WIN_ONE;
             }
         }

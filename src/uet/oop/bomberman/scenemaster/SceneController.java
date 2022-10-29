@@ -23,26 +23,29 @@ public abstract class SceneController {
         this.gameController = gameController;
         stage = gameController.getStage();
     }
+
     @FXML
     public void pressButton(MouseEvent event) {
-        GameController.audioController.playParallel(AudioController.AudioName.CLICK_BUTTON, 1);
-
+        gameController.audioController.playParallel(AudioController.AudioName.CLICK_BUTTON, 1);
     }
+
     @FXML
     public void releaseButton(MouseEvent event) {
 
     }
+
     @FXML
     public void enterButton(MouseEvent event) {
         Effect shadow = new Glow();
         ((Button) event.getSource()).setEffect(shadow);
-        ((Button)event.getSource()).getGraphic().setScaleX(1.05);
-        ((Button)event.getSource()).getGraphic().setScaleY(1.05);
+        ((Button) event.getSource()).getGraphic().setScaleX(1.05);
+        ((Button) event.getSource()).getGraphic().setScaleY(1.05);
     }
+
     @FXML
     public void exitButton(MouseEvent event) {
         ((Button) event.getSource()).setEffect(null);
-        ((Button)event.getSource()).getGraphic().setScaleX(1/1.05);
-        ((Button)event.getSource()).getGraphic().setScaleY(1/1.05);
+        ((Button) event.getSource()).getGraphic().setScaleX(1 / 1.05);
+        ((Button) event.getSource()).getGraphic().setScaleY(1 / 1.05);
     }
 }

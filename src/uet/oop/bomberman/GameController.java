@@ -2,12 +2,10 @@ package uet.oop.bomberman;
 
 import javafx.animation.AnimationTimer;
 import javafx.animation.Timeline;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import uet.oop.bomberman.audiomaster.AudioController;
@@ -37,7 +35,8 @@ public class GameController {
         WIN_ONE,
         WIN_ALL,
         GAME_LOSE,
-        GAME_PAUSE
+        GAME_PAUSE,
+        GAME_UNPAUSE
     }
 
     public static GameStatus gameStatus = GameStatus.GAME_LOBBY;
@@ -213,16 +212,15 @@ public class GameController {
      */
     public void update() {
         playingController.updateStatus();
+        audioController.run();
         switch (gameStatus) {
             case GAME_LOBBY:
                 resetAllLevel();
                 break;
             case GAME_START:
-                gameStatus = GAME_PLAYING;
                 break;
             case GAME_PLAYING:
                 isReset = false;
-                audioController.playAlone(AudioController.AudioName.PLAYING, -1);
                 entities.get(LEVEL).forEach(Entity::update);
                 //Update all list.
                 updateMapCamera();
@@ -232,19 +230,20 @@ public class GameController {
                 break;
             case LOAD_CURRENT_LEVEL:
                 resetCurrentLevel();
+                //playingController.resetTimeline();
                 gameStatus = GameStatus.GAME_PLAYING;
                 break;
             case WIN_ONE:
+                LEVEL++;
                 if (LEVEL <= MAX_LEVEL) {
                     gameStatus = GameStatus.GAME_START;
+                    playingController.resetTimeline();
                 }
                 break;
             case WIN_ALL:
                 break;
             case GAME_LOSE:
-                resetAllLevel();
-                stage.setScene(lobbyScene);
-                gameStatus = GameStatus.GAME_LOBBY;
+
                 break;
             case GAME_PAUSE:
                 break;
@@ -266,17 +265,14 @@ public class GameController {
     private void resetCurrentLevel() {
         int numOfLives = ((Bomber) entities.get(LEVEL).get(0)).getNumOfLives();
         mapList.get(LEVEL).reset();
-
         ((Bomber) entities.get(LEVEL).get(0)).setNumOfLives(numOfLives);
     }
 
-    private void resetAllLevel() {
+    public void resetAllLevel() {
         for (int i = 0; i <= LEVEL; i++) {
             mapList.get(LEVEL).reset(); //Reset played map in map list.
         }
         LEVEL = 0;
-        //Only when resetting(go to lobby scene), lobby music is started
-        audioController.playAlone(AudioController.AudioName.LOBBY, -1);
     }
 
     public int getMaxBombs() {
