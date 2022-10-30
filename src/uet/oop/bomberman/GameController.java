@@ -11,6 +11,7 @@ import javafx.util.Pair;
 import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.movingobject.Bomber;
+import uet.oop.bomberman.entities.movingobject.MovingObject;
 import uet.oop.bomberman.entities.movingobject.enemies.Enemy;
 import uet.oop.bomberman.entities.movingobject.enemies.Oneal;
 import uet.oop.bomberman.map_graph.Map;
@@ -37,6 +38,14 @@ public class GameController {
         GAME_LOSE,
         GAME_PAUSE,
         GAME_UNPAUSE
+    }
+
+    private int levelPoint = 0;
+    private int gamePoint = 0;
+
+    public void plusPoint(int rewardPoint) {
+        gamePoint += rewardPoint;
+        levelPoint += rewardPoint;
     }
 
     public static GameStatus gameStatus = GameStatus.GAME_LOBBY;
@@ -95,7 +104,6 @@ public class GameController {
      * Game characters, bombs and items.
      */
     public static List<List<Entity>> entities = new ArrayList<>();
-    public static List<Entity> bombsList = new LinkedList<>();
     /**
      * Audio controller.
      */
@@ -142,34 +150,12 @@ public class GameController {
         for (int i = entities.get(LEVEL).size() - 1; i >= 0; i--) {
             //Remove enemies died by bomb out of list.
             if (entities.get(LEVEL).get(i) instanceof Enemy) {
-                if (((Enemy) entities.get(LEVEL).get(i)).getEnemyStatus() == Enemy.EnemyStatus.DEAD) {
-                    //If an oneal is killed, set all other oneal status to NOT_CONNECTED.
-                    if (entities.get(LEVEL).get(i) instanceof Oneal) {
-                        for (Entity k : entities.get(LEVEL)) {
-                            if (k instanceof Oneal) ((Oneal) k).setOnealStatus(Oneal.OnealStatus.NOT_CONNECTED);
-                        }
-                    }
+                if (((MovingObject) entities.get(LEVEL).get(i)).getObjectStatus() == MovingObject.MovingObjectStatus.DEAD) {
+                    plusPoint(((Enemy) entities.get(LEVEL).get(i)).getRewardPoint());
                     entities.get(LEVEL).remove(i);
                 }
             }
         }
-
-        //This priority queue save (index of vertice, distance to bomber) and then get index of min distance.
-        Queue<Pair> dis = new PriorityQueue<>(Comparator.comparingDouble(o -> (int) o.getValue()));
-        for (int i = 1; i < entities.get(LEVEL).size(); i++) {
-            if (entities.get(LEVEL).get(i) instanceof Oneal) {
-                if (((Oneal) entities.get(LEVEL).get(i)).getOnealStatus() == Oneal.OnealStatus.CONNECTED) {
-                    dis.add(new Pair(i, ((Oneal) entities.get(LEVEL).get(i)).getDistanceToBomber()));
-                }
-            }
-        }
-        //If existing an oneal chasing bomber, all other oneals will run random move and has INVALID status.
-        if (!dis.isEmpty())
-            for (Entity j : entities.get(LEVEL)) {
-                if (!j.equals(entities.get(LEVEL).get((Integer) dis.peek().getKey())) && j instanceof Oneal) {
-                    ((Oneal) j).setOnealStatus(Oneal.OnealStatus.INVALID);
-                }
-            }
     }
 
     /**
@@ -222,24 +208,32 @@ public class GameController {
         }
     }
 
+    public void resetLevelPoint() {
+        levelPoint = 0;
+    }
+
     public void resetCurrentLevel() {
+        gamePoint -= levelPoint;
+        levelPoint = 0;
         int numOfLives = ((Bomber) entities.get(LEVEL).get(0)).getNumOfLives();
         mapList.get(LEVEL).reset();
         ((Bomber) entities.get(LEVEL).get(0)).setNumOfLives(numOfLives);
     }
 
     public void resetAllLevel() {
+        gamePoint = 0;
+        levelPoint = 0;
         for (int i = 0; i <= LEVEL; i++) {
-            mapList.get(LEVEL).reset(); //Reset played map in map list.
+            mapList.get(LEVEL).reset();
         }
         LEVEL = 0;
     }
 
-    public int getMaxBombs() {
-        return Bomber.MAX_BOMB;
-    }
-
     public int getNumOfLives() {
         return ((Bomber) entities.get(LEVEL).get(0)).getNumOfLives();
+    }
+
+    public int getGamePoint() {
+        return gamePoint;
     }
 }

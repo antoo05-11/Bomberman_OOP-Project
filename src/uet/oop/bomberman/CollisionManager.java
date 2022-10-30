@@ -2,12 +2,12 @@ package uet.oop.bomberman;
 
 import uet.oop.bomberman.entities.CannotBePassedThrough;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.stillobject.Wall;
+import uet.oop.bomberman.entities.movingobject.Bomber;
+import uet.oop.bomberman.entities.movingobject.MovingObject;
+import uet.oop.bomberman.entities.movingobject.enemies.Enemy;
 import uet.oop.bomberman.entities.stillobject.bomb.Bomb;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.map_graph.Map;
-
-import static uet.oop.bomberman.GameController.bombsList;
 
 public class CollisionManager {
     private Map map;
@@ -59,8 +59,8 @@ public class CollisionManager {
                 || downLeft instanceof CannotBePassedThrough || downRight instanceof CannotBePassedThrough;
     }
 
-    public boolean collidebBomb(int x, int y, String dir, int OBJECT_SPEED) {
-        int curX = x, curY = y;
+    public boolean collideBomb(Enemy enemy, String dir, int OBJECT_SPEED) {
+        int curX = enemy.getX(), curY = enemy.getY();
         switch (dir) {
             case "UP":
                 curY -= OBJECT_SPEED;
@@ -80,13 +80,16 @@ public class CollisionManager {
         int widthTile = (curX + CENTER_OBJECT_WIDTH) / Sprite.SCALED_SIZE;
         int heightTile = (curY + CENTER_OBJECT_WIDTH) / Sprite.SCALED_SIZE;
 
-        for (Entity b : bombsList) {
+        for (Entity b : map.getBombsList()) {
             int xBomb = (b.getX() + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE;
             int yBomb = (b.getY() + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE;
             if ((widthTile == xBomb && yTile == yBomb)
                     || (xTile == xBomb && heightTile == yBomb)
                     || (widthTile == xBomb && heightTile == yBomb)) {
-                return true;
+                {
+                    enemy.randomSpeed(1, 3);
+                    return true;
+                }
             }
         }
         return false;

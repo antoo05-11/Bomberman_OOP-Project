@@ -3,21 +3,15 @@ package uet.oop.bomberman.entities.movingobject.enemies;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.CollisionManager;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.map_graph.Graph;
 import uet.oop.bomberman.map_graph.Vertice;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.List;
 
-public class Oneal extends Enemy {
+public class Oneal extends Enemy implements HardEnemy {
 
-    OnealStatus onealStatus;
-
-    public enum OnealStatus {
-        CONNECTED,
-        NOT_CONNECTED,
-        INVALID
-    }
 
     private List<Vertice> path;
     private Entity bomber;
@@ -27,16 +21,7 @@ public class Oneal extends Enemy {
      */
     public Oneal(int xUnit, int yUnit, Image img, CollisionManager collisionManager, Entity bomber) {
         super(xUnit, yUnit, img, collisionManager);
-        onealStatus = OnealStatus.NOT_CONNECTED;
         this.bomber = bomber;
-    }
-
-    public void setOnealStatus(OnealStatus onealStatus) {
-        this.onealStatus = onealStatus;
-    }
-
-    public OnealStatus getOnealStatus() {
-        return onealStatus;
     }
 
     public void moveAlongPath() {
@@ -48,7 +33,7 @@ public class Oneal extends Enemy {
         if (src.getxTilePos() >= dst.getxTilePos()) {
             if (x > dst.getxTilePos() * Sprite.SCALED_SIZE) {
                 if (!collisionManager.collide(x, y, "LEFT", SPEED)
-                        && !collisionManager.collidebBomb(x, y, "LEFT", SPEED)) {
+                        && !collisionManager.collideBomb(this, "LEFT", SPEED)) {
                     setImg(Sprite.movingSprite(
                             leftSprites[0],
                             leftSprites[1],
@@ -61,7 +46,7 @@ public class Oneal extends Enemy {
         if (src.getxTilePos() <= dst.getxTilePos()) {
             if (x < dst.getxTilePos() * Sprite.SCALED_SIZE) {
                 if (!collisionManager.collide(x, y, "RIGHT", SPEED)
-                        && !collisionManager.collidebBomb(x, y, "RIGHT", SPEED)) {
+                        && !collisionManager.collideBomb(this, "RIGHT", SPEED)) {
                     setImg(Sprite.movingSprite(
                             rightSprites[0],
                             rightSprites[1],
@@ -75,7 +60,7 @@ public class Oneal extends Enemy {
         if (src.getyTilePos() >= dst.getyTilePos()) {
             if (y > dst.getyTilePos() * Sprite.SCALED_SIZE) {
                 if (!collisionManager.collide(x, y, "UP", SPEED)
-                        && !collisionManager.collidebBomb(x, y, "UP", SPEED)) {
+                        && !collisionManager.collideBomb(this, "UP", SPEED)) {
                     setImg(Sprite.movingSprite(
                             rightSprites[0],
                             rightSprites[1],
@@ -89,7 +74,7 @@ public class Oneal extends Enemy {
         if (src.getyTilePos() <= dst.getyTilePos()) {
             if (y < dst.getyTilePos() * Sprite.SCALED_SIZE) {
                 if (!collisionManager.collide(x, y, "DOWN", SPEED)
-                        && !collisionManager.collidebBomb(x, y, "DOWN", SPEED)) {
+                        && !collisionManager.collideBomb(this, "DOWN", SPEED)) {
                     setImg(Sprite.movingSprite(
                             leftSprites[0],
                             leftSprites[1],
@@ -103,19 +88,11 @@ public class Oneal extends Enemy {
     public void move() {
         int onealIndex = Graph.getVerticeIndex(x + Oneal.WIDTH / 2, y + Oneal.HEIGHT / 2);
         int bomberIndex = Graph.getVerticeIndex(bomber.getX(), bomber.getY());
-
-        if (onealStatus == OnealStatus.NOT_CONNECTED) {
-            path = collisionManager.getMap().getGraph().breathFirstSearch(onealIndex, bomberIndex);
-            if (path != null) onealStatus = OnealStatus.CONNECTED;
-        }
-
-        if (onealStatus != OnealStatus.CONNECTED) {
-            randomMoving(); // If no connection to bomber then random move or has other oneal chase bomber.
+        path = collisionManager.getMap().getGraph().breathFirstSearch(onealIndex, bomberIndex);
+        if (path != null) {
+            moveAlongPath();
         } else {
-            path = collisionManager.getMap().getGraph().breathFirstSearch(onealIndex, bomberIndex);
-            if (path != null) {
-                moveAlongPath();
-            }
+            randomMoving();
         }
 
     }

@@ -10,6 +10,7 @@ import uet.oop.bomberman.entities.movingobject.enemies.Doll;
 import uet.oop.bomberman.entities.movingobject.enemies.Enemy;
 import uet.oop.bomberman.entities.movingobject.enemies.Oneal;
 import uet.oop.bomberman.entities.stillobject.Portal;
+import uet.oop.bomberman.entities.stillobject.bomb.Bomb;
 import uet.oop.bomberman.entities.stillobject.item.BombItem;
 import uet.oop.bomberman.entities.stillobject.item.FlameItem;
 import uet.oop.bomberman.entities.stillobject.item.SpeedItem;
@@ -23,10 +24,7 @@ import uet.oop.bomberman.map_graph.Vertice;
 import javax.sound.sampled.Line;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 import static uet.oop.bomberman.BombermanGame.HEIGHT;
 import static uet.oop.bomberman.BombermanGame.WIDTH;
@@ -47,7 +45,9 @@ public class Map {
     private Entity[][] mapInfo;
     int LEVEL;
     private Graph graph;
-    protected Entity[][] grassList = new Entity[HEIGHT][WIDTH];
+    protected Entity[][] grassList;
+    protected Entity[][] bombsArr = new Entity[HEIGHT][WIDTH];
+    protected List<Entity> bombsList;
     protected int[][] listItem = new int[HEIGHT][WIDTH];
     protected int[][] listPortal = new int[HEIGHT][WIDTH];
 
@@ -55,6 +55,10 @@ public class Map {
         this.LEVEL = LEVEL;
         readMapFromFile();
         convertMapToGraph();
+    }
+
+    public List<Entity> getBombsList() {
+        return bombsList;
     }
 
     public Graph getGraph() {
@@ -80,7 +84,12 @@ public class Map {
         String[] specs = rowString.split(" "); //Line 1 splits: LEVEL, WIDTH, HEIGHT.
         widthTile = Integer.parseInt(specs[2]);
         heightTile = Integer.parseInt(specs[1]);
+
         mapInfo = new Entity[heightTile][widthTile];
+        grassList = new Entity[heightTile][widthTile];
+        bombsArr = new Entity[heightTile][widthTile];
+        bombsList = new LinkedList<>();
+
         for (int i = 0; i < heightTile; i++) {
             rowString = scanner.nextLine();
             // mapInfo.add(new ArrayList<>());
@@ -153,11 +162,7 @@ public class Map {
                 grassList[i][j].render(gc);
             }
         }
-//        for (int i = 0; i < mapInfo.size(); i++) {
-//            for (int j = 0; j < mapInfo.get(i).size(); j++) {
-//                //mapInfo.get(i).get(j).render(gc);
-//            }
-//        }
+
         for (int i = 0; i < heightTile; i++) {
             for (int j = 0; j < widthTile; j++) {
                 if (mapInfo[i][j] != null) {
@@ -165,10 +170,10 @@ public class Map {
                 }
             }
         }
+        for(Entity i : bombsList) i.render(gc);
     }
 
     public Entity getEntityAt(int x, int y) {
-        //return mapInfo.get(y / Sprite.SCALED_SIZE).get(x / Sprite.SCALED_SIZE);
         return mapInfo[y / Sprite.SCALED_SIZE][x / Sprite.SCALED_SIZE];
     }
 
@@ -185,39 +190,18 @@ public class Map {
      */
     public void reset() {
         GameController.entities.get(LEVEL).clear();
-        GameController.bombsList.clear();
+        bombsArr = null;
+        bombsList = null;
         mapInfo = null;
         readMapFromFile();
         convertMapToGraph();
     }
 
-    /**
-     * Get a random item and replace current position by Grass.
-     */
-    public Entity randomItem(int rowPos, int columnPos) {
-        Entity newItem = null;
-        Random random = new Random();
-        int rand = random.nextInt(3);
-        switch (rand) {
-            case 0:
-                newItem = new SpeedItem(columnPos, rowPos, Sprite.powerup_speed.getFxImage());
-                break;
-            case 1:
-                newItem = new FlameItem(columnPos, rowPos, Sprite.powerup_flames.getFxImage());
-                break;
-            case 2:
-                newItem = new BombItem(columnPos, rowPos, Sprite.powerup_bombs.getFxImage());
-                break;
-        }
-        replace(rowPos, columnPos, new Grass(columnPos, rowPos, Sprite.grass.getFxImage()));
-        return newItem;
-    }
 
     /**
      * Replace any entity by other entity in mapInfo.
      */
     public void replace(int rowPos, int columnPos, Entity insertedObject) {
-        //mapInfo.get(rowPos).set(columnPos, newItem);
         mapInfo[rowPos][columnPos] = insertedObject;
     }
 
@@ -241,7 +225,9 @@ public class Map {
                 int y1 = verticesList.get(i).getyTilePos();
                 int y2 = verticesList.get(j).getyTilePos();
                 if (mapInfo[y1][x1] == null
-                        && mapInfo[y2][x2] == null) {
+                        && mapInfo[y2][x2] == null
+                        && bombsArr[y1][x1] == null
+                        && bombsArr[y2][x2] == null) {
                     if (x1 == x2) {
                         if (y1 == y2 + 1) isAdj = true;
                         else if (y1 == y2 - 1) isAdj = true;
@@ -255,4 +241,26 @@ public class Map {
         }
     }
 
+    public static int MAX_BOMB = 3;
+
+    public void setBomb(int xPixel, int yPixel) {
+        if (bombsList.size() < MAX_BOMB) {
+            int xTile = xPixel / Sprite.SCALED_SIZE;
+            int yTile = yPixel / Sprite.SCALED_SIZE;
+            if (bombsArr[yTile][xTile] == null) {
+                bombsArr[yTile][xTile] = new Bomb(xTile, yTile, Sprite.bomb.getFxImage(), this);
+                bombsList.add(bombsArr[yTile][xTile]);
+                convertMapToGraph();
+            }
+        }
+    }
+    public void updateBombsList() {
+        bombsList.forEach(Entity::update);
+        if (!bombsList.isEmpty())
+            if (((Bomb) bombsList.get(0)).getBombStatus() == Bomb.BombStatus.DISAPPEAR) {
+                bombsArr[bombsList.get(0).getY()/Sprite.SCALED_SIZE][bombsList.get(0).getX()/Sprite.SCALED_SIZE] = null;
+                bombsList.remove(0);
+                convertMapToGraph();
+            }
+    }
 }

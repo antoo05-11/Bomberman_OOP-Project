@@ -27,6 +27,7 @@ import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.movingobject.Bomber;
+import uet.oop.bomberman.map_graph.Map;
 
 import javax.swing.text.html.ImageView;
 import java.net.URL;
@@ -65,10 +66,13 @@ public class PlayingController extends SceneController implements Initializable 
     Text maxBombs;
     @FXML
     VBox winOneImg;
+    @FXML
+            Text pointText;
     Timeline timeline;
     Timeline nextLevelTimeline;
     Timeline victoryTimeline;
     AtomicInteger timerCounter = new AtomicInteger(3);
+    int curGamePoint = 0;
 
     @FXML
     private HBox livesImg;
@@ -82,9 +86,9 @@ public class PlayingController extends SceneController implements Initializable 
             playingBox.getChildren().add(gameController.playingCanvas);
 
             levelText.setText("LEVEL " + LEVEL);
+            pointText.setText(Integer.toString(curGamePoint));
 
             // Set status of mute line for audio button.
-            System.out.println(gameController.audioController.isMuted());
             muteLine.setVisible(gameController.audioController.isMuted());
 
             //Click pause button
@@ -115,8 +119,6 @@ public class PlayingController extends SceneController implements Initializable 
                 @Override
                 public void handle(ActionEvent event) {
                     gameController.audioController.setMuted(!gameController.audioController.isMuted());
-
-
                 }
             });
 
@@ -197,18 +199,24 @@ public class PlayingController extends SceneController implements Initializable 
                 if (nextLevelTimeline.getStatus() == Animation.Status.STOPPED) {
                     nextLevelBox.setVisible(true);
                     playingBox.setDisable(true);
-                    stageText.setText("STAGE " + (LEVEL + 1)); //Appear when start new level.
+                    stageText.setText("STAGE " + (LEVEL + 1));
                     timerCounter.set(3);
                     nextLevelTimeline.playFromStart();
                 }
                 break;
             case GAME_PLAYING:
+                if(curGamePoint < gameController.getGamePoint()) {
+                    pointText.setText(Integer.toString(++curGamePoint));
+                }
+                else if(curGamePoint > gameController.getGamePoint()) {
+                    pointText.setText(Integer.toString(--curGamePoint));
+                }
                 if (timeline.getStatus() == Timeline.Status.STOPPED) {
                     GameController.gameStatus = GAME_LOSE;
                 } else if (timeline.getStatus() == Timeline.Status.RUNNING) {
                     // Update display.
-                    levelText.setText("STAGE " + (LEVEL + 1)); //Appear in status bar.
-                    maxBombs.setText(Integer.toString(gameController.getMaxBombs()));
+                    levelText.setText("STAGE " + (LEVEL + 1));
+                    maxBombs.setText(Integer.toString(Map.MAX_BOMB));
                     muteLine.setVisible(gameController.audioController.isMuted());
                     for (int i = 0; i < gameController.getNumOfLives(); i++)
                         livesImg.getChildren().get(i).setVisible(true);
@@ -218,11 +226,9 @@ public class PlayingController extends SceneController implements Initializable 
 
                     // Update logic game.
                     gameController.entities.get(LEVEL).forEach(Entity::update);
-                    //Update all list.
                     gameController.updateMapCamera();
                     gameController.updateEntitiesList();
-                    //updateBombsList();
-                    //updateItemsList();
+
                 }
                 break;
             case GAME_PAUSE:
@@ -247,12 +253,15 @@ public class PlayingController extends SceneController implements Initializable 
                     victoryTimeline.playFromStart();
                     timeline.stop();
                     winOneImg.setVisible(true);
+                    gameController.resetLevelPoint();
                 }
                 break;
             case GAME_LOSE:
                 gameController.resetAllLevel();
+                curGamePoint = 0;
                 stage.setScene(lobbyScene);
                 gameController.gameStatus = GAME_LOBBY;
+                timeline.stop();
                 break;
         }
     }

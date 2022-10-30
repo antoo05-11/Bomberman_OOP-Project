@@ -14,6 +14,9 @@ import uet.oop.bomberman.entities.movingobject.enemies.Enemy;
 import uet.oop.bomberman.entities.stillobject.item.Item;
 import uet.oop.bomberman.graphics.Sprite;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import static uet.oop.bomberman.GameController.*;
 
 public class Bomber extends MovingObject {
@@ -30,16 +33,15 @@ public class Bomber extends MovingObject {
     /**
      * Bomber status
      */
-    enum BomberStatus {
-        ALIVE,
-        DEAD
-    }
+
 
     int numOfLives = 3;
-    BomberStatus bomberStatus;
+
+
     /**
      * Bomber size
      */
+
     public static final int HEIGHT = Sprite.SCALED_SIZE * 30 / 32;
     public static final int WIDTH = Sprite.SCALED_SIZE * 20 / 32;
     private static final int FIX_SIZE = Sprite.SCALED_SIZE * 11 / 32;
@@ -52,23 +54,19 @@ public class Bomber extends MovingObject {
     public boolean goDown = false;
     private boolean bombed = false;
     private KeyCode latestDirectKey = KeyCode.RIGHT;
+    public List<Entity> bombsList;
 
-    //public List<Entity> bombsList = new LinkedList<>();
 
-    Entity newBomb;
     CollisionManager collisionManager;
 
-    int indexOfSprite = 0;
+
     public static int SPEED = 2;
-    public static int MAX_BOMB = 3;
     public static int BOMB_RADIUS = 1;
-    protected int life = 3;
 
     void reset() {
         SPEED = 3;
         BOMB_RADIUS = 1;
-        MAX_BOMB = 3;
-        bomberStatus = BomberStatus.ALIVE;
+        objectStatus = MovingObjectStatus.ALIVE;
         setImg(Sprite.player_right);
     }
 
@@ -76,7 +74,7 @@ public class Bomber extends MovingObject {
         super(x, y, null);
         reset();
         this.collisionManager = collisionManager;
-        this.life = 3;
+        bombsList = collisionManager.getMap().getBombsList();
     }
 
     public void saveKeyEvent(KeyCode keyCode, boolean isPress) {
@@ -107,48 +105,21 @@ public class Bomber extends MovingObject {
 
     private void updateBomberStatus() {
         /**
-         * Died by bomb.
-         */
-
-        for (Entity i : bombsList) {
-            if (((Bomb) i).insideBombRange_Pixel(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2)
-                    && ((Bomb) i).getBombStatus() == Bomb.BombStatus.EXPLODED) {
-                bomberStatus = BomberStatus.DEAD;
-                indexOfSprite = 0;
-                break;
-            }
-        }
-
-        /**
          * Died because of colliding with oneal and balloom.
          */
         for (int i = 1; i < GameController.entities.get(GameController.LEVEL).size(); i++) {
             if (((Enemy) GameController.entities.get(GameController.LEVEL).get(i)).collideBomber(x, y)) {
-                bomberStatus = BomberStatus.DEAD;
-                indexOfSprite = 0;
+                setObjectStatus(MovingObjectStatus.MORIBUND);
                 break;
             }
         }
     }
 
-
     private void setBomb() {
         if (bombed) {
-            if (bombsList.size() < MAX_BOMB) {
-                newBomb = new Bomb((x + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE,
-                        (y + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE,
-                        Sprite.bomb.getFxImage(), collisionManager.getMap());
-                boolean checkRepeated = false;
-                for (Entity i : bombsList) {
-                    if (i.getX() == newBomb.getX() && i.getY() == newBomb.getY()) {
-                        checkRepeated = true;
-                        break;
-                    }
-                }
-                if (!checkRepeated)
-                    bombsList.add(newBomb);
-                bombed = false;
-            }
+            collisionManager.getMap().setBomb(x + Bomber.WIDTH / 2,
+                    y + Bomber.HEIGHT / 2);
+            bombed = false;
         }
     }
 
@@ -248,25 +219,19 @@ public class Bomber extends MovingObject {
         }
     }
 
-    private void updateBombsList() {
-        bombsList.forEach(Entity::update);
-        if (!bombsList.isEmpty())
-            if (((Bomb) bombsList.get(0)).getBombStatus() == Bomb.BombStatus.DISAPPEAR) {
-                bombsList.remove(0);
-            }
-    }
 
     private void updateItemsList() {
+
         int Bomber_xPixel = entities.get(LEVEL).get(0).getX();
         int Bomber_yPixel = entities.get(LEVEL).get(0).getY();
 
         Entity checkItem = mapList.get(LEVEL).getEntityAt(Bomber_xPixel + Bomber.WIDTH / 2, Bomber_yPixel + Bomber.HEIGHT / 2);
-        if(checkItem instanceof Item) {
+        if (checkItem instanceof Item) {
             audioController.playParallel(AudioController.AudioName.EAT_ITEM, 1);
             (checkItem).update();
-            int columnPos = (Bomber_xPixel + Bomber.WIDTH / 2)/Sprite.SCALED_SIZE;
-            int rowPos = (Bomber_yPixel + Bomber.HEIGHT / 2)/Sprite.SCALED_SIZE;
-            mapList.get(LEVEL).replace(rowPos,columnPos , null);
+            int columnPos = (Bomber_xPixel + Bomber.WIDTH / 2) / Sprite.SCALED_SIZE;
+            int rowPos = (Bomber_yPixel + Bomber.HEIGHT / 2) / Sprite.SCALED_SIZE;
+            mapList.get(LEVEL).replace(rowPos, columnPos, null);
         }
     }
 
@@ -274,7 +239,7 @@ public class Bomber extends MovingObject {
         if (mapList.get(LEVEL).getEntityAt(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2) instanceof Portal) {
             if (LEVEL == MAX_LEVEL) {
                 System.out.println("WIN");
-            } else if (entities.get(LEVEL).size() == 1) {
+            } else if (entities.get(LEVEL).size() >= 1) {
                 reset();
                 bombsList.clear();
                 switch (latestDirectKey) {
@@ -296,34 +261,23 @@ public class Bomber extends MovingObject {
         }
     }
 
-    @Override
-    public void render(GraphicsContext gc) {
-        if (bomberStatus == BomberStatus.ALIVE) {
-            for (Entity i : bombsList) {
-                i.render(gc);
-            }
-            super.render(gc);
-        }
-        if (bomberStatus == BomberStatus.DEAD) {
-            super.render(gc);
-        }
-    }
 
     @Override
     public void update() {
-        if (bomberStatus == BomberStatus.ALIVE) {
+        if (objectStatus == MovingObjectStatus.ALIVE) {
             moving();
             setBomb();
             updateBomberStatus();
-            updateBombsList();
+            collisionManager.getMap().updateBombsList();
             updateItemsList();
             updatePortal();
         }
-        if (bomberStatus == BomberStatus.DEAD) {
+        if (objectStatus == MovingObjectStatus.MORIBUND) {
             indexOfSprite++;
             setImg(Sprite.movingSprite(Sprite.player_dead1, Sprite.player_dead2,
                     Sprite.player_dead3, indexOfSprite, 20));
             if (indexOfSprite == 20) {
+                setObjectStatus(MovingObjectStatus.DEAD);
                 numOfLives--;
                 if (numOfLives > 0) {
                     GameController.gameStatus = GameStatus.LOAD_CURRENT_LEVEL;

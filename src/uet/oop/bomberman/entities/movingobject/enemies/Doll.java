@@ -7,10 +7,12 @@ import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.stillobject.Wall;
 import uet.oop.bomberman.graphics.Sprite;
 
-public class Doll extends Enemy {
+public class Doll extends Enemy implements MediumEnemy {
     public Doll(int xUnit, int yUnit, Image img, CollisionManager collisionManager) {
         super(xUnit, yUnit, img, collisionManager);
     }
+
+
     public static final int HEIGHT = 30;
     public static final int WIDTH = 30;
 
@@ -37,7 +39,7 @@ public class Doll extends Enemy {
             }
         }
         if (collideForDoll(x, y, dir, SPEED)
-                || collisionManager.collidebBomb(x, y, dir, SPEED)) {
+                || collisionManager.collideBomb(this, dir, SPEED)) {
             changeDirection = false;
             indexOfSprite = 0;
         } else {

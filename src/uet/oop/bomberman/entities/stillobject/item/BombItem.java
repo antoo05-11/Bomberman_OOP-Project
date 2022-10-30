@@ -2,6 +2,7 @@ package uet.oop.bomberman.entities.stillobject.item;
 
 import javafx.scene.image.Image;
 import uet.oop.bomberman.entities.movingobject.Bomber;
+import uet.oop.bomberman.map_graph.Map;
 
 public class BombItem extends Item{
     public static final int code = 1;
@@ -12,6 +13,6 @@ public class BombItem extends Item{
 
     @Override
     public void update() {
-        Bomber.MAX_BOMB += bonus = 1;
+        Map.MAX_BOMB += bonus = 1;
     }
 }

@@ -73,46 +73,46 @@ public class FlameAround extends StillObject implements CanBePassedThrough {
                     setImg(Sprite.movingSprite(Sprite.explosion_horizontal_left_last,
                             Sprite.explosion_horizontal_left_last1,
                             Sprite.explosion_horizontal_left_last2,
-                            indexOfSprite, 30));
+                            indexOfSprite, 20));
                     break;
                 case RIGHT:
                     setImg(Sprite.movingSprite(Sprite.explosion_horizontal_right_last,
                             Sprite.explosion_horizontal_right_last1,
                             Sprite.explosion_horizontal_right_last2,
-                            indexOfSprite, 30));
+                            indexOfSprite, 20));
                     break;
                 case TOP:
                     setImg(Sprite.movingSprite(Sprite.explosion_vertical_top_last,
                             Sprite.explosion_vertical_top_last1,
                             Sprite.explosion_vertical_top_last2,
-                            indexOfSprite, 30));
+                            indexOfSprite, 20));
                     break;
                 case DOWN:
                     setImg(Sprite.movingSprite(Sprite.explosion_vertical_down_last,
                             Sprite.explosion_vertical_down_last1,
                             Sprite.explosion_vertical_down_last2,
-                            indexOfSprite, 30));
+                            indexOfSprite, 20));
                     break;
                 case HORIZON:
                     setImg(Sprite.movingSprite(Sprite.explosion_horizontal,
                             Sprite.explosion_horizontal1,
                             Sprite.explosion_horizontal2,
-                            indexOfSprite, 30));
+                            indexOfSprite, 20));
                     break;
                 case VERTICAL:
                     setImg(Sprite.movingSprite(Sprite.explosion_vertical,
                             Sprite.explosion_vertical1,
                             Sprite.explosion_vertical2,
-                            indexOfSprite, 30));
+                            indexOfSprite, 20));
                     break;
                 case CENTER:
                     setImg(Sprite.movingSprite(Sprite.bomb_exploded,
                             Sprite.bomb_exploded1,
                             Sprite.bomb_exploded2,
-                            indexOfSprite, 30));
+                            indexOfSprite, 20));
                     break;
             }
-            if (indexOfSprite == 30) {
+            if (indexOfSprite == 20) {
                 flameStatus = Bomb.BombStatus.DISAPPEAR;
             }
         }

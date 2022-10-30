@@ -3,13 +3,12 @@ package uet.oop.bomberman.entities.movingobject.enemies;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.CollisionManager;
-import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.stillobject.bomb.Bomb;
+import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.entities.movingobject.MovingObject;
+import uet.oop.bomberman.entities.stillobject.bomb.Bomb;
 import uet.oop.bomberman.graphics.Sprite;
 
-import static uet.oop.bomberman.GameController.bombsList;
 
 public abstract class Enemy extends MovingObject {
     public static final int WIDTH = 30;
@@ -22,7 +21,6 @@ public abstract class Enemy extends MovingObject {
     protected int SPEED;
     protected String dir = "";
     protected boolean changeDirection = false;
-    public int indexOfSprite;
     Sprite[] leftSprites;
     Sprite[] rightSprites;
     Sprite[] deadSprites;
@@ -65,31 +63,18 @@ public abstract class Enemy extends MovingObject {
             deadSprites[0] = Sprite.doll_dead;
         }
     }
-
-    public enum EnemyStatus {
-        ALIVE,
-        MORIBUND,
-        DEAD
-    }
-
-    public EnemyStatus getEnemyStatus() {
-        return enemyStatus;
-    }
-
-    EnemyStatus enemyStatus = EnemyStatus.ALIVE;
-
     public Enemy(int xUnit, int yUnit, Image img, CollisionManager collisionManager) {
         super(xUnit, yUnit, img);
         this.collisionManager = collisionManager;
         this.SPEED = 1;
         loadSprite();
+        objectStatus = MovingObjectStatus.ALIVE;
     }
 
     /**
      * Random moving for all enemies.
      */
     public void randomMoving() {
-
         indexOfSprite++;
         if (!changeDirection) {
             int rand = (int) (Math.random() * 10);
@@ -111,7 +96,7 @@ public abstract class Enemy extends MovingObject {
             }
         }
         if (collisionManager.collide(x, y, dir, SPEED)
-                || collisionManager.collidebBomb(x, y, dir, SPEED)) {
+                || collisionManager.collideBomb(this, dir, SPEED)) {
             changeDirection = false;
             indexOfSprite = 0;
         } else {
@@ -149,26 +134,22 @@ public abstract class Enemy extends MovingObject {
 
     public abstract void move();
 
-    private void updateEnemyStatus() {
-        for (Entity i : bombsList) {
-            if (((Bomb) i).insideBombRange_Pixel(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2)
-                    && ((Bomb) i).getBombStatus() == Bomb.BombStatus.EXPLODED) {
-                enemyStatus = EnemyStatus.MORIBUND;
-                indexOfSprite = 0;
-            }
-        }
-    }
+//    private void updateEnemyStatus() {
+//        for (Entity i : collisionManager.getMap().getBombsList()) {
+//            if (((Bomb) i).insideBombRange_Pixel(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2)
+//                    && ((Bomb) i).getBombStatus() == Bomb.BombStatus.EXPLODED) {
+//                objectStatus = MovingObjectStatus.MORIBUND;
+//            }
+//        }
+//    }
 
     @Override
     public void update() {
-        if (enemyStatus == EnemyStatus.ALIVE) {
-            updateEnemyStatus();
-        }
-        if (enemyStatus == EnemyStatus.ALIVE) {
+        if (objectStatus == MovingObjectStatus.ALIVE) {
             move();
         }
-        if (enemyStatus == EnemyStatus.MORIBUND) {
-            if (indexOfSprite == 20) enemyStatus = EnemyStatus.DEAD;
+        if (objectStatus == MovingObjectStatus.MORIBUND) {
+            if (indexOfSprite == 20) objectStatus = MovingObjectStatus.DEAD;
             else setImg(deadSprites[indexOfSprite%deadSprites.length]);
             indexOfSprite++;
         }
@@ -176,7 +157,7 @@ public abstract class Enemy extends MovingObject {
 
     @Override
     public void render(GraphicsContext gc) {
-        if (enemyStatus != EnemyStatus.DEAD) super.render(gc);
+        if (objectStatus != MovingObjectStatus.DEAD) super.render(gc);
     }
 
     public boolean collideBomber(int xPixel, int yPixel) {
@@ -184,7 +165,12 @@ public abstract class Enemy extends MovingObject {
         if (yPixel + Bomber.HEIGHT < y || yPixel > y + Sprite.SCALED_SIZE) return false;
         return true;
     }
-
+    public int getRewardPoint() {
+        if(this instanceof EasyEnemy) return EasyEnemy.rewardPoint;
+        else if(this instanceof MediumEnemy) return MediumEnemy.rewardPoint;
+        else if(this instanceof HardEnemy) return HardEnemy.rewardPoint;
+        return 0;
+    }
     public void randomSpeed(int x, int y) {
         SPEED = ((int) (Math.random() * (y - x)) + x);
     }
