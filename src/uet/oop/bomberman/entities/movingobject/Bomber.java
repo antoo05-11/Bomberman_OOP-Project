@@ -17,6 +17,8 @@ import uet.oop.bomberman.graphics.Sprite;
 import static uet.oop.bomberman.GameController.*;
 
 public class Bomber extends MovingObject {
+    public static final int MAX_LIVES = 3;
+
     public void setNumOfLives(int numOfLives) {
         this.numOfLives = numOfLives;
     }
@@ -257,14 +259,7 @@ public class Bomber extends MovingObject {
     private void updateItemsList() {
         int Bomber_xPixel = entities.get(LEVEL).get(0).getX();
         int Bomber_yPixel = entities.get(LEVEL).get(0).getY();
-//        for (Entity i : itemsList) {
-//            if (((Item) i).insideItem_Pixel(Bomber_xPixel + Bomber.WIDTH / 2, Bomber_yPixel + Bomber.HEIGHT / 2)) {
-//                audioController.playParallel(AudioController.AudioName.EAT_ITEM, 1);
-//                i.update();
-//                itemsList.remove(i);
-//                break;
-//            }
-//        }
+
         Entity checkItem = mapList.get(LEVEL).getEntityAt(Bomber_xPixel + Bomber.WIDTH / 2, Bomber_yPixel + Bomber.HEIGHT / 2);
         if(checkItem instanceof Item) {
             audioController.playParallel(AudioController.AudioName.EAT_ITEM, 1);
@@ -282,7 +277,20 @@ public class Bomber extends MovingObject {
             } else if (entities.get(LEVEL).size() == 1) {
                 reset();
                 bombsList.clear();
-
+                switch (latestDirectKey) {
+                    case LEFT:
+                        setImg(Sprite.player_left);
+                        break;
+                    case RIGHT:
+                        setImg(Sprite.player_right);
+                        break;
+                    case UP:
+                        setImg(Sprite.player_up);
+                        break;
+                    case DOWN:
+                        setImg(Sprite.player_down);
+                        break;
+                }
                 gameStatus = GameStatus.WIN_ONE;
             }
         }

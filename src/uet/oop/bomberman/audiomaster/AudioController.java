@@ -13,7 +13,7 @@ public class AudioController {
         EAT_ITEM,
         KILL_ENEMY,
         LOSE,
-        WIN,
+        WIN_ONE,
         CHOOSE,
         DIE,
         START_STAGE,
@@ -30,18 +30,20 @@ public class AudioController {
         else {
             if(GameController.gameStatus == GameController.GameStatus.GAME_LOBBY) {
                 audiosList[AudioName.PLAYING.ordinal()].stop();
-                audiosList[AudioName.START_STAGE.ordinal()].stop();
                 audiosList[AudioName.LOBBY.ordinal()].play(-1);
             }
             if(GameController.gameStatus == GameController.GameStatus.GAME_START) {
+                audiosList[AudioName.WIN_ONE.ordinal()].stop();
                 audiosList[AudioName.LOBBY.ordinal()].stop();
                 audiosList[AudioName.START_STAGE.ordinal()].play(-1);
-                audiosList[AudioName.PLAYING.ordinal()].stop();
             }
             if(GameController.gameStatus == GameController.GameStatus.GAME_PLAYING) {
-                audiosList[AudioName.LOBBY.ordinal()].stop();
                 audiosList[AudioName.START_STAGE.ordinal()].stop();
                 audiosList[AudioName.PLAYING.ordinal()].play(-1);
+            }
+            if(GameController.gameStatus == GameController.GameStatus.WIN_ONE) {
+                audiosList[AudioName.PLAYING.ordinal()].stop();
+                audiosList[AudioName.WIN_ONE.ordinal()].play(-1);
             }
         }
     }
@@ -53,6 +55,7 @@ public class AudioController {
         audiosList[AudioName.EAT_ITEM.ordinal()] = new Audio("res/audio/eatItem.wav");
         audiosList[AudioName.CLICK_BUTTON.ordinal()] = new Audio("res/audio/clickButton.wav");
         audiosList[AudioName.START_STAGE.ordinal()] = new Audio("res/audio/startStage.wav");
+        audiosList[AudioName.WIN_ONE.ordinal()] = new Audio("res/audio/winOne.wav");
     }
 
     public void playParallel(AudioName audioName, int time) {

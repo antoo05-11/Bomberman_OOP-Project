@@ -91,8 +91,6 @@ public class GameController {
         }
     };
 
-    boolean isReset = true;
-
     /**
      * Game characters, bombs and items.
      */
@@ -106,8 +104,7 @@ public class GameController {
     /**
      * Timer controller.
      */
-    public static final int MAX_TIME = 180 * 1000; // 180 seconds to millis.
-    private Timeline timeline;
+    public static final int MAX_TIME = 180; // 180 seconds.
 
 
     /**
@@ -141,7 +138,7 @@ public class GameController {
     /**
      * Update entities list (moving entities).
      */
-    private void updateEntitiesList() {
+    public void updateEntitiesList() {
         for (int i = entities.get(LEVEL).size() - 1; i >= 0; i--) {
             //Remove enemies died by bomb out of list.
             if (entities.get(LEVEL).get(i) instanceof Enemy) {
@@ -213,43 +210,6 @@ public class GameController {
     public void update() {
         playingController.updateStatus();
         audioController.run();
-        switch (gameStatus) {
-            case GAME_LOBBY:
-                resetAllLevel();
-                break;
-            case GAME_START:
-                break;
-            case GAME_PLAYING:
-                isReset = false;
-                entities.get(LEVEL).forEach(Entity::update);
-                //Update all list.
-                updateMapCamera();
-                updateEntitiesList();
-                //updateBombsList();
-                //updateItemsList();
-                break;
-            case LOAD_CURRENT_LEVEL:
-                resetCurrentLevel();
-                //playingController.resetTimeline();
-                gameStatus = GameStatus.GAME_PLAYING;
-                break;
-            case WIN_ONE:
-                LEVEL++;
-                if (LEVEL <= MAX_LEVEL) {
-                    gameStatus = GameStatus.GAME_START;
-                    playingController.resetTimeline();
-                }
-                break;
-            case WIN_ALL:
-                break;
-            case GAME_LOSE:
-
-                break;
-            case GAME_PAUSE:
-                break;
-            default:
-                break;
-        }
     }
 
     private void render() {
@@ -262,7 +222,7 @@ public class GameController {
         }
     }
 
-    private void resetCurrentLevel() {
+    public void resetCurrentLevel() {
         int numOfLives = ((Bomber) entities.get(LEVEL).get(0)).getNumOfLives();
         mapList.get(LEVEL).reset();
         ((Bomber) entities.get(LEVEL).get(0)).setNumOfLives(numOfLives);
