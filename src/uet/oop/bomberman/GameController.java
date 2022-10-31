@@ -1,28 +1,25 @@
 package uet.oop.bomberman;
 
 import javafx.animation.AnimationTimer;
-import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.entities.movingobject.MovingObject;
 import uet.oop.bomberman.entities.movingobject.enemies.Enemy;
-import uet.oop.bomberman.entities.movingobject.enemies.Oneal;
 import uet.oop.bomberman.map_graph.Map;
 import uet.oop.bomberman.scenemaster.LobbyController;
 import uet.oop.bomberman.scenemaster.PlayingController;
 import uet.oop.bomberman.scenemaster.SceneController;
 
 import java.io.IOException;
-import java.util.*;
-
-import static uet.oop.bomberman.GameController.GameStatus.GAME_PLAYING;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class GameController {
     /**
@@ -42,6 +39,11 @@ public class GameController {
 
     private int levelPoint = 0;
     private int gamePoint = 0;
+    private String username = "";
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public void plusPoint(int rewardPoint) {
         gamePoint += rewardPoint;
@@ -50,7 +52,8 @@ public class GameController {
 
     public static GameStatus gameStatus = GameStatus.GAME_LOBBY;
 
-    public static Canvas playingCanvas = new Canvas(SceneController.SCREEN_WIDTH, SceneController.SCREEN_HEIGHT - 30);
+    public static Canvas playingCanvas = new Canvas(SceneController.SCREEN_WIDTH,
+            SceneController.SCREEN_HEIGHT - 30);
     private final GraphicsContext gc = playingCanvas.getGraphicsContext2D();
 
     private LobbyController lobbyController;
@@ -75,7 +78,7 @@ public class GameController {
      */
     public final static List<Map> mapList = new ArrayList<>();
     public static int LEVEL = 0;
-    public static final int MAX_LEVEL = 3;
+    public static final int MAX_LEVEL = 0;
 
     private void loadMap() {
         for (int i = 0; i <= MAX_LEVEL; i++) {
@@ -113,7 +116,6 @@ public class GameController {
      * Timer controller.
      */
     public static final int MAX_TIME = 180; // 180 seconds.
-
 
     /**
      * Run game engine.
@@ -194,17 +196,19 @@ public class GameController {
      * Update all specs of game, set scenes.
      */
     public void update() {
+        lobbyController.updateStatus();
         playingController.updateStatus();
         audioController.run();
     }
 
+    /**
+     * Render into playing canvas by gc.
+     */
     private void render() {
         if (gameStatus == GameStatus.GAME_PLAYING) {
             gc.clearRect(0, 0, playingCanvas.getWidth(), playingCanvas.getHeight());
             mapList.get(LEVEL).mapRender(gc);
             entities.get(LEVEL).forEach(g -> g.render(gc));
-        } else if (gameStatus == GameStatus.GAME_LOBBY) {
-
         }
     }
 
@@ -227,6 +231,10 @@ public class GameController {
             mapList.get(LEVEL).reset();
         }
         LEVEL = 0;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public int getNumOfLives() {

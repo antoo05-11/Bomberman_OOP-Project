@@ -3,15 +3,15 @@ package uet.oop.bomberman.audiomaster;
 import uet.oop.bomberman.GameController;
 
 public class AudioController {
-    private boolean isMuted = false; //If isMuted is true, controller will stop all playing music.
-    //private List<Audio> playingAudioList = new ArrayList<>();
-    private GameController gameController;
+    private boolean isMuted = false;
+
     public enum AudioName {
         LOBBY,
         PLAYING,
         EXPLODING,
         EAT_ITEM,
         KILL_ENEMY,
+        WIN_ALL,
         LOSE,
         WIN_ONE,
         CHOOSE,
@@ -21,32 +21,39 @@ public class AudioController {
     }
 
     Audio[] audiosList;
+
     public void run() {
-        if(isMuted) {
+        if (isMuted) {
             audiosList[AudioName.LOBBY.ordinal()].stop();
             audiosList[AudioName.PLAYING.ordinal()].stop();
             audiosList[AudioName.START_STAGE.ordinal()].stop();
-        }
-        else {
-            if(GameController.gameStatus == GameController.GameStatus.GAME_LOBBY) {
+            audiosList[AudioName.WIN_ALL.ordinal()].stop();
+        } else {
+            if (GameController.gameStatus == GameController.GameStatus.GAME_LOBBY) {
                 audiosList[AudioName.PLAYING.ordinal()].stop();
+                audiosList[AudioName.WIN_ALL.ordinal()].stop();
                 audiosList[AudioName.LOBBY.ordinal()].play(-1);
             }
-            if(GameController.gameStatus == GameController.GameStatus.GAME_START) {
+            if (GameController.gameStatus == GameController.GameStatus.GAME_START) {
                 audiosList[AudioName.WIN_ONE.ordinal()].stop();
                 audiosList[AudioName.LOBBY.ordinal()].stop();
                 audiosList[AudioName.START_STAGE.ordinal()].play(-1);
             }
-            if(GameController.gameStatus == GameController.GameStatus.GAME_PLAYING) {
+            if (GameController.gameStatus == GameController.GameStatus.GAME_PLAYING) {
                 audiosList[AudioName.START_STAGE.ordinal()].stop();
                 audiosList[AudioName.PLAYING.ordinal()].play(-1);
             }
-            if(GameController.gameStatus == GameController.GameStatus.WIN_ONE) {
+            if (GameController.gameStatus == GameController.GameStatus.WIN_ONE) {
                 audiosList[AudioName.PLAYING.ordinal()].stop();
                 audiosList[AudioName.WIN_ONE.ordinal()].play(-1);
             }
+            if (GameController.gameStatus == GameController.GameStatus.WIN_ALL) {
+                audiosList[AudioName.WIN_ONE.ordinal()].stop();
+                audiosList[AudioName.WIN_ALL.ordinal()].play(-1);
+            }
         }
     }
+
     public AudioController() {
         audiosList = new Audio[20];
         audiosList[AudioName.LOBBY.ordinal()] = new Audio("res/audio/Title Screen.wav");
@@ -56,14 +63,14 @@ public class AudioController {
         audiosList[AudioName.CLICK_BUTTON.ordinal()] = new Audio("res/audio/clickButton.wav");
         audiosList[AudioName.START_STAGE.ordinal()] = new Audio("res/audio/startStage.wav");
         audiosList[AudioName.WIN_ONE.ordinal()] = new Audio("res/audio/winOne.wav");
+        audiosList[AudioName.WIN_ALL.ordinal()] = new Audio("res/audio/winAll.wav");
     }
 
     public void playParallel(AudioName audioName, int time) {
         if (!isMuted && audioName != AudioName.CLICK_BUTTON) {
             Audio audio = audiosList[audioName.ordinal()].copyAudio();
             audio.play(time);
-        }
-        else if(audioName == AudioName.CLICK_BUTTON) {
+        } else if (audioName == AudioName.CLICK_BUTTON) {
             Audio audio = audiosList[audioName.ordinal()].copyAudio();
             audio.play(time);
         }
@@ -90,12 +97,10 @@ public class AudioController {
                 if (i != audioName.ordinal()) {
                     if (audiosList[i] != null) {
                         audiosList[i].stop();
-                        //playingAudioList.remove(audiosList[i]);
                     }
                 }
             }
             audiosList[audioName.ordinal()].play(time);
-            //if(time == -1) playingAudioList.add(audiosList[audioName.ordinal()]);
         }
     }
 
