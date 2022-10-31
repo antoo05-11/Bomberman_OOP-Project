@@ -21,7 +21,7 @@ public class FlameAround extends StillObject implements CanBePassedThrough {
         VERTICAL
     }
 
-    FlameType type;
+    private FlameType type;
     private Bomb.BombStatus flameStatus;
     private Map map; //for render flame not in wall.
 

@@ -53,14 +53,6 @@ public class Bomb extends StillObject {
                 indexOfSprite = 0;
 
                 /**
-                 * All bricks near bomb switch to BEING_DESTROY status.
-                 */
-                for (Entity brick : bricksDestroyed) {
-                    ((Brick) brick).setBrickStatus(Brick.BrickStatus.BEING_DESTROYED);
-                }
-
-
-                /**
                  * All flame near bomb switch to EXPLODED status.
                  */
                 for (Entity flame : flameAroundDown) {
@@ -121,11 +113,9 @@ public class Bomb extends StillObject {
                 }
                 return;
             } else if (nearTile instanceof Brick) {
-                bricksDestroyed.add(nearTile);
+
                 if (bombStatus == BombStatus.EXPLODED) {
-                    if (!setItem(xTile, yTile) || !setPortal(xTile, yTile)) {
-                        map.replace(yTile, xTile, null);
-                    }
+                    ((Brick) nearTile).destroyBrick(xTile, yTile);
                     if (setItem(xTile, yTile)) {
                         entitiesAfterBrick.add(addItem(xTile, yTile));
                     }
@@ -157,13 +147,10 @@ public class Bomb extends StillObject {
                 }
                 return;
             } else if (nearTile instanceof Brick) {
-                bricksDestroyed.add(nearTile);
+                //((Brick) nearTile).destroyBrick(xTile, yTile);
                 if (bombStatus == BombStatus.EXPLODED) {
-                    if (!setItem(xTile, yTile) || !setPortal(xTile, yTile)) {
-                        map.replace(yTile, xTile, null);
-                    }
+                    ((Brick) nearTile).destroyBrick(xTile, yTile);
                     if (setItem(xTile, yTile)) {
-                        //itemsList.add(addItem(xTile, yTile));
                         entitiesAfterBrick.add(addItem(xTile, yTile));
                     }
                     if (setPortal(xTile, yTile)) {
@@ -194,11 +181,9 @@ public class Bomb extends StillObject {
                 }
                 return;
             } else if (nearTile instanceof Brick) {
-                bricksDestroyed.add(nearTile);
+                //((Brick) nearTile).destroyBrick(xTile, yTile);
                 if (bombStatus == BombStatus.EXPLODED) {
-                    if (!setItem(xTile, yTile) || !setPortal(xTile, yTile)) {
-                        map.replace(yTile, xTile, null);
-                    }
+                    ((Brick) nearTile).destroyBrick(xTile, yTile);
                     if (setItem(xTile, yTile)) {
                         entitiesAfterBrick.add(addItem(xTile, yTile));
                     }
@@ -231,12 +216,9 @@ public class Bomb extends StillObject {
                 return;
             } else if (nearTile instanceof Brick) {
 
-                bricksDestroyed.add(nearTile);
+                //((Brick) nearTile).destroyBrick(xTile, yTile);
                 if (bombStatus == BombStatus.EXPLODED) {
-                    if (!setItem(xTile, yTile) || !setPortal(xTile, yTile)) {
-                        map.replace(yTile, xTile, null);
-
-                    }
+                    ((Brick) nearTile).destroyBrick(xTile, yTile);
                     if (setItem(xTile, yTile)) {
                         entitiesAfterBrick.add(addItem(xTile, yTile));
                     }
