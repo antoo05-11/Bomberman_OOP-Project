@@ -240,7 +240,7 @@ public class Bomber extends MovingObject {
 
     private void updatePortal() {
         if (collisionManager.getMap().getEntityAt(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2) instanceof Portal) {
-            if (movingEntitiesList.size() >= 1) {
+            if (movingEntitiesList.size() == 1) {
                 reset();
                 bombsList.clear();
                 switch (latestDirectKey) {
