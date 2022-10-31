@@ -2,17 +2,14 @@ package uet.oop.bomberman;
 
 import uet.oop.bomberman.entities.CannotBePassedThrough;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.movingobject.Bomber;
-import uet.oop.bomberman.entities.movingobject.MovingObject;
 import uet.oop.bomberman.entities.movingobject.enemies.Enemy;
-import uet.oop.bomberman.entities.stillobject.bomb.Bomb;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.map_graph.Map;
 
 public class CollisionManager {
-    private Map map;
-    private int CENTER_OBJECT_HEIGHT;
-    private int CENTER_OBJECT_WIDTH;
+    private final Map map;
+    private final int CENTER_OBJECT_HEIGHT;
+    private final int CENTER_OBJECT_WIDTH;
 
     public CollisionManager(Map map, int objectWidth, int objectHeight) {
         this.map = map;

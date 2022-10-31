@@ -3,20 +3,13 @@ package uet.oop.bomberman.entities.movingobject.enemies;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.CollisionManager;
-import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.entities.movingobject.MovingObject;
-import uet.oop.bomberman.entities.stillobject.bomb.Bomb;
 import uet.oop.bomberman.graphics.Sprite;
-
 
 public abstract class Enemy extends MovingObject {
     public static final int WIDTH = 30;
     public static final int HEIGHT = 30;
-    public Enemy(int xUnit, int yUnit, Image img) {
-        super(xUnit, yUnit, img);
-    }
-
     CollisionManager collisionManager;
     protected int SPEED;
     protected String dir = "";
@@ -25,6 +18,13 @@ public abstract class Enemy extends MovingObject {
     Sprite[] rightSprites;
     Sprite[] deadSprites;
 
+    public Enemy(int xUnit, int yUnit, Image img) {
+        super(xUnit, yUnit, img);
+    }
+
+    /**
+     * Load sprite of types of enemies into sprites lists.
+     */
     public void loadSprite() {
         if (this instanceof Balloom) {
             leftSprites = new Sprite[3];
@@ -63,6 +63,7 @@ public abstract class Enemy extends MovingObject {
             deadSprites[0] = Sprite.doll_dead;
         }
     }
+
     public Enemy(int xUnit, int yUnit, Image img, CollisionManager collisionManager) {
         super(xUnit, yUnit, img);
         this.collisionManager = collisionManager;
@@ -72,7 +73,7 @@ public abstract class Enemy extends MovingObject {
     }
 
     /**
-     * Random moving for all enemies.
+     * Random moving for all enemies satisfying condition: not colliding with still object.
      */
     public void randomMoving() {
         indexOfSprite++;
@@ -132,16 +133,10 @@ public abstract class Enemy extends MovingObject {
         }
     }
 
+    /**
+     * Update path to go for enemy, implemented by completing a specific path.
+     */
     public abstract void move();
-
-//    private void updateEnemyStatus() {
-//        for (Entity i : collisionManager.getMap().getBombsList()) {
-//            if (((Bomb) i).insideBombRange_Pixel(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2)
-//                    && ((Bomb) i).getBombStatus() == Bomb.BombStatus.EXPLODED) {
-//                objectStatus = MovingObjectStatus.MORIBUND;
-//            }
-//        }
-//    }
 
     @Override
     public void update() {
@@ -150,27 +145,44 @@ public abstract class Enemy extends MovingObject {
         }
         if (objectStatus == MovingObjectStatus.MORIBUND) {
             if (indexOfSprite == 20) objectStatus = MovingObjectStatus.DEAD;
-            else setImg(deadSprites[indexOfSprite%deadSprites.length]);
+            else setImg(deadSprites[indexOfSprite % deadSprites.length]);
             indexOfSprite++;
         }
     }
 
+    /**
+     * Only render when enemy status is DEAD.
+     */
     @Override
     public void render(GraphicsContext gc) {
         if (objectStatus != MovingObjectStatus.DEAD) super.render(gc);
     }
 
+    /**
+     * @return True if enemy colliding bomber.
+     */
     public boolean collideBomber(int xPixel, int yPixel) {
         if (xPixel + Bomber.WIDTH < x || xPixel > x + Sprite.SCALED_SIZE) return false;
         if (yPixel + Bomber.HEIGHT < y || yPixel > y + Sprite.SCALED_SIZE) return false;
         return true;
     }
+
+    /**
+     * @return Reward point for types of dead enemies.
+     */
     public int getRewardPoint() {
-        if(this instanceof EasyEnemy) return EasyEnemy.rewardPoint;
-        else if(this instanceof MediumEnemy) return MediumEnemy.rewardPoint;
-        else if(this instanceof HardEnemy) return HardEnemy.rewardPoint;
+        if (this instanceof EasyEnemy) return EasyEnemy.rewardPoint;
+        else if (this instanceof MediumEnemy) return MediumEnemy.rewardPoint;
+        else if (this instanceof HardEnemy) return HardEnemy.rewardPoint;
         return 0;
     }
+
+    /**
+     * Random new speed for enemy.
+     *
+     * @param x is lower bound.
+     * @param y is upper bound.
+     */
     public void randomSpeed(int x, int y) {
         SPEED = ((int) (Math.random() * (y - x)) + x);
     }

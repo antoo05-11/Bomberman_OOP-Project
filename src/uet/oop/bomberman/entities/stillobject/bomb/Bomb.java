@@ -26,7 +26,7 @@ public class Bomb extends StillObject {
         DISAPPEAR
     }
 
-    private Map map;
+    private final Map map;
     int waitForExplodingTime = 2; //2 seconds before exploding.
     int indexOfSprite = 0;
     protected BombStatus bombStatus;
@@ -52,8 +52,8 @@ public class Bomb extends StillObject {
                 bombStatus = BombStatus.EXPLODED;
                 indexOfSprite = 0;
 
-                /**
-                 * All flame near bomb switch to EXPLODED status.
+                /*
+                  All flame near bomb switch to EXPLODED status.
                  */
                 for (Entity flame : flameAroundDown) {
                     ((FlameAround) flame).setFlameStatus(BombStatus.EXPLODED);
@@ -116,7 +116,7 @@ public class Bomb extends StillObject {
 
                 if (bombStatus == BombStatus.EXPLODED) {
                     ((Brick) nearTile).destroyBrick(xTile, yTile);
-                    if (setItem(xTile, yTile)) {
+                    if (hasItemAfterBrick(xTile, yTile)) {
                         entitiesAfterBrick.add(addItem(xTile, yTile));
                     }
                     if (setPortal(xTile, yTile)) {
@@ -150,7 +150,7 @@ public class Bomb extends StillObject {
                 //((Brick) nearTile).destroyBrick(xTile, yTile);
                 if (bombStatus == BombStatus.EXPLODED) {
                     ((Brick) nearTile).destroyBrick(xTile, yTile);
-                    if (setItem(xTile, yTile)) {
+                    if (hasItemAfterBrick(xTile, yTile)) {
                         entitiesAfterBrick.add(addItem(xTile, yTile));
                     }
                     if (setPortal(xTile, yTile)) {
@@ -184,7 +184,7 @@ public class Bomb extends StillObject {
                 //((Brick) nearTile).destroyBrick(xTile, yTile);
                 if (bombStatus == BombStatus.EXPLODED) {
                     ((Brick) nearTile).destroyBrick(xTile, yTile);
-                    if (setItem(xTile, yTile)) {
+                    if (hasItemAfterBrick(xTile, yTile)) {
                         entitiesAfterBrick.add(addItem(xTile, yTile));
                     }
                     if (setPortal(xTile, yTile)) {
@@ -219,7 +219,7 @@ public class Bomb extends StillObject {
                 //((Brick) nearTile).destroyBrick(xTile, yTile);
                 if (bombStatus == BombStatus.EXPLODED) {
                     ((Brick) nearTile).destroyBrick(xTile, yTile);
-                    if (setItem(xTile, yTile)) {
+                    if (hasItemAfterBrick(xTile, yTile)) {
                         entitiesAfterBrick.add(addItem(xTile, yTile));
                     }
                     if (setPortal(xTile, yTile)) {
@@ -251,7 +251,12 @@ public class Bomb extends StillObject {
         return null;
     }
 
-    private boolean setItem(int xTile, int yTile) {
+    /**
+     * @param xTile is x pos of brick.
+     * @param yTile is y pos of brick.
+     * @return true if existing item after brick.
+     */
+    private boolean hasItemAfterBrick(int xTile, int yTile) {
         switch (map.getItem(xTile, yTile)) {
             case SpeedItem.code:
             case FlameItem.code:
@@ -268,6 +273,9 @@ public class Bomb extends StillObject {
 
     /**
      * Check if a point in Pixel is inside bombList.
+     * @param xPos is x pos of bomber.
+     * @param yPos is y pos of bomber.
+     * @return true if bomber is inside bomb's exploding range.
      */
     public boolean insideBombRange_Pixel(int xPos, int yPos) {
         int xTile = xPos / Sprite.SCALED_SIZE;
@@ -343,14 +351,14 @@ public class Bomb extends StillObject {
         }
         if (bombStatus == BombStatus.EXPLODED) {
             bombStatus = ((FlameAround) flameAroundCenter).getStatus();
-            /**
-             * Check if moving objects inside bomb range.
+            /*
+              Check if moving objects inside bomb range.
              */
-            for (int i = entities.get(LEVEL).size() - 1; i >= 0; i--) {
-                int xBomberPos = entities.get(LEVEL).get(i).getX();
-                int yBomberPos = entities.get(LEVEL).get(i).getY();
+            for (int i = map.getMovingEntitiesList().size() - 1; i >= 0; i--) {
+                int xBomberPos = map.getMovingEntitiesList().get(i).getX();
+                int yBomberPos = map.getMovingEntitiesList().get(i).getY();
                 if (insideBombRange_Pixel(xBomberPos + Sprite.SCALED_SIZE / 2, yBomberPos + Sprite.SCALED_SIZE / 2)) {
-                    ((MovingObject) entities.get(LEVEL).get(i)).setObjectStatus(MovingObject.MovingObjectStatus.MORIBUND);
+                    ((MovingObject) map.getMovingEntitiesList().get(i)).setObjectStatus(MovingObject.MovingObjectStatus.MORIBUND);
                 }
             }
         }

@@ -22,12 +22,13 @@ public class Brick extends StillObject implements CannotBePassedThrough {
     public void render(GraphicsContext gc) {
         super.render(gc);
     }
-    public void destroyBrick(int xTile, int yTile){
+
+    public void destroyBrick(int xTile, int yTile) {
         indexOfSprite++;
         setImg(Sprite.movingSprite(Sprite.brick_exploded,
                 Sprite.brick_exploded1,
                 Sprite.brick_exploded2, indexOfSprite, 40));
-        if (indexOfSprite == 40){
+        if (indexOfSprite == 40) {
             indexOfSprite = 0;
             GameController.mapList.get(GameController.LEVEL).replace(yTile, xTile, null);
         }

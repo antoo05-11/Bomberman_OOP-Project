@@ -54,6 +54,8 @@ public class Bomber extends MovingObject {
     public boolean goDown = false;
     private boolean bombed = false;
     private KeyCode latestDirectKey = KeyCode.RIGHT;
+
+    private final List<Entity> movingEntitiesList;
     public List<Entity> bombsList;
 
 
@@ -75,6 +77,7 @@ public class Bomber extends MovingObject {
         reset();
         this.collisionManager = collisionManager;
         bombsList = collisionManager.getMap().getBombsList();
+        movingEntitiesList = collisionManager.getMap().getMovingEntitiesList();
     }
 
     public void saveKeyEvent(KeyCode keyCode, boolean isPress) {
@@ -104,11 +107,11 @@ public class Bomber extends MovingObject {
     }
 
     private void updateBomberStatus() {
-        /**
-         * Died because of colliding with oneal and balloom.
+        /*
+          Died because of colliding with oneal and balloom.
          */
-        for (int i = 1; i < GameController.entities.get(GameController.LEVEL).size(); i++) {
-            if (((Enemy) GameController.entities.get(GameController.LEVEL).get(i)).collideBomber(x, y)) {
+        for (int i = 1; i < movingEntitiesList.size(); i++) {
+            if (((Enemy) movingEntitiesList.get(i)).collideBomber(x, y)) {
                 setObjectStatus(MovingObjectStatus.MORIBUND);
                 break;
             }
@@ -222,8 +225,8 @@ public class Bomber extends MovingObject {
 
     private void updateItemsList() {
 
-        int Bomber_xPixel = entities.get(LEVEL).get(0).getX();
-        int Bomber_yPixel = entities.get(LEVEL).get(0).getY();
+        int Bomber_xPixel = movingEntitiesList.get(0).getX();
+        int Bomber_yPixel = movingEntitiesList.get(0).getY();
 
         Entity checkItem = mapList.get(LEVEL).getEntityAt(Bomber_xPixel + Bomber.WIDTH / 2, Bomber_yPixel + Bomber.HEIGHT / 2);
         if (checkItem instanceof Item) {
@@ -236,8 +239,8 @@ public class Bomber extends MovingObject {
     }
 
     private void updatePortal() {
-        if (mapList.get(LEVEL).getEntityAt(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2) instanceof Portal) {
-            if (entities.get(LEVEL).size() >= 1) {
+        if (collisionManager.getMap().getEntityAt(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2) instanceof Portal) {
+            if (movingEntitiesList.size() >= 1) {
                 reset();
                 bombsList.clear();
                 switch (latestDirectKey) {
