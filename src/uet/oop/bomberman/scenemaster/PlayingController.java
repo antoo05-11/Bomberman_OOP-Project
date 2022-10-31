@@ -30,7 +30,10 @@ import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.map_graph.Map;
 
 import javax.swing.text.html.ImageView;
+import java.io.*;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -67,13 +70,14 @@ public class PlayingController extends SceneController implements Initializable 
     @FXML
     VBox winOneImg;
     @FXML
-            Text pointText;
+    Text pointText;
     Timeline timeline;
     Timeline nextLevelTimeline;
     Timeline victoryTimeline;
     AtomicInteger timerCounter = new AtomicInteger(3);
     int curGamePoint = 0;
-
+    @FXML
+    VBox winAllBox;
     @FXML
     private HBox livesImg;
 
@@ -115,9 +119,9 @@ public class PlayingController extends SceneController implements Initializable 
             });
 
             // Click audio button.
-            audioButton.setOnAction(new EventHandler<ActionEvent>() {
+            audioButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
-                public void handle(ActionEvent event) {
+                public void handle(MouseEvent event) {
                     gameController.audioController.setMuted(!gameController.audioController.isMuted());
                 }
             });
@@ -178,15 +182,25 @@ public class PlayingController extends SceneController implements Initializable 
                     event -> {
                         timerCounter.decrementAndGet();
                         if (timerCounter.get() <= 0) {
-                            LEVEL++;
-                            if (LEVEL <= GameController.MAX_LEVEL) {
+
+                            if (LEVEL < GameController.MAX_LEVEL) {
+                                LEVEL++;
                                 GameController.gameStatus = GameController.GameStatus.GAME_START;
+                            } else {
+                                if (GameController.gameStatus != GameController.GameStatus.WIN_ALL)
+                                    GameController.gameStatus = GameController.GameStatus.WIN_ALL;
+                                else {
+                                    GameController.gameStatus = GAME_LOBBY;
+                                    stage.setScene(lobbyScene);
+                                }
                             }
                             winOneImg.setVisible(false);
+                            winAllBox.setVisible(false);
                             victoryTimeline.stop();
                         }
                     }), new KeyFrame(Duration.seconds(1)));
             victoryTimeline.setCycleCount(-1);
+            winAllBox.setVisible(false);
         }
     }
 
@@ -205,10 +219,9 @@ public class PlayingController extends SceneController implements Initializable 
                 }
                 break;
             case GAME_PLAYING:
-                if(curGamePoint < gameController.getGamePoint()) {
+                if (curGamePoint < gameController.getGamePoint()) {
                     pointText.setText(Integer.toString(++curGamePoint));
-                }
-                else if(curGamePoint > gameController.getGamePoint()) {
+                } else if (curGamePoint > gameController.getGamePoint()) {
                     pointText.setText(Integer.toString(--curGamePoint));
                 }
                 if (timeline.getStatus() == Timeline.Status.STOPPED) {
@@ -241,28 +254,56 @@ public class PlayingController extends SceneController implements Initializable 
             case LOAD_CURRENT_LEVEL:
                 // Game display.
                 timeline.playFromStart();
-                playingBox.setDisable(false);
 
                 // Logic game
                 gameController.resetCurrentLevel();
                 gameController.gameStatus = GAME_PLAYING;
                 break;
             case WIN_ONE:
+                if (curGamePoint < gameController.getGamePoint()) {
+                    pointText.setText(Integer.toString(++curGamePoint));
+                } else if (curGamePoint > gameController.getGamePoint()) {
+                    pointText.setText(Integer.toString(--curGamePoint));
+                }
                 if (victoryTimeline.getStatus() != Animation.Status.RUNNING) {
                     timerCounter.set(7);
                     victoryTimeline.playFromStart();
+                    gameController.plusPoint((int) ((1 - progressBar.getProgress()) * (LEVEL + 1) * 100));
                     timeline.stop();
                     winOneImg.setVisible(true);
                     gameController.resetLevelPoint();
                 }
                 break;
+            case WIN_ALL:
+                if (victoryTimeline.getStatus() != Animation.Status.RUNNING) {
+                    updateRankingTable();
+                    timerCounter.set(7);
+                    victoryTimeline.playFromStart();
+                    winAllBox.setVisible(true);
+                    gameController.resetAllLevel();
+                }
+                break;
             case GAME_LOSE:
+                updateRankingTable();
                 gameController.resetAllLevel();
                 curGamePoint = 0;
                 stage.setScene(lobbyScene);
                 gameController.gameStatus = GAME_LOBBY;
                 timeline.stop();
                 break;
+        }
+    }
+
+    public void updateRankingTable() {
+        File file = new File("res/lobbyTexture/ranking.txt");
+        try {
+            FileWriter fileWriter = new FileWriter(file, true);
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            Date date = new Date();
+            fileWriter.write("\n" + gameController.getUsername() + "\n" + gameController.getGamePoint() + " " + formatter.format(date));
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

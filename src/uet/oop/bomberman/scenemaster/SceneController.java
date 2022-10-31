@@ -4,10 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.effect.Effect;
 import javafx.scene.effect.Glow;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.audiomaster.AudioController;
@@ -16,7 +13,6 @@ public abstract class SceneController {
     public static final int SCREEN_WIDTH = 800;
     public static final int SCREEN_HEIGHT = 400;
     Stage stage;
-
     GameController gameController;
 
     public void setGameController(GameController gameController) {
@@ -25,12 +21,12 @@ public abstract class SceneController {
     }
 
     @FXML
-    public void pressButton(MouseEvent event) {
+    public void pressButton() {
         gameController.audioController.playParallel(AudioController.AudioName.CLICK_BUTTON, 1);
     }
 
     @FXML
-    public void releaseButton(MouseEvent event) {
+    public void releaseButton() {
 
     }
 

@@ -237,9 +237,7 @@ public class Bomber extends MovingObject {
 
     private void updatePortal() {
         if (mapList.get(LEVEL).getEntityAt(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2) instanceof Portal) {
-            if (LEVEL == MAX_LEVEL) {
-                System.out.println("WIN");
-            } else if (entities.get(LEVEL).size() >= 1) {
+            if (entities.get(LEVEL).size() >= 1) {
                 reset();
                 bombsList.clear();
                 switch (latestDirectKey) {

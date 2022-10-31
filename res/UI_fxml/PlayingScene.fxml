@@ -28,7 +28,7 @@
                         <Cursor fx:constant="MOVE" />
                      </cursor>
                   </Text>
-                  <ProgressBar fx:id="progressBar" prefHeight="18.0" prefWidth="494.0" style="-fx-background-color: grey;" stylesheets="@progressBar.css" />
+                  <ProgressBar fx:id="progressBar" prefHeight="18.0" prefWidth="494.0" style="-fx-background-color: grey;" />
                   <Text fx:id="pointText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="80.92346143722534">
                      <font>
                         <Font name="Kristen ITC" size="27.0" />
@@ -106,6 +106,15 @@
             </HBox>
          </children>
       </VBox>
+      <VBox fx:id="winOneImg" alignment="CENTER" disable="true" prefHeight="200.0" prefWidth="100.0" visible="false">
+         <children>
+            <ImageView disable="true" fitHeight="384.0" fitWidth="505.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../statusBar/winOne.gif" />
+               </image>
+            </ImageView>
+         </children>
+      </VBox>
       <Button fx:id="continueButton" disable="true" focusTraversable="false" mnemonicParsing="false" onMouseEntered="#enterButton" onMouseExited="#exitButton" onMousePressed="#pressButton" style="-fx-background-color: transparent;" visible="false">
          <graphic>
             <ImageView fitHeight="95.0" fitWidth="94.0" pickOnBounds="true" preserveRatio="true">
@@ -115,7 +124,7 @@
             </ImageView>
          </graphic>
       </Button>
-      <VBox fx:id="nextLevelBox" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: black;" visible="false">
+      <VBox fx:id="nextLevelBox" alignment="CENTER" disable="true" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: black;" visible="false">
          <children>
             <Text fx:id="stageText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="STAGE 1">
                <font>
@@ -124,22 +133,33 @@
             </Text>
          </children>
       </VBox>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: black;" visible="false">
+      <VBox fx:id="winAllBox" alignment="CENTER" disable="true" prefHeight="200.0" prefWidth="100.0" spacing="10.0" style="-fx-background-color: black;" visible="false">
          <children>
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="CONGRATULATIONS">
-               <font>
-                  <Font name="Kristen ITC" size="29.0" />
-               </font>
-            </Text>
-         </children>
-      </VBox>
-      <VBox fx:id="winOneImg" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
-         <children>
-            <ImageView disable="true" fitHeight="384.0" fitWidth="505.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="150.0" fitWidth="490.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../statusBar/winOne.gif" />
+                  <Image url="@../statusBar/winAll.gif" />
                </image>
             </ImageView>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  CONGRATULATIONS" textAlignment="CENTER">
+               <font>
+                  <Font name="Gill Sans MT Condensed" size="33.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="YOU HAVE SUCCEEDED IN HELPING BOMBERMAN TO BECOME A HUMAN BEING" textAlignment="CENTER">
+               <font>
+                  <Font name="Gill Sans MT Condensed" size="33.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="MAYBE YOU CAN RECOGNIZE HIM IN ANOTHER HUDSON SOFT GAME" textAlignment="CENTER">
+               <font>
+                  <Font name="Gill Sans MT Condensed" size="33.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="GOODBYE" textAlignment="CENTER">
+               <font>
+                  <Font name="Gill Sans MT Condensed" size="33.0" />
+               </font>
+            </Text>
          </children>
       </VBox>
    </children>
