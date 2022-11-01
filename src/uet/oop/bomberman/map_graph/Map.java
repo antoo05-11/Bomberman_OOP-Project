@@ -18,10 +18,7 @@ import uet.oop.bomberman.entities.stillobject.Brick;
 import uet.oop.bomberman.entities.stillobject.Grass;
 import uet.oop.bomberman.entities.stillobject.Wall;
 import uet.oop.bomberman.graphics.Sprite;
-import uet.oop.bomberman.map_graph.Graph;
-import uet.oop.bomberman.map_graph.Vertice;
 
-import javax.sound.sampled.Line;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -77,7 +74,7 @@ public class Map {
         } catch (FileNotFoundException e) {
             System.out.println("No file exist");
         }
-        String rowString = ""; //Save info of a row into string.
+        String rowString; //Save info of a row into string.
         assert scanner != null;
         rowString = scanner.nextLine(); //Read first line in Level.txt.
 
@@ -97,55 +94,44 @@ public class Map {
                 grassList[i][j] = new Grass(j, i, Sprite.grass.getFxImage());
                 switch (rowString.charAt(j)) {
                     case 'p':
-                        //mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
                         Entity bomberman = new Bomber(j, i, new CollisionManager(this, Bomber.WIDTH, Bomber.HEIGHT));
                         GameController.entities.get(LEVEL).add(bomberman);
                         break;
                     case '#':
-                        //mapInfo.get(i).add(new Wall(j, i, Sprite.wall.getFxImage()));
                         mapInfo[i][j] = new Wall(j, i, Sprite.wall.getFxImage());
                         break;
                     case '*':
-                        //mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
                         mapInfo[i][j] = new Brick(j, i, Sprite.brick.getFxImage());
                         break;
                     case 'x':
-                        //mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
                         mapInfo[i][j] = new Brick(j, i, Sprite.brick.getFxImage());
                         listPortal[i][j] = Portal.code;
                         break;
                     case '1':
-                        //mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
                         Enemy balloom = new Balloom(j, i, Sprite.balloom_left1.getFxImage(), new CollisionManager(this, Balloom.WIDTH, Balloom.HEIGHT));
                         GameController.entities.get(LEVEL).add(balloom);
                         break;
                     case '2':
-                        //mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
                         Enemy oneal = new Oneal(j, i, Sprite.oneal_right1.getFxImage(), new CollisionManager(this, Oneal.WIDTH, Oneal.HEIGHT), GameController.entities.get(LEVEL).get(0));
                         GameController.entities.get(LEVEL).add(oneal);
                         break;
                     case '3':
-                        //mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
                         Enemy doll = new Doll(j, i, Sprite.doll_right1.getFxImage(), new CollisionManager(this, Doll.WIDTH, Doll.HEIGHT));
                         GameController.entities.get(LEVEL).add(doll);
                         break;
                     case 'b':
-                        //mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
                         mapInfo[i][j] = new Brick(j, i, Sprite.brick.getFxImage());
                         listItem[i][j] = BombItem.code;
                         break;
                     case 'f':
-                        //mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
                         mapInfo[i][j] = new Brick(j, i, Sprite.brick.getFxImage());
                         listItem[i][j] = FlameItem.code;
                         break;
                     case 's':
-                        //mapInfo.get(i).add(new Brick(j, i, Sprite.brick.getFxImage()));
                         mapInfo[i][j] = new Brick(j, i, Sprite.brick.getFxImage());
                         listItem[i][j] = SpeedItem.code;
                         break;
                     default:
-                        //mapInfo.get(i).add(new Grass(j, i, Sprite.grass.getFxImage()));
                         break;
                 }
             }
@@ -154,7 +140,7 @@ public class Map {
     }
 
     /**
-     * Render still
+     * Render still object.
      */
     public void mapRender(GraphicsContext gc) {
         for (int i = 0; i < HEIGHT; i++) {
@@ -170,17 +156,38 @@ public class Map {
                 }
             }
         }
-        for(Entity i : bombsList) i.render(gc);
+        for (Entity i : bombsList) i.render(gc);
     }
 
+    /**
+     * Get entity in map.
+     *
+     * @param x int
+     * @param y int
+     * @return Entity
+     */
     public Entity getEntityAt(int x, int y) {
         return mapInfo[y / Sprite.SCALED_SIZE][x / Sprite.SCALED_SIZE];
     }
 
+    /**
+     * Get item in map.
+     *
+     * @param xPos int
+     * @param yPos int
+     * @return listItem
+     */
     public int getItem(int xPos, int yPos) {
         return listItem[yPos][xPos];
     }
 
+    /**
+     * Get portal in map.
+     *
+     * @param xPos int
+     * @param yPos int
+     * @return listPortal
+     */
     public int getPortal(int xPos, int yPos) {
         return listPortal[yPos][xPos];
     }
@@ -243,6 +250,12 @@ public class Map {
 
     public static int MAX_BOMB = 3;
 
+    /**
+     * Set bomb for bomber.
+     *
+     * @param xPixel int
+     * @param yPixel int
+     */
     public void setBomb(int xPixel, int yPixel) {
         if (bombsList.size() < MAX_BOMB) {
             int xTile = xPixel / Sprite.SCALED_SIZE;
@@ -254,11 +267,15 @@ public class Map {
             }
         }
     }
+
+    /**
+     * Update bomb list.
+     */
     public void updateBombsList() {
         bombsList.forEach(Entity::update);
         if (!bombsList.isEmpty())
             if (((Bomb) bombsList.get(0)).getBombStatus() == Bomb.BombStatus.DISAPPEAR) {
-                bombsArr[bombsList.get(0).getY()/Sprite.SCALED_SIZE][bombsList.get(0).getX()/Sprite.SCALED_SIZE] = null;
+                bombsArr[bombsList.get(0).getY() / Sprite.SCALED_SIZE][bombsList.get(0).getX() / Sprite.SCALED_SIZE] = null;
                 bombsList.remove(0);
                 convertMapToGraph();
             }

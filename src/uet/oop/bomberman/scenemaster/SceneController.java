@@ -15,21 +15,33 @@ public abstract class SceneController {
     Stage stage;
     GameController gameController;
 
+    /**
+     * Set game controller.
+     */
     public void setGameController(GameController gameController) {
         this.gameController = gameController;
         stage = gameController.getStage();
     }
 
+    /**
+     * Press button.
+     */
     @FXML
     public void pressButton() {
-        gameController.audioController.playParallel(AudioController.AudioName.CLICK_BUTTON, 1);
+        GameController.audioController.playParallel(AudioController.AudioName.CLICK_BUTTON, 1);
     }
 
+    /**
+     * Release button.
+     */
     @FXML
     public void releaseButton() {
 
     }
 
+    /**
+     * Enter button.
+     */
     @FXML
     public void enterButton(MouseEvent event) {
         Effect shadow = new Glow();
@@ -38,6 +50,9 @@ public abstract class SceneController {
         ((Button) event.getSource()).getGraphic().setScaleY(1.05);
     }
 
+    /**
+     * Exit button.
+     */
     @FXML
     public void exitButton(MouseEvent event) {
         ((Button) event.getSource()).setEffect(null);

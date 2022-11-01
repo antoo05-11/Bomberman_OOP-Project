@@ -3,20 +3,14 @@ package uet.oop.bomberman.entities.movingobject.enemies;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.CollisionManager;
-import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.entities.movingobject.MovingObject;
-import uet.oop.bomberman.entities.stillobject.bomb.Bomb;
 import uet.oop.bomberman.graphics.Sprite;
 
 
 public abstract class Enemy extends MovingObject {
     public static final int WIDTH = 30;
     public static final int HEIGHT = 30;
-    public Enemy(int xUnit, int yUnit, Image img) {
-        super(xUnit, yUnit, img);
-    }
-
     CollisionManager collisionManager;
     protected int SPEED;
     protected String dir = "";
@@ -25,6 +19,9 @@ public abstract class Enemy extends MovingObject {
     Sprite[] rightSprites;
     Sprite[] deadSprites;
 
+    /**
+     * Load sprite for enemy.
+     */
     public void loadSprite() {
         if (this instanceof Balloom) {
             leftSprites = new Sprite[3];
@@ -63,6 +60,10 @@ public abstract class Enemy extends MovingObject {
             deadSprites[0] = Sprite.doll_dead;
         }
     }
+
+    /**
+     * Constructor for enemy.
+     */
     public Enemy(int xUnit, int yUnit, Image img, CollisionManager collisionManager) {
         super(xUnit, yUnit, img);
         this.collisionManager = collisionManager;
@@ -134,15 +135,6 @@ public abstract class Enemy extends MovingObject {
 
     public abstract void move();
 
-//    private void updateEnemyStatus() {
-//        for (Entity i : collisionManager.getMap().getBombsList()) {
-//            if (((Bomb) i).insideBombRange_Pixel(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2)
-//                    && ((Bomb) i).getBombStatus() == Bomb.BombStatus.EXPLODED) {
-//                objectStatus = MovingObjectStatus.MORIBUND;
-//            }
-//        }
-//    }
-
     @Override
     public void update() {
         if (objectStatus == MovingObjectStatus.ALIVE) {
@@ -150,7 +142,7 @@ public abstract class Enemy extends MovingObject {
         }
         if (objectStatus == MovingObjectStatus.MORIBUND) {
             if (indexOfSprite == 20) objectStatus = MovingObjectStatus.DEAD;
-            else setImg(deadSprites[indexOfSprite%deadSprites.length]);
+            else setImg(deadSprites[indexOfSprite % deadSprites.length]);
             indexOfSprite++;
         }
     }
@@ -160,17 +152,36 @@ public abstract class Enemy extends MovingObject {
         if (objectStatus != MovingObjectStatus.DEAD) super.render(gc);
     }
 
+    /**
+     * Check if enemy collide with bomber.
+     *
+     * @param xPixel int
+     * @param yPixel int
+     * @return true/false
+     */
     public boolean collideBomber(int xPixel, int yPixel) {
         if (xPixel + Bomber.WIDTH < x || xPixel > x + Sprite.SCALED_SIZE) return false;
-        if (yPixel + Bomber.HEIGHT < y || yPixel > y + Sprite.SCALED_SIZE) return false;
-        return true;
+        return yPixel + Bomber.HEIGHT >= y && yPixel <= y + Sprite.SCALED_SIZE;
     }
+
+    /**
+     * Get points from enemy type.
+     *
+     * @return point
+     */
     public int getRewardPoint() {
-        if(this instanceof EasyEnemy) return EasyEnemy.rewardPoint;
-        else if(this instanceof MediumEnemy) return MediumEnemy.rewardPoint;
-        else if(this instanceof HardEnemy) return HardEnemy.rewardPoint;
+        if (this instanceof EasyEnemy) return EasyEnemy.rewardPoint;
+        else if (this instanceof MediumEnemy) return MediumEnemy.rewardPoint;
+        else if (this instanceof HardEnemy) return HardEnemy.rewardPoint;
         return 0;
     }
+
+    /**
+     * Make enemies move randomly.
+     *
+     * @param x int
+     * @param y int
+     */
     public void randomSpeed(int x, int y) {
         SPEED = ((int) (Math.random() * (y - x)) + x);
     }

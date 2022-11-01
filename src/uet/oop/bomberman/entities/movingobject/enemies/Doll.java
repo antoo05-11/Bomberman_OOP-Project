@@ -8,14 +8,16 @@ import uet.oop.bomberman.entities.stillobject.Wall;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class Doll extends Enemy implements MediumEnemy {
+    /**
+     * Constructor of Doll.
+     */
     public Doll(int xUnit, int yUnit, Image img, CollisionManager collisionManager) {
         super(xUnit, yUnit, img, collisionManager);
     }
 
-
-    public static final int HEIGHT = 30;
-    public static final int WIDTH = 30;
-
+    /**
+     * Random moving for Doll.
+     */
     @Override
     public void randomMoving() {
         indexOfSprite++;
@@ -75,6 +77,9 @@ public class Doll extends Enemy implements MediumEnemy {
         }
     }
 
+    /**
+     * Make Doll go through wall.
+     */
     public boolean collideForDoll(int x, int y, String dir, int OBJECT_SPEED) {
         int curX = x;
         int curY = y;
@@ -99,6 +104,10 @@ public class Doll extends Enemy implements MediumEnemy {
         return topLeft instanceof Wall || topRight instanceof Wall
                 || downLeft instanceof Wall || downRight instanceof Wall;
     }
+
+    /**
+     * This is move.
+     */
     @Override
     public void move() {
         randomMoving();

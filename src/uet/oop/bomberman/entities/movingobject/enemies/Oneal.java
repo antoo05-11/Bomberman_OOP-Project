@@ -3,7 +3,6 @@ package uet.oop.bomberman.entities.movingobject.enemies;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.CollisionManager;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.map_graph.Graph;
 import uet.oop.bomberman.map_graph.Vertice;
 import uet.oop.bomberman.graphics.Sprite;
@@ -24,6 +23,9 @@ public class Oneal extends Enemy implements HardEnemy {
         this.bomber = bomber;
     }
 
+    /**
+     * Make oneal move along path.
+     */
     public void moveAlongPath() {
         Vertice src = path.get(0);
         Vertice dst = path.get(1);
@@ -85,6 +87,9 @@ public class Oneal extends Enemy implements HardEnemy {
         }
     }
 
+    /**
+     * Oneal moving.
+     */
     public void move() {
         int onealIndex = Graph.getVerticeIndex(x + Oneal.WIDTH / 2, y + Oneal.HEIGHT / 2);
         int bomberIndex = Graph.getVerticeIndex(bomber.getX(), bomber.getY());
@@ -97,15 +102,11 @@ public class Oneal extends Enemy implements HardEnemy {
 
     }
 
+    /**
+     * This is update.
+     */
     @Override
     public void update() {
-        //randomSpeed(Bomber.SPEED-1,Bomber.SPEED+1);
         super.update();
     }
-
-    public int getDistanceToBomber() {
-        if (path == null) return -1;
-        return path.size();
-    }
-
 }

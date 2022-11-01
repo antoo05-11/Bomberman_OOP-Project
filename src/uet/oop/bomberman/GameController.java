@@ -23,7 +23,7 @@ import java.util.Objects;
 
 public class GameController {
     /**
-     * Game status control
+     * Game status control.
      */
     public enum GameStatus {
         GAME_LOBBY,
@@ -78,7 +78,7 @@ public class GameController {
      */
     public final static List<Map> mapList = new ArrayList<>();
     public static int LEVEL = 0;
-    public static final int MAX_LEVEL = 0;
+    public static final int MAX_LEVEL = 3;
 
     private void loadMap() {
         for (int i = 0; i <= MAX_LEVEL; i++) {
@@ -212,10 +212,16 @@ public class GameController {
         }
     }
 
+    /**
+     * Reset level point.
+     */
     public void resetLevelPoint() {
         levelPoint = 0;
     }
 
+    /**
+     * Reset current level after died.
+     */
     public void resetCurrentLevel() {
         gamePoint -= levelPoint;
         levelPoint = 0;
@@ -224,6 +230,9 @@ public class GameController {
         ((Bomber) entities.get(LEVEL).get(0)).setNumOfLives(numOfLives);
     }
 
+    /**
+     * Reset all level.
+     */
     public void resetAllLevel() {
         gamePoint = 0;
         levelPoint = 0;
@@ -233,14 +242,23 @@ public class GameController {
         LEVEL = 0;
     }
 
+    /**
+     * Get username.
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * Get number of lives.
+     */
     public int getNumOfLives() {
         return ((Bomber) entities.get(LEVEL).get(0)).getNumOfLives();
     }
 
+    /**
+     * Get game points.
+     */
     public int getGamePoint() {
         return gamePoint;
     }

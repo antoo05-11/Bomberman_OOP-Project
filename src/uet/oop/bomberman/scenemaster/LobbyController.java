@@ -38,10 +38,16 @@ public class LobbyController extends SceneController implements Initializable {
     double scaleValue = 0;
     private Scene playingScene;
 
+    /**
+     * Set playing scene.
+     */
     public void setPlayingScene(Scene playingScene) {
         this.playingScene = playingScene;
     }
 
+    /**
+     * Initialize.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         URL lobbyURL = BombermanGame.class.getResource("/UI_fxml/LobbyScene.fxml");
@@ -74,6 +80,9 @@ public class LobbyController extends SceneController implements Initializable {
         stage.setScene(playingScene);
     }
 
+    /**
+     * Click quit button.
+     */
     @FXML
     public void clickQuitButton() {
         Alert alert = new Alert(Alert.AlertType.WARNING,
@@ -88,17 +97,22 @@ public class LobbyController extends SceneController implements Initializable {
         }
     }
 
-
+    /**
+     * Click audio button.
+     */
     public void clickAudioButton() {
-        gameController.audioController.setMuted(!gameController.audioController.isMuted());
+        GameController.audioController.setMuted(!GameController.audioController.isMuted());
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setGraphic((new ImageView("lobbyTexture/audioNotification.png")));
         alert.setTitle("AUDIO Notification");
         alert.setHeaderText(null);
-        alert.setContentText("Audio has been turn " + (gameController.audioController.isMuted() ? "off!" : "on!"));
+        alert.setContentText("Audio has been turn " + (GameController.audioController.isMuted() ? "off!" : "on!"));
         alert.showAndWait();
     }
 
+    /**
+     * Click rank button.
+     */
     public void clickRankButton() {
         if (!rankTable.isVisible()) {
             scaleValue = 0;
@@ -146,8 +160,11 @@ public class LobbyController extends SceneController implements Initializable {
         rankTable.setItems(FXCollections.observableArrayList(rankingList));
     }
 
+    /**
+     * Update status
+     */
     public void updateStatus() {
-        if (gameController.gameStatus == GameController.GameStatus.GAME_LOBBY) {
+        if (GameController.gameStatus == GameController.GameStatus.GAME_LOBBY) {
             if (rankTable.isVisible()) {
                 if (rankTable.getScaleX() < 1) {
                     scaleValue = (scaleValue <= 0.97) ? scaleValue + 0.03 : 1;
