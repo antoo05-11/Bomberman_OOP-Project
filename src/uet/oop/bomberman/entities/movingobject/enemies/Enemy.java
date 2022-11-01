@@ -7,7 +7,6 @@ import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.entities.movingobject.MovingObject;
 import uet.oop.bomberman.graphics.Sprite;
 
-
 public abstract class Enemy extends MovingObject {
     public static final int WIDTH = 30;
     public static final int HEIGHT = 30;
@@ -20,7 +19,7 @@ public abstract class Enemy extends MovingObject {
     Sprite[] deadSprites;
 
     /**
-     * Load sprite for enemy.
+     * Load sprite of types of enemies into sprites lists.
      */
     public void loadSprite() {
         if (this instanceof Balloom) {
@@ -73,7 +72,7 @@ public abstract class Enemy extends MovingObject {
     }
 
     /**
-     * Random moving for all enemies.
+     * Random moving for all enemies satisfying condition: not colliding with still object.
      */
     public void randomMoving() {
         indexOfSprite++;
@@ -133,6 +132,9 @@ public abstract class Enemy extends MovingObject {
         }
     }
 
+    /**
+     * Update path to go for enemy, implemented by completing a specific path.
+     */
     public abstract void move();
 
     @Override
@@ -147,6 +149,9 @@ public abstract class Enemy extends MovingObject {
         }
     }
 
+    /**
+     * Only render when enemy status is DEAD.
+     */
     @Override
     public void render(GraphicsContext gc) {
         if (objectStatus != MovingObjectStatus.DEAD) super.render(gc);
@@ -167,7 +172,7 @@ public abstract class Enemy extends MovingObject {
     /**
      * Get points from enemy type.
      *
-     * @return point
+     * @return Reward point for types of dead enemies.
      */
     public int getRewardPoint() {
         if (this instanceof EasyEnemy) return EasyEnemy.rewardPoint;
@@ -177,10 +182,10 @@ public abstract class Enemy extends MovingObject {
     }
 
     /**
-     * Make enemies move randomly.
+     * Random new speed for enemy.
      *
-     * @param x int
-     * @param y int
+     * @param x is lower bound.
+     * @param y is upper bound.
      */
     public void randomSpeed(int x, int y) {
         SPEED = ((int) (Math.random() * (y - x)) + x);

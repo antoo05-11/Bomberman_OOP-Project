@@ -4,6 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.graphics.Sprite;
+import uet.oop.bomberman.map_graph.Map;
 
 public abstract class Entity {
     protected int x; //X coordinate from top left corner in Canvas
@@ -24,7 +25,7 @@ public abstract class Entity {
      * @param gc GraphicsContext
      */
     public void render(GraphicsContext gc) {
-        gc.drawImage(img, x - GameController.dx_gc, y - GameController.dy_gc);
+        gc.drawImage(img, x - Map.dx_gc, y - Map.dy_gc);
     }
 
     public abstract void update();

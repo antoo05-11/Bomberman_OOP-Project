@@ -10,18 +10,29 @@ public class AudioController {
         PLAYING,
         EXPLODING,
         EAT_ITEM,
-        KILL_ENEMY,
         WIN_ALL,
-        LOSE,
         WIN_ONE,
-        CHOOSE,
-        DIE,
         START_STAGE,
         CLICK_BUTTON
     }
 
     Audio[] audiosList;
 
+    public AudioController() {
+        audiosList = new Audio[20];
+        audiosList[AudioName.LOBBY.ordinal()] = new Audio("res/audio/lobby.wav");
+        audiosList[AudioName.PLAYING.ordinal()] = new Audio("res/audio/playing.wav");
+        audiosList[AudioName.EXPLODING.ordinal()] = new Audio("res/audio/exploding.wav");
+        audiosList[AudioName.EAT_ITEM.ordinal()] = new Audio("res/audio/eatItem.wav");
+        audiosList[AudioName.CLICK_BUTTON.ordinal()] = new Audio("res/audio/clickButton.wav");
+        audiosList[AudioName.START_STAGE.ordinal()] = new Audio("res/audio/startStage.wav");
+        audiosList[AudioName.WIN_ONE.ordinal()] = new Audio("res/audio/winOne.wav");
+        audiosList[AudioName.WIN_ALL.ordinal()] = new Audio("res/audio/winAll.wav");
+    }
+
+    /**
+     * Control the background music for the game in each game status.
+     */
     public void run() {
         if (isMuted) {
             audiosList[AudioName.LOBBY.ordinal()].stop();
@@ -54,17 +65,6 @@ public class AudioController {
         }
     }
 
-    public AudioController() {
-        audiosList = new Audio[20];
-        audiosList[AudioName.LOBBY.ordinal()] = new Audio("res/audio/Title Screen.wav");
-        audiosList[AudioName.PLAYING.ordinal()] = new Audio("res/audio/playing.wav");
-        audiosList[AudioName.EXPLODING.ordinal()] = new Audio("res/audio/exploding.wav");
-        audiosList[AudioName.EAT_ITEM.ordinal()] = new Audio("res/audio/eatItem.wav");
-        audiosList[AudioName.CLICK_BUTTON.ordinal()] = new Audio("res/audio/clickButton.wav");
-        audiosList[AudioName.START_STAGE.ordinal()] = new Audio("res/audio/startStage.wav");
-        audiosList[AudioName.WIN_ONE.ordinal()] = new Audio("res/audio/winOne.wav");
-        audiosList[AudioName.WIN_ALL.ordinal()] = new Audio("res/audio/winAll.wav");
-    }
 
     public void playParallel(AudioName audioName, int time) {
         if (!isMuted && audioName != AudioName.CLICK_BUTTON) {

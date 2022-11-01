@@ -7,9 +7,9 @@ import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.map_graph.Map;
 
 public class CollisionManager {
-    private Map map;
-    private int CENTER_OBJECT_HEIGHT;
-    private int CENTER_OBJECT_WIDTH;
+    private final Map map;
+    private final int CENTER_OBJECT_HEIGHT;
+    private final int CENTER_OBJECT_WIDTH;
 
     /**
      * Constructor for collision.

@@ -78,8 +78,8 @@
         <columns>
           <TableColumn fx:id="rankColumn" editable="false" prefWidth="38.66666030883789" resizable="false" sortable="false" text="RANK" />
             <TableColumn fx:id="usernameColumn" editable="false" prefWidth="120.6666488647461" resizable="false" sortable="false" text="USERNAME" />
-          <TableColumn fx:id="pointColumn" editable="false" minWidth="0.0" prefWidth="97.33338928222656" resizable="false" sortType="DESCENDING" sortable="false" text="POINT" />
-            <TableColumn fx:id="timeColumn" editable="false" prefWidth="117.33331298828125" resizable="false" sortable="false" text="TIME" />
+          <TableColumn fx:id="pointColumn" editable="false" minWidth="0.0" prefWidth="66.66667175292969" resizable="false" sortType="DESCENDING" sortable="false" text="POINT" />
+            <TableColumn fx:id="timeColumn" editable="false" prefWidth="148.66668701171875" resizable="false" sortable="false" text="TIME" />
         </columns>
       </TableView>
    </children>

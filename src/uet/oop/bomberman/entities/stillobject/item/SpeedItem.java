@@ -5,7 +5,6 @@ import uet.oop.bomberman.entities.movingobject.Bomber;
 
 public class SpeedItem extends Item {
     public static final int code = 3;
-    private final int bonus = 1;
 
     /**
      * Constructor of speed item.

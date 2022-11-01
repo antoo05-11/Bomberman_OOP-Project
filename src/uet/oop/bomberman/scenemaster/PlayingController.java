@@ -29,6 +29,9 @@ import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.map_graph.Map;
 
 import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -69,15 +72,16 @@ public class PlayingController extends SceneController implements Initializable 
     VBox winOneImg;
     @FXML
     Text pointText;
+    @FXML
+    VBox winAllBox;
+    @FXML
+    private HBox livesImg;
     Timeline timeline;
     Timeline nextLevelTimeline;
     Timeline victoryTimeline;
     AtomicInteger timerCounter = new AtomicInteger(3);
     int curGamePoint = 0;
-    @FXML
-    VBox winAllBox;
-    @FXML
-    private HBox livesImg;
+
 
     /**
      * Initialize.
@@ -145,13 +149,13 @@ public class PlayingController extends SceneController implements Initializable 
             playingBox.getChildren().get(1).setOnKeyPressed(new EventHandler<KeyEvent>() {
                 @Override
                 public void handle(KeyEvent event) {
-                    ((Bomber) GameController.entities.get(LEVEL).get(0)).saveKeyEvent(event.getCode(), true);
+                    ((Bomber) gameController.getCurrentMap().getMovingEntitiesList().get(0)).saveKeyEvent(event.getCode(), true);
                 }
             });
             playingBox.getChildren().get(1).setOnKeyReleased(new EventHandler<KeyEvent>() {
                 @Override
                 public void handle(KeyEvent event) {
-                    ((Bomber) GameController.entities.get(LEVEL).get(0)).saveKeyEvent(event.getCode(), false);
+                    ((Bomber) gameController.getCurrentMap().getMovingEntitiesList().get(0)).saveKeyEvent(event.getCode(), false);
                 }
             });
             playingBox.getChildren().get(1).setFocusTraversable(true);
@@ -231,18 +235,18 @@ public class PlayingController extends SceneController implements Initializable 
                     // Update display.
                     levelText.setText("STAGE " + (LEVEL + 1));
                     maxBombs.setText(Integer.toString(Map.MAX_BOMB));
-                    muteLine.setVisible(GameController.audioController.isMuted());
-                    for (int i = 0; i < gameController.getNumOfLives(); i++)
+
+                    muteLine.setVisible(gameController.audioController.isMuted());
+                    for (int i = 0; i < gameController.getCurrentMap().getBomberNumOfLives(); i++)
                         livesImg.getChildren().get(i).setVisible(true);
-                    for (int i = gameController.getNumOfLives(); i < Bomber.MAX_LIVES; i++) {
+                    for (int i = gameController.getCurrentMap().getBomberNumOfLives(); i < Bomber.MAX_LIVES; i++) {
                         livesImg.getChildren().get(i).setVisible(false);
                     }
 
                     // Update logic game.
-                    GameController.entities.get(LEVEL).forEach(Entity::update);
-                    gameController.updateMapCamera();
-                    gameController.updateEntitiesList();
-
+                    gameController.getCurrentMap().getMovingEntitiesList().forEach(Entity::update);
+                    gameController.getCurrentMap().updateMapCamera();
+                    gameController.getCurrentMap().updateEntitiesList();
                 }
                 break;
             case GAME_PAUSE:
@@ -283,6 +287,10 @@ public class PlayingController extends SceneController implements Initializable 
                     winAllBox.setVisible(true);
                     gameController.resetAllLevel();
                 }
+                if (victoryTimeline.getStatus() == Animation.Status.STOPPED) {
+                    System.out.println(3456);
+
+                }
                 break;
             case GAME_LOSE:
                 updateRankingTable();
@@ -304,11 +312,13 @@ public class PlayingController extends SceneController implements Initializable 
             FileWriter fileWriter = new FileWriter(file, true);
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             Date date = new Date();
-            fileWriter.write("\n" + gameController.getUsername() + "\n" + gameController.getGamePoint() + " " + formatter.format(date));
+            String stringAppend = "\n" + gameController.getUsername() + "\n" + gameController.getGamePoint() + " " + formatter.format(date);
+            fileWriter.write(stringAppend);
             fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     /**

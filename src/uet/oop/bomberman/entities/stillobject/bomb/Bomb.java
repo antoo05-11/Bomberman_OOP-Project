@@ -26,7 +26,7 @@ public class Bomb extends StillObject {
         DISAPPEAR
     }
 
-    private Map map;
+    private final Map map;
     int waitForExplodingTime = 2; //2 seconds before exploding.
     int indexOfSprite = 0;
     protected BombStatus bombStatus;
@@ -163,7 +163,7 @@ public class Bomb extends StillObject {
                 }
                 return;
             } else if (nearTile instanceof Brick) {
-                //((Brick) nearTile).destroyBrick(xTile, yTile);
+              
                 if (bombStatus == BombStatus.EXPLODED) {
                     destroyBrick(xTile, yTile, (Brick) nearTile);
                     distance = (double) flameAroundDown.get(i).getY() / Sprite.SCALED_SIZE - (double) y / Sprite.SCALED_SIZE;
@@ -265,13 +265,11 @@ public class Bomb extends StillObject {
     }
 
     /**
-     * Get item from map.
-     *
-     * @param xTile int
-     * @param yTile int
-     * @return true/false
+     * @param xTile is x pos of brick.
+     * @param yTile is y pos of brick.
+     * @return true if existing item after brick.
      */
-    private boolean checkItems(int xTile, int yTile) {
+    private boolean hasItemAfterBrick(int xTile, int yTile) {
         switch (map.getItem(xTile, yTile)) {
             case SpeedItem.code:
             case FlameItem.code:
@@ -287,6 +285,9 @@ public class Bomb extends StillObject {
 
     /**
      * Check if a point in Pixel is inside bombList.
+     * @param xPos is x pos of bomber.
+     * @param yPos is y pos of bomber.
+     * @return true if bomber is inside bomb's exploding range.
      */
     public boolean insideBombRange_Pixel(int xPos, int yPos) {
         int xTile = xPos / Sprite.SCALED_SIZE;
@@ -371,11 +372,11 @@ public class Bomb extends StillObject {
             /*
               Check if moving objects inside bomb range.
              */
-            for (int i = entities.get(LEVEL).size() - 1; i >= 0; i--) {
-                int xBomberPos = entities.get(LEVEL).get(i).getX();
-                int yBomberPos = entities.get(LEVEL).get(i).getY();
+            for (int i = map.getMovingEntitiesList().size() - 1; i >= 0; i--) {
+                int xBomberPos = map.getMovingEntitiesList().get(i).getX();
+                int yBomberPos = map.getMovingEntitiesList().get(i).getY();
                 if (insideBombRange_Pixel(xBomberPos + Sprite.SCALED_SIZE / 2, yBomberPos + Sprite.SCALED_SIZE / 2)) {
-                    ((MovingObject) entities.get(LEVEL).get(i)).setObjectStatus(MovingObject.MovingObjectStatus.MORIBUND);
+                    ((MovingObject) map.getMovingEntitiesList().get(i)).setObjectStatus(MovingObject.MovingObjectStatus.MORIBUND);
                 }
             }
         }

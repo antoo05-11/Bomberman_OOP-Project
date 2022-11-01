@@ -5,6 +5,7 @@ import uet.oop.bomberman.CollisionManager;
 import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.movingobject.MovingObject;
 import uet.oop.bomberman.entities.movingobject.enemies.Balloom;
 import uet.oop.bomberman.entities.movingobject.enemies.Doll;
 import uet.oop.bomberman.entities.movingobject.enemies.Enemy;
@@ -19,6 +20,9 @@ import uet.oop.bomberman.entities.stillobject.Grass;
 import uet.oop.bomberman.entities.stillobject.Wall;
 import uet.oop.bomberman.graphics.Sprite;
 
+import uet.oop.bomberman.scenemaster.SceneController;
+
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -29,16 +33,9 @@ import static uet.oop.bomberman.BombermanGame.WIDTH;
 public class Map {
     private int widthTile;
     private int heightTile;
-
-    public int getWidthPixel() {
-        return widthTile * Sprite.SCALED_SIZE;
-    }
-
-    public int getHeightPixel() {
-        return heightTile * Sprite.SCALED_SIZE;
-    }
-
-    //private final List<List<Entity>> mapInfo = new ArrayList<>(); //Can be changed.
+    public static int MAX_BOMB = 3;
+    private final GameController gameController;
+    private List<Entity> movingEntitiesList;
     private Entity[][] mapInfo;
     int LEVEL;
     private Graph graph;
@@ -48,10 +45,19 @@ public class Map {
     protected int[][] listItem = new int[HEIGHT][WIDTH];
     protected int[][] listPortal = new int[HEIGHT][WIDTH];
 
-    public Map(int LEVEL) {
+    public Map(int LEVEL, GameController gameController) {
         this.LEVEL = LEVEL;
+        this.gameController = gameController;
         readMapFromFile();
         convertMapToGraph();
+    }
+
+    public int getWidthPixel() {
+        return widthTile * Sprite.SCALED_SIZE;
+    }
+
+    public int getHeightPixel() {
+        return heightTile * Sprite.SCALED_SIZE;
     }
 
     public List<Entity> getBombsList() {
@@ -86,16 +92,16 @@ public class Map {
         grassList = new Entity[heightTile][widthTile];
         bombsArr = new Entity[heightTile][widthTile];
         bombsList = new LinkedList<>();
+        movingEntitiesList = new ArrayList<>();
 
         for (int i = 0; i < heightTile; i++) {
             rowString = scanner.nextLine();
-            // mapInfo.add(new ArrayList<>());
             for (int j = 0; j < widthTile; j++) {
                 grassList[i][j] = new Grass(j, i, Sprite.grass.getFxImage());
                 switch (rowString.charAt(j)) {
                     case 'p':
                         Entity bomberman = new Bomber(j, i, new CollisionManager(this, Bomber.WIDTH, Bomber.HEIGHT));
-                        GameController.entities.get(LEVEL).add(bomberman);
+                        movingEntitiesList.add(bomberman);
                         break;
                     case '#':
                         mapInfo[i][j] = new Wall(j, i, Sprite.wall.getFxImage());
@@ -109,15 +115,15 @@ public class Map {
                         break;
                     case '1':
                         Enemy balloom = new Balloom(j, i, Sprite.balloom_left1.getFxImage(), new CollisionManager(this, Balloom.WIDTH, Balloom.HEIGHT));
-                        GameController.entities.get(LEVEL).add(balloom);
+                        movingEntitiesList.add(balloom);
                         break;
                     case '2':
-                        Enemy oneal = new Oneal(j, i, Sprite.oneal_right1.getFxImage(), new CollisionManager(this, Oneal.WIDTH, Oneal.HEIGHT), GameController.entities.get(LEVEL).get(0));
-                        GameController.entities.get(LEVEL).add(oneal);
+                        Enemy oneal = new Oneal(j, i, Sprite.oneal_right1.getFxImage(), new CollisionManager(this, Oneal.WIDTH, Oneal.HEIGHT), movingEntitiesList.get(0));
+                        movingEntitiesList.add(oneal);
                         break;
                     case '3':
                         Enemy doll = new Doll(j, i, Sprite.doll_right1.getFxImage(), new CollisionManager(this, Doll.WIDTH, Doll.HEIGHT));
-                        GameController.entities.get(LEVEL).add(doll);
+                        movingEntitiesList.add(doll);
                         break;
                     case 'b':
                         mapInfo[i][j] = new Brick(j, i, Sprite.brick.getFxImage());
@@ -140,9 +146,9 @@ public class Map {
     }
 
     /**
-     * Render still object.
+     * Render all list of map.
      */
-    public void mapRender(GraphicsContext gc) {
+    public void render(GraphicsContext gc) {
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
                 grassList[i][j].render(gc);
@@ -157,6 +163,7 @@ public class Map {
             }
         }
         for (Entity i : bombsList) i.render(gc);
+        for (Entity i : movingEntitiesList) i.render(gc);
     }
 
     /**
@@ -193,10 +200,10 @@ public class Map {
     }
 
     /**
-     * Read map again and refresh entities list in GameController class.
+     * Read map again and refresh entities list.
      */
     public void reset() {
-        GameController.entities.get(LEVEL).clear();
+        movingEntitiesList.clear();
         bombsArr = null;
         bombsList = null;
         mapInfo = null;
@@ -215,6 +222,7 @@ public class Map {
     /**
      * Read from mapInfo to graph.
      * Add all cells on map and add adj vertices into Graph.
+     * This method need be called after any change of any still element like brick, bomb.
      */
     public void convertMapToGraph() {
         List<Vertice> verticesList = new ArrayList<>();
@@ -269,7 +277,7 @@ public class Map {
     }
 
     /**
-     * Update bomb list.
+     * Update bombsList: If any bomb disappear, remove it from bomb linked list.
      */
     public void updateBombsList() {
         bombsList.forEach(Entity::update);
@@ -279,5 +287,64 @@ public class Map {
                 bombsList.remove(0);
                 convertMapToGraph();
             }
+    }
+
+    /**
+     * Update entities list (moving entities).
+     */
+    public void updateEntitiesList() {
+        for (int i = movingEntitiesList.size() - 1; i >= 0; i--) {
+            //Remove enemies died by bomb out of list.
+            if (movingEntitiesList.get(i) instanceof Enemy) {
+                if (((MovingObject) movingEntitiesList.get(i)).getObjectStatus() == MovingObject.MovingObjectStatus.DEAD) {
+                    gameController.plusPoint(((Enemy) movingEntitiesList.get(i)).getRewardPoint());
+                    movingEntitiesList.remove(i);
+                }
+            }
+        }
+    }
+
+    /**
+     * dx_gc and dy_gc is displacement of graphic context gc.
+     * These values are set along with the position of Bomber.
+     */
+    public static int dx_gc = 0, dy_gc = 0;
+
+    /**
+     * If xPixel of bomber < SCREEN_WIDTH/2, gc render (xPixel,yPixel) as usual.
+     * If SCREEN_WIDTH/2 < xPixel of bomber < MAP_WIDTH - SCREEN_WIDTH/2, gc decrease position of image by xPixel-SCREEN_WIDTH/2.
+     * If xPixel of bomber > MAP_WIDTH - SCREEN_WIDTH/2, gc  decrease position of image by MAP_WIDTH - SCREEN_WIDTH.
+     * All operations do same for y_pos rendering of gc.
+     */
+    public void updateMapCamera() {
+        int bomber_xPixel = movingEntitiesList.get(0).getX();
+        int bomber_yPixel = movingEntitiesList.get(0).getY();
+
+        if (bomber_xPixel < SceneController.SCREEN_WIDTH / 2) {
+            dx_gc = 0;
+        } else if (bomber_xPixel < getWidthPixel() - SceneController.SCREEN_WIDTH / 2) {
+            dx_gc = bomber_xPixel - SceneController.SCREEN_WIDTH / 2;
+        } else {
+            dx_gc = getWidthPixel() - SceneController.SCREEN_WIDTH;
+        }
+        if (bomber_yPixel < (SceneController.SCREEN_HEIGHT - 30) / 2) {
+            dy_gc = 0;
+        } else if (bomber_yPixel < getHeightPixel() - (SceneController.SCREEN_HEIGHT - 30) / 2) {
+            dy_gc = bomber_yPixel - (SceneController.SCREEN_HEIGHT - 30) / 2;
+        } else {
+            dy_gc = getHeightPixel() - (SceneController.SCREEN_HEIGHT - 30);
+        }
+    }
+
+    public int getBomberNumOfLives() {
+        return ((Bomber) movingEntitiesList.get(0)).getNumOfLives();
+    }
+
+    public void setBomberNumOfLives(int num) {
+        ((Bomber) movingEntitiesList.get(0)).setNumOfLives(num);
+    }
+
+    public List<Entity> getMovingEntitiesList() {
+        return movingEntitiesList;
     }
 }

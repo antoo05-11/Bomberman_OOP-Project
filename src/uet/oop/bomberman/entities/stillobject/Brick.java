@@ -19,6 +19,7 @@ public class Brick extends StillObject implements CannotBePassedThrough {
     /**
      * Destroy brick animation.
      */
+
     public void destroyBrick(int xTile, int yTile) {
         indexOfSprite++;
         setImg(Sprite.movingSprite(Sprite.brick_exploded,
