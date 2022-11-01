@@ -1,17 +1,17 @@
 package uet.oop.bomberman.entities.stillobject.bomb;
 
 import javafx.scene.canvas.GraphicsContext;
+
 import uet.oop.bomberman.entities.CannotBePassedThrough;
 import uet.oop.bomberman.map_graph.Map;
 import uet.oop.bomberman.entities.CanBePassedThrough;
-import uet.oop.bomberman.entities.stillobject.Grass;
 import uet.oop.bomberman.entities.stillobject.StillObject;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class FlameAround extends StillObject implements CanBePassedThrough {
-    int indexOfSprite = 0;
+    private int indexOfSprite = 0;
 
-    enum FlameType {
+    protected enum FlameType {
         TOP,
         DOWN,
         LEFT,
@@ -29,6 +29,9 @@ public class FlameAround extends StillObject implements CanBePassedThrough {
         return flameStatus;
     }
 
+    /**
+     * Constructor for flame.
+     */
     public FlameAround(int xUnit, int yUnit, FlameType type, Map map) {
         super(xUnit, yUnit, null);
         switch (type) {
@@ -54,16 +57,22 @@ public class FlameAround extends StillObject implements CanBePassedThrough {
                 setImg(Sprite.explosion_vertical);
                 break;
         }
-
         this.type = type;
         this.map = map;
         flameStatus = Bomb.BombStatus.NotExplodedYet;
     }
 
+    /**
+     * This is set flame status.
+     * @param flameStatus BombStatus
+     */
     public void setFlameStatus(Bomb.BombStatus flameStatus) {
         this.flameStatus = flameStatus;
     }
 
+    /**
+     * This is update.
+     */
     @Override
     public void update() {
         if (flameStatus == Bomb.BombStatus.EXPLODED) {
@@ -118,6 +127,10 @@ public class FlameAround extends StillObject implements CanBePassedThrough {
         }
     }
 
+    /**
+     * This is render.
+     * @param gc GraphicsContext
+     */
     @Override
     public void render(GraphicsContext gc) {
         if (!(map.getEntityAt(x, y) instanceof CannotBePassedThrough)) {

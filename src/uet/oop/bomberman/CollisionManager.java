@@ -11,6 +11,9 @@ public class CollisionManager {
     private final int CENTER_OBJECT_HEIGHT;
     private final int CENTER_OBJECT_WIDTH;
 
+    /**
+     * Constructor for collision.
+     */
     public CollisionManager(Map map, int objectWidth, int objectHeight) {
         this.map = map;
         CENTER_OBJECT_WIDTH = objectWidth;
@@ -31,9 +34,7 @@ public class CollisionManager {
      * x and y are pixel position of object,
      * dir and speed is updated continually.
      */
-    public boolean collide(int x, int y, String dir, int OBJECT_SPEED) {
-        int curX = x;
-        int curY = y;
+    public boolean collide(int curX, int curY, String dir, int OBJECT_SPEED) {
         switch (dir) {
             case "UP":
                 curY -= OBJECT_SPEED;
@@ -56,6 +57,13 @@ public class CollisionManager {
                 || downLeft instanceof CannotBePassedThrough || downRight instanceof CannotBePassedThrough;
     }
 
+    /**
+     * Check if enemy collide with bomb and change speed.
+     * @param enemy Enemy
+     * @param dir String
+     * @param OBJECT_SPEED int
+     * @return true/false
+     */
     public boolean collideBomb(Enemy enemy, String dir, int OBJECT_SPEED) {
         int curX = enemy.getX(), curY = enemy.getY();
         switch (dir) {
@@ -91,5 +99,4 @@ public class CollisionManager {
         }
         return false;
     }
-
 }

@@ -11,6 +11,9 @@ public class Graph {
     private final List<Vertice> verticesList;
     private final List<Integer>[] adj;
 
+    /**
+     * Constructor for graph.
+     */
     public Graph(List<Vertice> verticesList) {
         this.verticesList = verticesList;
         numOfVertices = verticesList.size();
@@ -20,11 +23,19 @@ public class Graph {
         }
     }
 
+    /**
+     * Add adj vertices.
+     * @param v1 int
+     * @param v2 int
+     */
     public void addAdjVertice(int v1, int v2) {
         adj[v1].add(v2);
         adj[v2].add(v1);
     }
 
+    /**
+     * This is to string.
+     */
     @Override
     public String toString() {
         String graphInfo = "New graph: \n";
@@ -38,6 +49,9 @@ public class Graph {
         return graphInfo;
     }
 
+    /**
+     * BFS algorithm.
+     */
     public List<Vertice> breathFirstSearch(int start, int end) {
         boolean[] marked = new boolean[numOfVertices];
         int[] trace = new int[numOfVertices];
@@ -81,6 +95,9 @@ public class Graph {
 
     }
 
+    /**
+     * Get vertice index.
+     */
     public static int getVerticeIndex(int xPixel, int yPixel) {
         int x = xPixel / Sprite.SCALED_SIZE;
         int y = yPixel / Sprite.SCALED_SIZE;

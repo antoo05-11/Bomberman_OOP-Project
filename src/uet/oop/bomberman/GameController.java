@@ -21,7 +21,7 @@ import java.util.Objects;
 
 public class GameController {
     /**
-     * Game status control
+     * Game status control.
      */
     public enum GameStatus {
         GAME_LOBBY,
@@ -157,10 +157,16 @@ public class GameController {
         }
     }
 
+    /**
+     * Reset level point.
+     */
     public void resetLevelPoint() {
         levelPoint = 0;
     }
 
+    /**
+     * Reset current level after died.
+     */
     public void resetCurrentLevel() {
         gamePoint -= levelPoint;
         levelPoint = 0;
@@ -169,6 +175,9 @@ public class GameController {
         mapList.get(LEVEL).setBomberNumOfLives(numOfLives);
     }
 
+    /**
+     * Reset all level.
+     */
     public void resetAllLevel() {
         gamePoint = 0;
         levelPoint = 0;
@@ -178,11 +187,16 @@ public class GameController {
         LEVEL = 0;
     }
 
+    /**
+     * Get username.
+     */
     public String getUsername() {
         return username;
     }
 
-
+    /**
+     * Get game points.
+     */
     public int getGamePoint() {
         return gamePoint;
     }

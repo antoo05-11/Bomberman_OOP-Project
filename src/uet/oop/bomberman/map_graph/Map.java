@@ -19,7 +19,9 @@ import uet.oop.bomberman.entities.stillobject.Brick;
 import uet.oop.bomberman.entities.stillobject.Grass;
 import uet.oop.bomberman.entities.stillobject.Wall;
 import uet.oop.bomberman.graphics.Sprite;
+
 import uet.oop.bomberman.scenemaster.SceneController;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,7 +33,7 @@ import static uet.oop.bomberman.BombermanGame.WIDTH;
 public class Map {
     private int widthTile;
     private int heightTile;
-    public static int MAX_BOMB = 3;
+    //public static int MAX_BOMB = 3;
     private final GameController gameController;
     private List<Entity> movingEntitiesList;
     private Entity[][] mapInfo;
@@ -164,14 +166,35 @@ public class Map {
         for (Entity i : movingEntitiesList) i.render(gc);
     }
 
+    /**
+     * Get entity in map.
+     *
+     * @param x int
+     * @param y int
+     * @return Entity
+     */
     public Entity getEntityAt(int x, int y) {
         return mapInfo[y / Sprite.SCALED_SIZE][x / Sprite.SCALED_SIZE];
     }
 
+    /**
+     * Get item in map.
+     *
+     * @param xPos int
+     * @param yPos int
+     * @return listItem
+     */
     public int getItem(int xPos, int yPos) {
         return listItem[yPos][xPos];
     }
 
+    /**
+     * Get portal in map.
+     *
+     * @param xPos int
+     * @param yPos int
+     * @return listPortal
+     */
     public int getPortal(int xPos, int yPos) {
         return listPortal[yPos][xPos];
     }
@@ -233,8 +256,13 @@ public class Map {
         }
     }
 
+    public static int MAX_BOMB = 3;
+
     /**
-     * Set bomb if bombArr at current position be null.
+     * Set bomb for bomber.
+     *
+     * @param xPixel int
+     * @param yPixel int
      */
     public void setBomb(int xPixel, int yPixel) {
         if (bombsList.size() < MAX_BOMB) {

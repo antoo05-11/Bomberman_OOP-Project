@@ -28,6 +28,7 @@ import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.map_graph.Map;
 
+import java.io.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -82,19 +83,22 @@ public class PlayingController extends SceneController implements Initializable 
     int curGamePoint = 0;
 
 
+    /**
+     * Initialize.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         URL playingURL = BombermanGame.class.getResource("/UI_fxml/PlayingScene.fxml");
         if (location.equals(playingURL)) {
 
             //Add playing canvas from gameController
-            playingBox.getChildren().add(gameController.playingCanvas);
+            playingBox.getChildren().add(GameController.playingCanvas);
 
             levelText.setText("LEVEL " + LEVEL);
             pointText.setText(Integer.toString(curGamePoint));
 
             // Set status of mute line for audio button.
-            muteLine.setVisible(gameController.audioController.isMuted());
+            muteLine.setVisible(GameController.audioController.isMuted());
 
             //Click pause button
             pauseButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -123,7 +127,7 @@ public class PlayingController extends SceneController implements Initializable 
             audioButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    gameController.audioController.setMuted(!gameController.audioController.isMuted());
+                    GameController.audioController.setMuted(!GameController.audioController.isMuted());
                 }
             });
 
@@ -183,7 +187,8 @@ public class PlayingController extends SceneController implements Initializable 
                     event -> {
                         timerCounter.decrementAndGet();
                         if (timerCounter.get() <= 0) {
-                            if (LEVEL < GameController.MAX_LEVEL && GameController.gameStatus == GameController.GameStatus.WIN_ONE) {
+
+                            if (LEVEL < GameController.MAX_LEVEL && GameController.gameStatus == WIN_ONE) {
                                 LEVEL++;
                                 GameController.gameStatus = GameController.GameStatus.GAME_START;
                             } else {
@@ -208,7 +213,7 @@ public class PlayingController extends SceneController implements Initializable 
      * Update status for all game events include timers, status bar.
      */
     public void updateStatus() {
-        switch (gameController.gameStatus) {
+        switch (GameController.gameStatus) {
             case GAME_START:
                 if (nextLevelTimeline.getStatus() == Animation.Status.STOPPED) {
                     nextLevelBox.setVisible(true);
@@ -230,6 +235,7 @@ public class PlayingController extends SceneController implements Initializable 
                     // Update display.
                     levelText.setText("STAGE " + (LEVEL + 1));
                     maxBombs.setText(Integer.toString(Map.MAX_BOMB));
+
                     muteLine.setVisible(gameController.audioController.isMuted());
                     for (int i = 0; i < gameController.getCurrentMap().getBomberNumOfLives(); i++)
                         livesImg.getChildren().get(i).setVisible(true);
@@ -248,7 +254,7 @@ public class PlayingController extends SceneController implements Initializable 
                 break;
             case GAME_UNPAUSE:
                 timeline.play();
-                gameController.gameStatus = GAME_PLAYING;
+                GameController.gameStatus = GAME_PLAYING;
                 break;
             case LOAD_CURRENT_LEVEL:
                 // Game display.
@@ -256,7 +262,7 @@ public class PlayingController extends SceneController implements Initializable 
 
                 // Logic game
                 gameController.resetCurrentLevel();
-                gameController.gameStatus = GAME_PLAYING;
+                GameController.gameStatus = GAME_PLAYING;
                 break;
             case WIN_ONE:
                 if (curGamePoint < gameController.getGamePoint()) {
@@ -291,12 +297,15 @@ public class PlayingController extends SceneController implements Initializable 
                 gameController.resetAllLevel();
                 curGamePoint = 0;
                 stage.setScene(lobbyScene);
-                gameController.gameStatus = GAME_LOBBY;
+                GameController.gameStatus = GAME_LOBBY;
                 timeline.stop();
                 break;
         }
     }
 
+    /**
+     * Update ranking table.
+     */
     public void updateRankingTable() {
         File file = new File("res/lobbyTexture/ranking.txt");
         try {
@@ -312,6 +321,9 @@ public class PlayingController extends SceneController implements Initializable 
 
     }
 
+    /**
+     * Set lobby scene.
+     */
     public void setLobbyScene(Scene lobbyScene) {
         this.lobbyScene = lobbyScene;
     }

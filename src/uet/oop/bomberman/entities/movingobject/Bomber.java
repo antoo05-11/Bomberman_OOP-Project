@@ -1,27 +1,26 @@
 package uet.oop.bomberman.entities.movingobject;
 
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import uet.oop.bomberman.CollisionManager;
 import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.audiomaster.AudioController;
-import uet.oop.bomberman.entities.CanBePassedThrough;
 import uet.oop.bomberman.entities.CannotBePassedThrough;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.stillobject.Portal;
-import uet.oop.bomberman.entities.stillobject.bomb.Bomb;
 import uet.oop.bomberman.entities.movingobject.enemies.Enemy;
 import uet.oop.bomberman.entities.stillobject.item.Item;
 import uet.oop.bomberman.graphics.Sprite;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import static uet.oop.bomberman.GameController.*;
 
 public class Bomber extends MovingObject {
     public static final int MAX_LIVES = 3;
-
+    int numOfLives = 3;
+    public static int SPEED = 2;
+    public static int BOMB_RADIUS = 1;
+    CollisionManager collisionManager;
     public void setNumOfLives(int numOfLives) {
         this.numOfLives = numOfLives;
     }
@@ -29,42 +28,30 @@ public class Bomber extends MovingObject {
     public int getNumOfLives() {
         return numOfLives;
     }
-
-    /**
-     * Bomber status
-     */
-
-
-    int numOfLives = 3;
-
-
     /**
      * Bomber size
      */
-
     public static final int HEIGHT = Sprite.SCALED_SIZE * 30 / 32;
     public static final int WIDTH = Sprite.SCALED_SIZE * 20 / 32;
     private static final int FIX_SIZE = Sprite.SCALED_SIZE * 11 / 32;
+
     /**
      * Direction check and bombed check.
      */
-    public boolean goLeft = false;
-    public boolean goRight = false;
-    public boolean goUp = false;
-    public boolean goDown = false;
+    private boolean goLeft = false;
+    private boolean goRight = false;
+    private boolean goUp = false;
+    private boolean goDown = false;
     private boolean bombed = false;
     private KeyCode latestDirectKey = KeyCode.RIGHT;
+    
+    private List<Entity> bombsList;
 
     private final List<Entity> movingEntitiesList;
-    public List<Entity> bombsList;
 
-
-    CollisionManager collisionManager;
-
-
-    public static int SPEED = 2;
-    public static int BOMB_RADIUS = 1;
-
+    /**
+     * Reset status of bomber.
+     */
     void reset() {
         SPEED = 3;
         BOMB_RADIUS = 1;
@@ -72,6 +59,9 @@ public class Bomber extends MovingObject {
         setImg(Sprite.player_right);
     }
 
+    /**
+     * Constructor of bomber.
+     */
     public Bomber(int x, int y, CollisionManager collisionManager) {
         super(x, y, null);
         reset();
@@ -80,6 +70,9 @@ public class Bomber extends MovingObject {
         movingEntitiesList = collisionManager.getMap().getMovingEntitiesList();
     }
 
+    /**
+     * Save key code.
+     */
     public void saveKeyEvent(KeyCode keyCode, boolean isPress) {
         if (keyCode.isArrowKey()) {
             switch (keyCode) {
@@ -106,6 +99,9 @@ public class Bomber extends MovingObject {
         }
     }
 
+    /**
+     * Update bomber status.
+     */
     private void updateBomberStatus() {
         /*
           Died because of colliding with oneal and balloom.
@@ -118,6 +114,9 @@ public class Bomber extends MovingObject {
         }
     }
 
+    /**
+     * Set bomb for bomber.
+     */
     private void setBomb() {
         if (bombed) {
             collisionManager.getMap().setBomb(x + Bomber.WIDTH / 2,
@@ -126,6 +125,9 @@ public class Bomber extends MovingObject {
         }
     }
 
+    /**
+     * Make bomber move.
+     */
     private void moving() {
         if (goUp || goDown || goRight || goLeft) indexOfSprite++;
         else {
@@ -222,7 +224,9 @@ public class Bomber extends MovingObject {
         }
     }
 
-
+    /**
+     * Update item list.
+     */
     private void updateItemsList() {
 
         int Bomber_xPixel = movingEntitiesList.get(0).getX();
@@ -238,6 +242,9 @@ public class Bomber extends MovingObject {
         }
     }
 
+    /**
+     * Update portal.
+     */
     private void updatePortal() {
         if (collisionManager.getMap().getEntityAt(x + Bomber.WIDTH / 2, y + Bomber.HEIGHT / 2) instanceof Portal) {
             if (movingEntitiesList.size() == 1) {
@@ -262,7 +269,9 @@ public class Bomber extends MovingObject {
         }
     }
 
-
+    /**
+     * This is update.
+     */
     @Override
     public void update() {
         if (objectStatus == MovingObjectStatus.ALIVE) {

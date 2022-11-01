@@ -18,10 +18,6 @@ public abstract class Enemy extends MovingObject {
     Sprite[] rightSprites;
     Sprite[] deadSprites;
 
-    public Enemy(int xUnit, int yUnit, Image img) {
-        super(xUnit, yUnit, img);
-    }
-
     /**
      * Load sprite of types of enemies into sprites lists.
      */
@@ -64,6 +60,9 @@ public abstract class Enemy extends MovingObject {
         }
     }
 
+    /**
+     * Constructor for enemy.
+     */
     public Enemy(int xUnit, int yUnit, Image img, CollisionManager collisionManager) {
         super(xUnit, yUnit, img);
         this.collisionManager = collisionManager;
@@ -159,15 +158,20 @@ public abstract class Enemy extends MovingObject {
     }
 
     /**
-     * @return True if enemy colliding bomber.
+     * Check if enemy collide with bomber.
+     *
+     * @param xPixel int
+     * @param yPixel int
+     * @return true/false
      */
     public boolean collideBomber(int xPixel, int yPixel) {
         if (xPixel + Bomber.WIDTH < x || xPixel > x + Sprite.SCALED_SIZE) return false;
-        if (yPixel + Bomber.HEIGHT < y || yPixel > y + Sprite.SCALED_SIZE) return false;
-        return true;
+        return yPixel + Bomber.HEIGHT >= y && yPixel <= y + Sprite.SCALED_SIZE;
     }
 
     /**
+     * Get points from enemy type.
+     *
      * @return Reward point for types of dead enemies.
      */
     public int getRewardPoint() {
