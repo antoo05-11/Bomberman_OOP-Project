@@ -49,8 +49,6 @@ public class Bomber extends MovingObject {
 
     private final List<Entity> movingEntitiesList;
 
-    CollisionManager collisionManager;
-
     /**
      * Reset status of bomber.
      */

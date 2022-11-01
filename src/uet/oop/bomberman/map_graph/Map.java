@@ -33,7 +33,7 @@ import static uet.oop.bomberman.BombermanGame.WIDTH;
 public class Map {
     private int widthTile;
     private int heightTile;
-    public static int MAX_BOMB = 3;
+    //public static int MAX_BOMB = 3;
     private final GameController gameController;
     private List<Entity> movingEntitiesList;
     private Entity[][] mapInfo;

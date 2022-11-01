@@ -135,7 +135,7 @@ public class Bomb extends StillObject {
      */
     private void destroyBrick(int xTile, int yTile, Brick nearTile) {
         nearTile.destroyBrick(xTile, yTile);
-        if (checkItems(xTile, yTile)) {
+        if (hasItemAfterBrick(xTile, yTile)) {
             entitiesAfterBrick.add(addItems(xTile, yTile));
         }
         if (checkPortal(xTile, yTile)) {
