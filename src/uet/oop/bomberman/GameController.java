@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.map_graph.Map;
@@ -12,6 +13,7 @@ import uet.oop.bomberman.scenemaster.LobbyController;
 import uet.oop.bomberman.scenemaster.PlayingController;
 import uet.oop.bomberman.scenemaster.SceneController;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,6 +96,7 @@ public class GameController {
     /**
      * Timer for scenes.
      */
+
     AnimationTimer timer = new AnimationTimer() {
         @Override
         public void handle(long now) {
@@ -103,10 +106,12 @@ public class GameController {
     };
 
 
+
     /**
      * Run game engine.
      */
     public void run() {
+
         FXMLLoader fxmlLoader1 = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/UI_fxml/LobbyScene.fxml")));
         FXMLLoader fxmlLoader2 = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/UI_fxml/PlayingScene.fxml")));
         try {
