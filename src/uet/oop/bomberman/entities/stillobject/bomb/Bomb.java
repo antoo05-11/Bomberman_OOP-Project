@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 
 import uet.oop.bomberman.entities.movingobject.MovingObject;
 import uet.oop.bomberman.entities.stillobject.*;
+import uet.oop.bomberman.entities.stillobject.item.Item;
 import uet.oop.bomberman.map_graph.Map;
 import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.entities.movingobject.Bomber;
@@ -25,8 +26,6 @@ public class Bomb extends StillObject {
         EXPLODED,
         DISAPPEAR
     }
-
-    private final Map map;
     int waitForExplodingTime = 2; //2 seconds before exploding.
     int indexOfSprite = 0;
     protected BombStatus bombStatus;
@@ -36,8 +35,7 @@ public class Bomb extends StillObject {
     protected List<Entity> flameAroundLeft = new ArrayList<>();
     protected List<Entity> flameAroundRight = new ArrayList<>();
     protected List<Entity> bricksDestroyed = new ArrayList<>();
-    protected List<Entity> entitiesAfterBrick = new ArrayList<>();
-
+    Bomber bomber;
     /**
      * Timer and task for counting 3 seconds before exploding.
      */
@@ -79,22 +77,22 @@ public class Bomb extends StillObject {
     /**
      * Constructor for Bomb, run timer and add all flame sprite around.
      */
-    public Bomb(int x, int y, Image img, Map map) {
-        super(x, y, img);
-        this.map = map;
+    public Bomb(int x, int y, Map map) {
+        super(x, y, Sprite.bomb.getFxImage(), map);
+        bomber = (Bomber) map.getMovingEntitiesList().get(0);
         timer.schedule(task, 0, 1000);
         bombStatus = BombStatus.NotExplodedYet;
         flameAroundCenter = new FlameAround(x, y, FlameAround.FlameType.CENTER, map);
-        for (int i = 1; i < Bomber.BOMB_RADIUS; i++) {
+        for (int i = 1; i < bomber.getBombRadius(); i++) {
             flameAroundTop.add(new FlameAround(x, y - i, FlameAround.FlameType.VERTICAL, map));
             flameAroundDown.add(new FlameAround(x, y + i, FlameAround.FlameType.VERTICAL, map));
             flameAroundLeft.add(new FlameAround(x - i, y, FlameAround.FlameType.HORIZON, map));
             flameAroundRight.add(new FlameAround(x + i, y, FlameAround.FlameType.HORIZON, map));
         }
-        flameAroundTop.add(new FlameAround(x, y - Bomber.BOMB_RADIUS, FlameAround.FlameType.TOP, map));
-        flameAroundDown.add(new FlameAround(x, y + Bomber.BOMB_RADIUS, FlameAround.FlameType.DOWN, map));
-        flameAroundLeft.add(new FlameAround(x - Bomber.BOMB_RADIUS, y, FlameAround.FlameType.LEFT, map));
-        flameAroundRight.add(new FlameAround(x + Bomber.BOMB_RADIUS, y, FlameAround.FlameType.RIGHT, map));
+        flameAroundTop.add(new FlameAround(x, y - bomber.getBombRadius(), FlameAround.FlameType.TOP, map));
+        flameAroundDown.add(new FlameAround(x, y + bomber.getBombRadius(), FlameAround.FlameType.DOWN, map));
+        flameAroundLeft.add(new FlameAround(x - bomber.getBombRadius(), y, FlameAround.FlameType.LEFT, map));
+        flameAroundRight.add(new FlameAround(x + bomber.getBombRadius(), y, FlameAround.FlameType.RIGHT, map));
     }
 
     /**
@@ -135,13 +133,7 @@ public class Bomb extends StillObject {
      */
     private void destroyBrick(int xTile, int yTile, Brick nearTile) {
         nearTile.destroyBrick(xTile, yTile);
-        if (hasItemAfterBrick(xTile, yTile)) {
-            entitiesAfterBrick.add(addItems(xTile, yTile));
-        }
-        if (checkPortal(xTile, yTile)) {
-            entitiesAfterBrick.add(new Portal(xTile, yTile, Sprite.portal.getFxImage()));
-        }
-        map.convertMapToGraph();
+        map.removeInMapInfo(xTile, yTile);
     }
 
     /**
@@ -163,7 +155,6 @@ public class Bomb extends StillObject {
                 }
                 return;
             } else if (nearTile instanceof Brick) {
-              
                 if (bombStatus == BombStatus.EXPLODED) {
                     destroyBrick(xTile, yTile, (Brick) nearTile);
                     distance = (double) flameAroundDown.get(i).getY() / Sprite.SCALED_SIZE - (double) y / Sprite.SCALED_SIZE;
@@ -234,50 +225,7 @@ public class Bomb extends StillObject {
 
     }
 
-    /**
-     * Get portal from map.
-     *
-     * @param xTile int
-     * @param yTile int
-     * @return true/false
-     */
-    private boolean checkPortal(int xTile, int yTile) {
-        return map.getPortal(xTile, yTile) == 4;
-    }
 
-    /**
-     * Add item to entitiesAfterBrick.
-     *
-     * @param xTile int
-     * @param yTile int
-     * @return Items
-     */
-    private Entity addItems(int xTile, int yTile) {
-        switch (map.getItem(xTile, yTile)) {
-            case SpeedItem.code:
-                return new SpeedItem(xTile, yTile, Sprite.powerup_speed.getFxImage());
-            case FlameItem.code:
-                return new FlameItem(xTile, yTile, Sprite.powerup_flames.getFxImage());
-            case BombItem.code:
-                return new BombItem(xTile, yTile, Sprite.powerup_bombs.getFxImage());
-        }
-        return null;
-    }
-
-    /**
-     * @param xTile is x pos of brick.
-     * @param yTile is y pos of brick.
-     * @return true if existing item after brick.
-     */
-    private boolean hasItemAfterBrick(int xTile, int yTile) {
-        switch (map.getItem(xTile, yTile)) {
-            case SpeedItem.code:
-            case FlameItem.code:
-            case BombItem.code:
-                return true;
-        }
-        return false;
-    }
 
     public BombStatus getBombStatus() {
         return bombStatus;
@@ -378,13 +326,6 @@ public class Bomb extends StillObject {
                 if (insideBombRange_Pixel(xBomberPos + Sprite.SCALED_SIZE / 2, yBomberPos + Sprite.SCALED_SIZE / 2)) {
                     ((MovingObject) map.getMovingEntitiesList().get(i)).setObjectStatus(MovingObject.MovingObjectStatus.MORIBUND);
                 }
-            }
-        }
-        if (bombStatus == BombStatus.DISAPPEAR) {
-            for (Entity entity : entitiesAfterBrick) {
-                int xTile = entity.getX() / Sprite.SCALED_SIZE;
-                int yTile = entity.getY() / Sprite.SCALED_SIZE;
-                map.replace(yTile, xTile, entity);
             }
         }
     }

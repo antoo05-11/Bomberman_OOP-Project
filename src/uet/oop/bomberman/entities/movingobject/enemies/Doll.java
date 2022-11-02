@@ -1,108 +1,35 @@
 package uet.oop.bomberman.entities.movingobject.enemies;
 
-import javafx.scene.image.Image;
-import uet.oop.bomberman.CollisionManager;
-import uet.oop.bomberman.GameController;
-import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.map_graph.CollisionManager;
 import uet.oop.bomberman.entities.stillobject.Wall;
+import uet.oop.bomberman.entities.stillobject.bomb.Bomb;
 import uet.oop.bomberman.graphics.Sprite;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Doll extends Enemy implements MediumEnemy {
+    public static final List<Class> cannotPassEntityList = Arrays.asList(new Class[] {Wall.class, Bomb.class});
+
     /**
      * Constructor of Doll.
      */
-    public Doll(int xUnit, int yUnit, Image img, CollisionManager collisionManager) {
-        super(xUnit, yUnit, img, collisionManager);
+    public Doll(int xUnit, int yUnit, CollisionManager collisionManager) {
+        super(xUnit, yUnit, Sprite.doll_right1.getFxImage(), collisionManager);
     }
 
-    /**
-     * Random moving for Doll.
-     */
     @Override
-    public void randomMoving() {
-        indexOfSprite++;
-        if (!changeDirection) {
-            int rand = (int) (Math.random() * 10);
-            switch (rand % 4) {
-                case 0:
-                    dir = "LEFT";
-                    break;
-                case 1:
-                    dir = "RIGHT";
-                    break;
-                case 2:
-                    dir = "UP";
-                    break;
-                case 3:
-                    dir = "DOWN";
-                    break;
-                default:
-                    break;
-            }
-        }
-        if (collideForDoll(x, y, dir, SPEED)
-                || collisionManager.collideBomb(this, dir, SPEED)) {
-            changeDirection = false;
-            indexOfSprite = 0;
-        } else {
-            if (dir.equals("LEFT")) {
-                x -= SPEED;
-                setImg(Sprite.movingSprite(
-                        leftSprites[0],
-                        leftSprites[1],
-                        leftSprites[2], indexOfSprite, 20));
-            }
-            if (dir.equals("RIGHT")) {
-                x += SPEED;
-                setImg(Sprite.movingSprite(
-                        rightSprites[0],
-                        rightSprites[1],
-                        rightSprites[2], indexOfSprite, 20));
-            }
-            if (dir.equals("UP")) {
-                y -= SPEED;
-                setImg(Sprite.movingSprite(
-                        rightSprites[0],
-                        rightSprites[1],
-                        rightSprites[2], indexOfSprite, 20));
-            }
-            if (dir.equals("DOWN")) {
-                y += SPEED;
-                setImg(Sprite.movingSprite(
-                        leftSprites[0],
-                        leftSprites[1],
-                        leftSprites[2], indexOfSprite, 20));
-            }
-            changeDirection = true;
-        }
-    }
-
-    /**
-     * Make Doll go through wall.
-     */
-    public boolean collideForDoll(int x, int y, String dir, int OBJECT_SPEED) {
-        int curX = x;
-        int curY = y;
-        switch (dir) {
-            case "UP":
-                curY -= OBJECT_SPEED;
-                break;
-            case "DOWN":
-                curY += OBJECT_SPEED;
-                break;
-            case "LEFT":
-                curX -= OBJECT_SPEED;
-                break;
-            case "RIGHT":
-                curX += OBJECT_SPEED;
-                break;
-        }
-        Entity topLeft = GameController.mapList.get(GameController.LEVEL).getEntityAt(curX, curY);
-        Entity topRight = GameController.mapList.get(GameController.LEVEL).getEntityAt(curX + WIDTH, curY);
-        Entity downLeft = GameController.mapList.get(GameController.LEVEL).getEntityAt(curX, curY + HEIGHT);
-        Entity downRight = GameController.mapList.get(GameController.LEVEL).getEntityAt(curX + WIDTH, curY + HEIGHT);
-        return topLeft instanceof Wall || topRight instanceof Wall
-                || downLeft instanceof Wall || downRight instanceof Wall;
+    public void loadSprite() {
+        leftSprites = new Sprite[3];
+        rightSprites = new Sprite[3];
+        deadSprites = new Sprite[1];
+        leftSprites[0] = Sprite.doll_left1;
+        leftSprites[1] = Sprite.doll_left2;
+        leftSprites[2] = Sprite.doll_left3;
+        rightSprites[0] = Sprite.doll_right1;
+        rightSprites[1] = Sprite.doll_right2;
+        rightSprites[2] = Sprite.doll_right3;
+        deadSprites[0] = Sprite.doll_dead;
     }
 
     /**
@@ -110,6 +37,11 @@ public class Doll extends Enemy implements MediumEnemy {
      */
     @Override
     public void move() {
-        randomMoving();
+        randomMovingWhenCollidingWithWall();
+    }
+
+    @Override
+    public List<Class> getCannotPassEntityList() {
+        return cannotPassEntityList;
     }
 }

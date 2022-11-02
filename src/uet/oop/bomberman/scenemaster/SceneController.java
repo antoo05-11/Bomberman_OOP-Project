@@ -7,6 +7,7 @@ import javafx.scene.effect.Glow;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import uet.oop.bomberman.GameController;
+import uet.oop.bomberman.Level;
 import uet.oop.bomberman.audiomaster.AudioController;
 
 public abstract class SceneController {

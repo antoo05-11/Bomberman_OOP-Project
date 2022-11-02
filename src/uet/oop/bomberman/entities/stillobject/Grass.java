@@ -1,14 +1,12 @@
 package uet.oop.bomberman.entities.stillobject;
+import uet.oop.bomberman.graphics.Sprite;
 
-import javafx.scene.image.Image;
-import uet.oop.bomberman.entities.CanBePassedThrough;
-
-public class Grass extends StillObject implements CanBePassedThrough {
+public class Grass extends StillObject {
     /**
      * Constructor of grass.
      */
-    public Grass(int x, int y, Image img) {
-        super(x, y, img);
+    public Grass(int x, int y) {
+        super(x, y, Sprite.grass.getFxImage(), null);
     }
 
     /**

@@ -88,20 +88,5 @@ public class AudioController {
                     i.stop();
             }
         }
-
     }
-
-    public void playAlone(AudioName audioName, int time) {
-        if (!isMuted) {
-            for (int i = 0; i < audiosList.length; i++) {
-                if (i != audioName.ordinal()) {
-                    if (audiosList[i] != null) {
-                        audiosList[i].stop();
-                    }
-                }
-            }
-            audiosList[audioName.ordinal()].play(time);
-        }
-    }
-
 }

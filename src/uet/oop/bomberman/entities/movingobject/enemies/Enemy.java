@@ -2,7 +2,7 @@ package uet.oop.bomberman.entities.movingobject.enemies;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import uet.oop.bomberman.CollisionManager;
+import uet.oop.bomberman.map_graph.CollisionManager;
 import uet.oop.bomberman.entities.movingobject.Bomber;
 import uet.oop.bomberman.entities.movingobject.MovingObject;
 import uet.oop.bomberman.graphics.Sprite;
@@ -21,50 +21,13 @@ public abstract class Enemy extends MovingObject {
     /**
      * Load sprite of types of enemies into sprites lists.
      */
-    public void loadSprite() {
-        if (this instanceof Balloom) {
-            leftSprites = new Sprite[3];
-            rightSprites = new Sprite[3];
-            deadSprites = new Sprite[1];
-            leftSprites[0] = Sprite.balloom_left1;
-            leftSprites[1] = Sprite.balloom_left2;
-            leftSprites[2] = Sprite.balloom_left3;
-            rightSprites[0] = Sprite.balloom_right1;
-            rightSprites[1] = Sprite.balloom_right2;
-            rightSprites[2] = Sprite.balloom_right3;
-            deadSprites[0] = Sprite.balloom_dead;
-        }
-        if (this instanceof Oneal) {
-            leftSprites = new Sprite[3];
-            rightSprites = new Sprite[3];
-            deadSprites = new Sprite[1];
-            leftSprites[0] = Sprite.oneal_left1;
-            leftSprites[1] = Sprite.oneal_left2;
-            leftSprites[2] = Sprite.oneal_left3;
-            rightSprites[0] = Sprite.oneal_right1;
-            rightSprites[1] = Sprite.oneal_right2;
-            rightSprites[2] = Sprite.oneal_right3;
-            deadSprites[0] = Sprite.oneal_dead;
-        }
-        if (this instanceof Doll) {
-            leftSprites = new Sprite[3];
-            rightSprites = new Sprite[3];
-            deadSprites = new Sprite[1];
-            leftSprites[0] = Sprite.doll_left1;
-            leftSprites[1] = Sprite.doll_left2;
-            leftSprites[2] = Sprite.doll_left3;
-            rightSprites[0] = Sprite.doll_right1;
-            rightSprites[1] = Sprite.doll_right2;
-            rightSprites[2] = Sprite.doll_right3;
-            deadSprites[0] = Sprite.doll_dead;
-        }
-    }
+    public abstract void loadSprite();
 
     /**
      * Constructor for enemy.
      */
     public Enemy(int xUnit, int yUnit, Image img, CollisionManager collisionManager) {
-        super(xUnit, yUnit, img);
+        super(xUnit, yUnit, img, collisionManager);
         this.collisionManager = collisionManager;
         this.SPEED = 1;
         loadSprite();
@@ -74,7 +37,7 @@ public abstract class Enemy extends MovingObject {
     /**
      * Random moving for all enemies satisfying condition: not colliding with still object.
      */
-    public void randomMoving() {
+    public void randomMovingWhenCollidingWithWall() {
         indexOfSprite++;
         if (!changeDirection) {
             int rand = (int) (Math.random() * 10);
@@ -95,8 +58,7 @@ public abstract class Enemy extends MovingObject {
                     break;
             }
         }
-        if (collisionManager.collide(x, y, dir, SPEED)
-                || collisionManager.collideBomb(this, dir, SPEED)) {
+        if (collisionManager.collide(this, x, y, dir, SPEED)) {
             changeDirection = false;
             indexOfSprite = 0;
         } else {
@@ -165,8 +127,10 @@ public abstract class Enemy extends MovingObject {
      * @return true/false
      */
     public boolean collideBomber(int xPixel, int yPixel) {
-        if (xPixel + Bomber.WIDTH < x || xPixel > x + Sprite.SCALED_SIZE) return false;
-        return yPixel + Bomber.HEIGHT >= y && yPixel <= y + Sprite.SCALED_SIZE;
+        return yPixel + Bomber.HEIGHT - Sprite.SCALED_SIZE / 10 >= y
+                && yPixel + Sprite.SCALED_SIZE / 10 <= y + Enemy.HEIGHT
+                && xPixel + Bomber.WIDTH - Sprite.SCALED_SIZE / 10 >= x
+                && xPixel + Sprite.SCALED_SIZE / 10 <= x + Enemy.WIDTH;
     }
 
     /**

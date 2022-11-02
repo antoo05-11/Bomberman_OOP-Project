@@ -1,19 +1,17 @@
 package uet.oop.bomberman.entities.stillobject;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import uet.oop.bomberman.GameController;
-import uet.oop.bomberman.entities.CannotBePassedThrough;
 import uet.oop.bomberman.graphics.Sprite;
+import uet.oop.bomberman.map_graph.Map;
 
-public class Brick extends StillObject implements CannotBePassedThrough {
+public class Brick extends StillObject {
     int indexOfSprite = 0;
 
     /**
      * Constructor of brick.
      */
-    public Brick(int xUnit, int yUnit, Image img) {
-        super(xUnit, yUnit, img);
+    public Brick(int xUnit, int yUnit, Map map) {
+        super(xUnit, yUnit, Sprite.brick.getFxImage(), map);
     }
 
     /**
@@ -27,7 +25,7 @@ public class Brick extends StillObject implements CannotBePassedThrough {
                 Sprite.brick_exploded2, indexOfSprite, 40));
         if (indexOfSprite == 40) {
             indexOfSprite = 0;
-            GameController.mapList.get(GameController.LEVEL).replace(yTile, xTile, null);
+            map.removeInMapInfo(yTile, xTile);
         }
     }
 
@@ -46,4 +44,5 @@ public class Brick extends StillObject implements CannotBePassedThrough {
     public void render(GraphicsContext gc) {
         super.render(gc);
     }
+
 }

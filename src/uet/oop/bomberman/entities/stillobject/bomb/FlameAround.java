@@ -2,13 +2,11 @@ package uet.oop.bomberman.entities.stillobject.bomb;
 
 import javafx.scene.canvas.GraphicsContext;
 
-import uet.oop.bomberman.entities.CannotBePassedThrough;
 import uet.oop.bomberman.map_graph.Map;
-import uet.oop.bomberman.entities.CanBePassedThrough;
 import uet.oop.bomberman.entities.stillobject.StillObject;
 import uet.oop.bomberman.graphics.Sprite;
 
-public class FlameAround extends StillObject implements CanBePassedThrough {
+public class FlameAround extends StillObject {
     private int indexOfSprite = 0;
 
     protected enum FlameType {
@@ -23,7 +21,6 @@ public class FlameAround extends StillObject implements CanBePassedThrough {
 
     private FlameType type;
     private Bomb.BombStatus flameStatus;
-    private Map map; //for render flame not in wall.
 
     public Bomb.BombStatus getStatus() {
         return flameStatus;
@@ -33,7 +30,7 @@ public class FlameAround extends StillObject implements CanBePassedThrough {
      * Constructor for flame.
      */
     public FlameAround(int xUnit, int yUnit, FlameType type, Map map) {
-        super(xUnit, yUnit, null);
+        super(xUnit, yUnit, null, map);
         switch (type) {
             case DOWN:
                 setImg(Sprite.explosion_vertical_down_last);
@@ -133,7 +130,7 @@ public class FlameAround extends StillObject implements CanBePassedThrough {
      */
     @Override
     public void render(GraphicsContext gc) {
-        if (!(map.getEntityAt(x, y) instanceof CannotBePassedThrough)) {
+        if ((map.getEntityAt(x, y) instanceof Bomb) || map.getEntityAt(x,y) == null) {
             super.render(gc);
         }
     }

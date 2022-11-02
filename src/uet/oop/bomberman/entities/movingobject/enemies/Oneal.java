@@ -1,32 +1,45 @@
 package uet.oop.bomberman.entities.movingobject.enemies;
 
-import javafx.scene.image.Image;
-import uet.oop.bomberman.CollisionManager;
-import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.map_graph.CollisionManager;
+import uet.oop.bomberman.entities.stillobject.Brick;
+import uet.oop.bomberman.entities.stillobject.Wall;
+import uet.oop.bomberman.entities.stillobject.bomb.Bomb;
+import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.map_graph.Graph;
 import uet.oop.bomberman.map_graph.Vertice;
-import uet.oop.bomberman.graphics.Sprite;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Oneal extends Enemy implements HardEnemy {
-
-
-    private List<Vertice> path;
-    private Entity bomber;
+    public static final List<Class> cannotPassEntityList = Arrays.asList(new Class[]{Wall.class, Bomb.class, Brick.class});
+    private Graph graph;
 
     /**
      * Full constructor with param bomber for update continually position of bomberman.
      */
-    public Oneal(int xUnit, int yUnit, Image img, CollisionManager collisionManager, Entity bomber) {
-        super(xUnit, yUnit, img, collisionManager);
-        this.bomber = bomber;
+    public Oneal(int xUnit, int yUnit, CollisionManager collisionManager) {
+        super(xUnit, yUnit, Sprite.oneal_right1.getFxImage(), collisionManager);
+    }
+
+    @Override
+    public void loadSprite() {
+        leftSprites = new Sprite[3];
+        rightSprites = new Sprite[3];
+        deadSprites = new Sprite[1];
+        leftSprites[0] = Sprite.oneal_left1;
+        leftSprites[1] = Sprite.oneal_left2;
+        leftSprites[2] = Sprite.oneal_left3;
+        rightSprites[0] = Sprite.oneal_right1;
+        rightSprites[1] = Sprite.oneal_right2;
+        rightSprites[2] = Sprite.oneal_right3;
+        deadSprites[0] = Sprite.oneal_dead;
     }
 
     /**
      * Make oneal move along path.
      */
-    public void moveAlongPath() {
+    public void moveAlongPath(List<Vertice> path) {
         Vertice src = path.get(0);
         Vertice dst = path.get(1);
         indexOfSprite++;
@@ -34,8 +47,7 @@ public class Oneal extends Enemy implements HardEnemy {
         // Case 1: left
         if (src.getxTilePos() >= dst.getxTilePos()) {
             if (x > dst.getxTilePos() * Sprite.SCALED_SIZE) {
-                if (!collisionManager.collide(x, y, "LEFT", SPEED)
-                        && !collisionManager.collideBomb(this, "LEFT", SPEED)) {
+                if (!collisionManager.collide(this, x, y, "LEFT", SPEED)) {
                     setImg(Sprite.movingSprite(
                             leftSprites[0],
                             leftSprites[1],
@@ -47,8 +59,7 @@ public class Oneal extends Enemy implements HardEnemy {
         // Case 2: right
         if (src.getxTilePos() <= dst.getxTilePos()) {
             if (x < dst.getxTilePos() * Sprite.SCALED_SIZE) {
-                if (!collisionManager.collide(x, y, "RIGHT", SPEED)
-                        && !collisionManager.collideBomb(this, "RIGHT", SPEED)) {
+                if (!collisionManager.collide(this, x, y, "RIGHT", SPEED)) {
                     setImg(Sprite.movingSprite(
                             rightSprites[0],
                             rightSprites[1],
@@ -61,8 +72,7 @@ public class Oneal extends Enemy implements HardEnemy {
         // Case 3: up
         if (src.getyTilePos() >= dst.getyTilePos()) {
             if (y > dst.getyTilePos() * Sprite.SCALED_SIZE) {
-                if (!collisionManager.collide(x, y, "UP", SPEED)
-                        && !collisionManager.collideBomb(this, "UP", SPEED)) {
+                if (!collisionManager.collide(this, x, y, "UP", SPEED)) {
                     setImg(Sprite.movingSprite(
                             rightSprites[0],
                             rightSprites[1],
@@ -75,8 +85,7 @@ public class Oneal extends Enemy implements HardEnemy {
         // Case 4: down
         if (src.getyTilePos() <= dst.getyTilePos()) {
             if (y < dst.getyTilePos() * Sprite.SCALED_SIZE) {
-                if (!collisionManager.collide(x, y, "DOWN", SPEED)
-                        && !collisionManager.collideBomb(this, "DOWN", SPEED)) {
+                if (!collisionManager.collide(this, x, y, "DOWN", SPEED)) {
                     setImg(Sprite.movingSprite(
                             leftSprites[0],
                             leftSprites[1],
@@ -91,22 +100,16 @@ public class Oneal extends Enemy implements HardEnemy {
      * Oneal moving.
      */
     public void move() {
-        int onealIndex = Graph.getVerticeIndex(x + Oneal.WIDTH / 2, y + Oneal.HEIGHT / 2);
-        int bomberIndex = Graph.getVerticeIndex(bomber.getX(), bomber.getY());
-        path = collisionManager.getMap().getGraph().breathFirstSearch(onealIndex, bomberIndex);
-        if (path != null) {
-            moveAlongPath();
+        graph = collisionManager.getMap().convertMapToGraph(new Vertice(x / Sprite.SCALED_SIZE, y / Sprite.SCALED_SIZE));
+        if (!graph.isConnected()) {
+            randomMovingWhenCollidingWithWall();
         } else {
-            randomMoving();
+            moveAlongPath(graph.findWay(1, 0));
         }
-
     }
 
-    /**
-     * This is update.
-     */
     @Override
-    public void update() {
-        super.update();
+    public List<Class> getCannotPassEntityList() {
+        return cannotPassEntityList;
     }
 }
