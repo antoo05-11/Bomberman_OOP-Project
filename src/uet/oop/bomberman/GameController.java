@@ -3,7 +3,9 @@ package uet.oop.bomberman;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.scenemaster.LobbyController;
 import uet.oop.bomberman.scenemaster.PlayingController;
@@ -32,8 +34,6 @@ public class GameController {
     }
 
     private Stage stage;
-
-    private int levelPoint = 0;
     private String username = "";
 
     public void setUsername(String username) {
@@ -46,9 +46,8 @@ public class GameController {
 
     public static GameStatus gameStatus;
 
-
     public static int LEVEL = 0;
-    public static final int MAX_LEVEL = 1;
+    public static final int MAX_LEVEL = 4;
 
     int currentLevelCode = 0;
 
@@ -94,6 +93,9 @@ public class GameController {
      * Run game engine.
      */
     public void run() {
+        stage.getIcons().add(new Image("/stageIcon.png"));
+        stage.setTitle("BOMBERMAN");
+        stage.setResizable(false);
         FXMLLoader fxmlLoader1 = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/UI_fxml/LobbyScene.fxml")));
         FXMLLoader fxmlLoader2 = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/UI_fxml/PlayingScene.fxml")));
 

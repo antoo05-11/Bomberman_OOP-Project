@@ -3,9 +3,8 @@ package uet.oop.bomberman.map_graph;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.movingobject.MovingObject;
-import uet.oop.bomberman.entities.movingobject.enemies.*;
+import uet.oop.bomberman.entities.movingobject.enemies.Enemy;
 import uet.oop.bomberman.graphics.Sprite;
-import uet.oop.bomberman.map_graph.Map;
 
 import java.util.List;
 

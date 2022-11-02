@@ -14,9 +14,6 @@ public class BombermanGame extends Application {
 
     @Override
     public void start(Stage stage) {
-        stage.setResizable(false);
-        stage.getIcons().add(new Image("/stageIcon.png"));
-        stage.setTitle("BOMBERMAN");
         GameController gameController = new GameController(stage);
         gameController.run();
     }
