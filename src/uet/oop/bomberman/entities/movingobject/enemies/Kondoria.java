@@ -34,11 +34,71 @@ public class Kondoria extends Enemy implements MediumEnemy {
 
     @Override
     public void move() {
-        randomMovingWhenCollidingWithWall();
+        randomMoving();
     };
 
     @Override
     public List<Class> getCannotPassEntityList() {
         return cannotPassEntityList;
+    }
+
+    public void randomMoving() {
+        indexOfSprite++;
+        if (!changeDirection) {
+            int rand = (int) (Math.random() * 10);
+            switch (rand % 4) {
+                case 0:
+                    dir = "LEFT";
+                    break;
+                case 1:
+                    dir = "RIGHT";
+                    break;
+                case 2:
+                    dir = "UP";
+                    break;
+                case 3:
+                    dir = "DOWN";
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (collisionManager.collideWallAtEdge(x, y, dir, SPEED)) {
+            changeDirection = false;
+            indexOfSprite = 0;
+        } else {
+            switch (dir){
+                case "LEFT":
+                    x -= SPEED;
+                    setImg(Sprite.movingSprite(
+                            leftSprites[0],
+                            leftSprites[1],
+                            leftSprites[2], indexOfSprite, 20));
+                    break;
+                case "RIGHT":
+                    x += SPEED;
+                    setImg(Sprite.movingSprite(
+                            rightSprites[0],
+                            rightSprites[1],
+                            rightSprites[2], indexOfSprite, 20));
+                    break;
+                case "UP":
+                    y -= SPEED;
+                    setImg(Sprite.movingSprite(
+                            rightSprites[0],
+                            rightSprites[1],
+                            rightSprites[2], indexOfSprite, 20));
+                    break;
+                case "DOWN":
+                    y += SPEED;
+                    setImg(Sprite.movingSprite(
+                            leftSprites[0],
+                            leftSprites[1],
+                            leftSprites[2], indexOfSprite, 20));
+                    break;
+
+            }
+            changeDirection = true;
+        }
     }
 }

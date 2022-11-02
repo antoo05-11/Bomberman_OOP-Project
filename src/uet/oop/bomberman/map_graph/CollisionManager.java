@@ -1,5 +1,6 @@
 package uet.oop.bomberman.map_graph;
 
+import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.movingobject.MovingObject;
 import uet.oop.bomberman.entities.movingobject.enemies.*;
@@ -87,8 +88,32 @@ public class CollisionManager {
 
         if (checkIfColliding) {
             if (movingObject instanceof Enemy)
-                ((Enemy) movingObject).randomSpeed(2, 3);
+                ((Enemy) movingObject).randomSpeed(1, 3);
         }
         return checkIfColliding;
+    }
+
+    /**
+     * Check collide with wall ar edge of map.
+     */
+    public boolean collideWallAtEdge(int x, int y, String dir, int OBJECT_SPEED){
+        int curX = x;
+        int curY = y;
+        switch (dir) {
+            case "UP":
+                curY -= OBJECT_SPEED;
+                break;
+            case "DOWN":
+                curY += OBJECT_SPEED;
+                break;
+            case "LEFT":
+                curX -= OBJECT_SPEED;
+                break;
+            case "RIGHT":
+                curX += OBJECT_SPEED;
+                break;
+        }
+        return curX == Sprite.SCALED_SIZE || curX == BombermanGame.WIDTH * Sprite.SCALED_SIZE - (Sprite.DEFAULT_SIZE * 4)
+                || curY == Sprite.SCALED_SIZE || curY == BombermanGame.HEIGHT * Sprite.SCALED_SIZE - (Sprite.DEFAULT_SIZE * 4);
     }
 }
