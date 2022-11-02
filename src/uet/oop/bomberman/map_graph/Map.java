@@ -40,11 +40,11 @@ public class Map {
         readMapFromFile();
     }
 
-    public int getWidthPixel() {
+    public int getWidth_Pixel() {
         return widthTile * Sprite.SCALED_SIZE;
     }
 
-    public int getHeightPixel() {
+    public int getHeight_Pixel() {
         return heightTile * Sprite.SCALED_SIZE;
     }
 
@@ -260,7 +260,7 @@ public class Map {
     /**
      * Update entities list (moving entities).
      */
-    public void updateEntitiesList() {
+    public void updateMovingEntitiesList() {
         for (int i = movingEntitiesList.size() - 1; i >= 0; i--) {
             //Remove enemies died by bomb out of list.
             if (movingEntitiesList.get(i) instanceof Enemy) {
@@ -284,24 +284,24 @@ public class Map {
      * If xPixel of bomber > MAP_WIDTH - SCREEN_WIDTH/2, gc  decrease position of image by MAP_WIDTH - SCREEN_WIDTH.
      * All operations do same for y_pos rendering of gc.
      */
-    public void updateMapCamera() {
-        int bomber_xPixel = movingEntitiesList.get(0).getX();
-        int bomber_yPixel = movingEntitiesList.get(0).getY();
-
-        if (bomber_xPixel < SceneController.SCREEN_WIDTH / 2) {
-            dx_gc = 0;
-        } else if (bomber_xPixel < getWidthPixel() - SceneController.SCREEN_WIDTH / 2) {
-            dx_gc = bomber_xPixel - SceneController.SCREEN_WIDTH / 2;
-        } else {
-            dx_gc = getWidthPixel() - SceneController.SCREEN_WIDTH;
-        }
-        if (bomber_yPixel < (SceneController.SCREEN_HEIGHT - 30) / 2) {
+    public void setUpMapCamera() {
+        int bomber_x = movingEntitiesList.get(0).getX();
+        int bomber_y = movingEntitiesList.get(0).getY();
+        if (bomber_y < (SceneController.SCREEN_HEIGHT - 30) / 2) {
             dy_gc = 0;
-        } else if (bomber_yPixel < getHeightPixel() - (SceneController.SCREEN_HEIGHT - 30) / 2) {
-            dy_gc = bomber_yPixel - (SceneController.SCREEN_HEIGHT - 30) / 2;
+        } else if (bomber_y < getHeight_Pixel() - (SceneController.SCREEN_HEIGHT - 30) / 2) {
+            dy_gc = bomber_y - (SceneController.SCREEN_HEIGHT - 30) / 2;
         } else {
-            dy_gc = getHeightPixel() - (SceneController.SCREEN_HEIGHT - 30);
+            dy_gc = getHeight_Pixel() - (SceneController.SCREEN_HEIGHT - 30);
         }
+        if (bomber_x < SceneController.SCREEN_WIDTH / 2) {
+            dx_gc = 0;
+        } else if (bomber_x < getWidth_Pixel() - SceneController.SCREEN_WIDTH / 2) {
+            dx_gc = bomber_x - SceneController.SCREEN_WIDTH / 2;
+        } else {
+            dx_gc = getWidth_Pixel() - SceneController.SCREEN_WIDTH;
+        }
+
     }
 
     public int getBomberNumOfLives() {

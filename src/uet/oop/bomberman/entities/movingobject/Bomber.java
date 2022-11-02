@@ -299,7 +299,7 @@ public class Bomber extends MovingObject {
     private void eatItemAndPortal() {
         int xTile = (x + Bomber.WIDTH / 2) / Sprite.SCALED_SIZE;
         int yTile = (y + Bomber.HEIGHT / 2) / Sprite.SCALED_SIZE;
-        Entity item = collisionManager.getMap().getItem(xTile, yTile);
+        Entity item = map.getItem(xTile, yTile);
         if (item instanceof Item) {
             audioController.playParallel(AudioController.AudioName.EAT_ITEM, 1);
             item.update();
@@ -312,11 +312,11 @@ public class Bomber extends MovingObject {
             if (item instanceof BombItem) {
                 maxBomb++;
             }
-            collisionManager.getMap().removeItem(xTile, yTile);
+            map.removeItem(xTile, yTile);
         }
 
         if (item instanceof Portal) {
-            if (movingEntitiesList.size() >= 1) {
+            if (movingEntitiesList.size() == 1) {
                 switch (latestDirectKey) {
                     case LEFT:
                         setImg(Sprite.player_left);
@@ -350,7 +350,7 @@ public class Bomber extends MovingObject {
             moving();
             setBomb();
             updateBomberStatus();
-            collisionManager.getMap().updateBombArrayList();
+            map.updateBombArrayList();
             eatItemAndPortal();
 
         }

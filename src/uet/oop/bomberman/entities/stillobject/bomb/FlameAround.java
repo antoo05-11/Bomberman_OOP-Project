@@ -32,6 +32,12 @@ public class FlameAround extends StillObject {
     public FlameAround(int xUnit, int yUnit, FlameType type, Map map) {
         super(xUnit, yUnit, null, map);
         switch (type) {
+            case HORIZON:
+                setImg(Sprite.explosion_horizontal);
+                break;
+            case VERTICAL:
+                setImg(Sprite.explosion_vertical);
+                break;
             case DOWN:
                 setImg(Sprite.explosion_vertical_down_last);
                 break;
@@ -46,12 +52,6 @@ public class FlameAround extends StillObject {
                 break;
             case CENTER:
                 setImg(Sprite.bomb_exploded2);
-                break;
-            case HORIZON:
-                setImg(Sprite.explosion_horizontal);
-                break;
-            case VERTICAL:
-                setImg(Sprite.explosion_vertical);
                 break;
         }
         this.type = type;
@@ -75,16 +75,10 @@ public class FlameAround extends StillObject {
         if (flameStatus == Bomb.BombStatus.EXPLODED) {
             indexOfSprite++;
             switch (type) {
-                case LEFT:
-                    setImg(Sprite.movingSprite(Sprite.explosion_horizontal_left_last,
-                            Sprite.explosion_horizontal_left_last1,
-                            Sprite.explosion_horizontal_left_last2,
-                            indexOfSprite, 20));
-                    break;
-                case RIGHT:
-                    setImg(Sprite.movingSprite(Sprite.explosion_horizontal_right_last,
-                            Sprite.explosion_horizontal_right_last1,
-                            Sprite.explosion_horizontal_right_last2,
+                case CENTER:
+                    setImg(Sprite.movingSprite(Sprite.bomb_exploded,
+                            Sprite.bomb_exploded1,
+                            Sprite.bomb_exploded2,
                             indexOfSprite, 20));
                     break;
                 case TOP:
@@ -99,6 +93,19 @@ public class FlameAround extends StillObject {
                             Sprite.explosion_vertical_down_last2,
                             indexOfSprite, 20));
                     break;
+                case RIGHT:
+                    setImg(Sprite.movingSprite(Sprite.explosion_horizontal_right_last,
+                            Sprite.explosion_horizontal_right_last1,
+                            Sprite.explosion_horizontal_right_last2,
+                            indexOfSprite, 20));
+                    break;
+                case LEFT:
+                    setImg(Sprite.movingSprite(Sprite.explosion_horizontal_left_last,
+                            Sprite.explosion_horizontal_left_last1,
+                            Sprite.explosion_horizontal_left_last2,
+                            indexOfSprite, 20));
+                    break;
+
                 case HORIZON:
                     setImg(Sprite.movingSprite(Sprite.explosion_horizontal,
                             Sprite.explosion_horizontal1,
@@ -111,12 +118,7 @@ public class FlameAround extends StillObject {
                             Sprite.explosion_vertical2,
                             indexOfSprite, 20));
                     break;
-                case CENTER:
-                    setImg(Sprite.movingSprite(Sprite.bomb_exploded,
-                            Sprite.bomb_exploded1,
-                            Sprite.bomb_exploded2,
-                            indexOfSprite, 20));
-                    break;
+
             }
             if (indexOfSprite == 20) {
                 flameStatus = Bomb.BombStatus.DISAPPEAR;

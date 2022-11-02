@@ -31,8 +31,8 @@ public class Level {
     }
     public void update() {
         gameMap.getMovingEntitiesList().forEach(Entity::update);
-        gameMap.updateMapCamera();
-        gameMap.updateEntitiesList();
+        gameMap.setUpMapCamera();
+        gameMap.updateMovingEntitiesList();
     }
     public void render() {
         gc.clearRect(0, 0, playingCanvas.getWidth(), playingCanvas.getHeight());

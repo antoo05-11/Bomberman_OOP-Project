@@ -9,8 +9,6 @@ import java.util.List;
 
 public class Kondoria extends Enemy implements MediumEnemy {
     public static final List<Class> cannotPassEntityList = Arrays.asList(new Class[]{Bomb.class});
-    private int timeTrace = 0;
-
     @Override
     public void loadSprite() {
         leftSprites = new Sprite[3];
@@ -34,7 +32,7 @@ public class Kondoria extends Enemy implements MediumEnemy {
 
     @Override
     public void move() {
-        randomMoving();
+        randomMovingWhenCollidingWithWall();
     };
 
     @Override
@@ -42,7 +40,7 @@ public class Kondoria extends Enemy implements MediumEnemy {
         return cannotPassEntityList;
     }
 
-    public void randomMoving() {
+    public void randomMovingWhenCollidingWithWall() {
         indexOfSprite++;
         if (!changeDirection) {
             int rand = (int) (Math.random() * 10);

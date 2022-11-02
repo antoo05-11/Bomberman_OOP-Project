@@ -6,12 +6,10 @@ import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.map_graph.Map;
 
 public class SpeedItem extends Item {
-    private final int bonus = 1;
-
     /**
      * Constructor of speed item.
      */
     public SpeedItem(int xUnit, int yUnit, Map map) {
-        super(xUnit, yUnit,  Sprite.powerup_speed.getFxImage(), map);
+        super(xUnit, yUnit, Sprite.powerup_speed.getFxImage(), map);
     }
 }

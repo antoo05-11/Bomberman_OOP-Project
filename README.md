@@ -4,6 +4,11 @@ Sinh viên: Ngũ Thành An _ Mã sinh viên: 21020271
 Sinh viên: Đỗ Đức Anh _ Mã sinh viên: 21020274
 
 ## Mô tả về các đối tượng trong trò chơi
+
+### Game UML:
+
+![](res/umlDiagram.png)
+
 Nếu bạn đã từng chơi Bomberman, bạn sẽ cảm thấy quen thuộc với những đối tượng này. Chúng được được chia làm hai loại chính là nhóm đối tượng động (*Bomber*, *Enemy*, *Bomb*) và nhóm đối tượng tĩnh (*Grass*, *Wall*, *Brick*, *Door*, *Item*).
 
 *Hãy thiết kế hệ thống các đối tượng một cách phù hợp để tận dụng tối đa sức mạnh của OOP: tái sử dụng code, dễ dàng maintain.*

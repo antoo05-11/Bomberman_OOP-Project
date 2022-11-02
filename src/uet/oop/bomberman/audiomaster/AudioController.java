@@ -4,7 +4,6 @@ import uet.oop.bomberman.GameController;
 
 public class AudioController {
     private boolean isMuted = false;
-
     public enum AudioName {
         LOBBY,
         PLAYING,
@@ -68,10 +67,10 @@ public class AudioController {
 
     public void playParallel(AudioName audioName, int time) {
         if (!isMuted && audioName != AudioName.CLICK_BUTTON) {
-            Audio audio = audiosList[audioName.ordinal()].copyAudio();
+            Audio audio = audiosList[audioName.ordinal()].cloneAudio();
             audio.play(time);
         } else if (audioName == AudioName.CLICK_BUTTON) {
-            Audio audio = audiosList[audioName.ordinal()].copyAudio();
+            Audio audio = audiosList[audioName.ordinal()].cloneAudio();
             audio.play(time);
         }
     }

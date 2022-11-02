@@ -1,8 +1,12 @@
 package uet.oop.bomberman.entities.stillobject.bomb;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
+import javafx.util.Duration;
+import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.entities.movingobject.MovingObject;
 import uet.oop.bomberman.entities.stillobject.*;
 import uet.oop.bomberman.entities.stillobject.item.Item;
@@ -18,6 +22,8 @@ import uet.oop.bomberman.graphics.Sprite;
 import java.util.*;
 
 import static uet.oop.bomberman.GameController.*;
+import static uet.oop.bomberman.GameController.GameStatus.GAME_LOBBY;
+import static uet.oop.bomberman.GameController.GameStatus.WIN_ONE;
 
 
 public class Bomb extends StillObject {
@@ -26,6 +32,7 @@ public class Bomb extends StillObject {
         EXPLODED,
         DISAPPEAR
     }
+
     int waitForExplodingTime = 2; //2 seconds before exploding.
     int indexOfSprite = 0;
     protected BombStatus bombStatus;
@@ -39,40 +46,9 @@ public class Bomb extends StillObject {
     /**
      * Timer and task for counting 3 seconds before exploding.
      */
-    Timer timer = new Timer();
-    TimerTask task = new TimerTask() {
-        int i = 0;
+    Timeline timerForExploding = new Timeline();
+    private int timerCounter = 2;
 
-        @Override
-        public void run() {
-            i++;
-            if ((waitForExplodingTime - i) <= 0) {
-                bombStatus = BombStatus.EXPLODED;
-                indexOfSprite = 0;
-
-                /*
-                  All flame near bomb switch to EXPLODED status.
-                 */
-                for (Entity flame : flameAroundDown) {
-                    ((FlameAround) flame).setFlameStatus(BombStatus.EXPLODED);
-                }
-                for (Entity flame : flameAroundLeft) {
-                    ((FlameAround) flame).setFlameStatus(BombStatus.EXPLODED);
-                }
-                for (Entity flame : flameAroundRight) {
-                    ((FlameAround) flame).setFlameStatus(BombStatus.EXPLODED);
-                }
-                for (Entity flame : flameAroundTop) {
-                    ((FlameAround) flame).setFlameStatus(BombStatus.EXPLODED);
-                }
-                ((FlameAround) flameAroundCenter).setFlameStatus(BombStatus.EXPLODED);
-
-                audioController.playParallel(AudioController.AudioName.EXPLODING, 1);
-                timer.cancel();
-                indexOfSprite = 0;
-            }
-        }
-    };
 
     /**
      * Constructor for Bomb, run timer and add all flame sprite around.
@@ -80,8 +56,40 @@ public class Bomb extends StillObject {
     public Bomb(int x, int y, Map map) {
         super(x, y, Sprite.bomb.getFxImage(), map);
         bomber = (Bomber) map.getMovingEntitiesList().get(0);
-        timer.schedule(task, 0, 1000);
         bombStatus = BombStatus.NotExplodedYet;
+
+        timerForExploding.getKeyFrames().addAll(new KeyFrame(Duration.seconds(0),
+                event -> {
+                    timerCounter--;
+                    if (timerCounter <= 0) {
+                        bombStatus = BombStatus.EXPLODED;
+                        indexOfSprite = 0;
+                /*
+                  All flame near bomb switch to EXPLODED status.
+                 */
+                        for (Entity flame : flameAroundDown) {
+                            ((FlameAround) flame).setFlameStatus(BombStatus.EXPLODED);
+                        }
+                        for (Entity flame : flameAroundLeft) {
+                            ((FlameAround) flame).setFlameStatus(BombStatus.EXPLODED);
+                        }
+                        for (Entity flame : flameAroundRight) {
+                            ((FlameAround) flame).setFlameStatus(BombStatus.EXPLODED);
+                        }
+                        for (Entity flame : flameAroundTop) {
+                            ((FlameAround) flame).setFlameStatus(BombStatus.EXPLODED);
+                        }
+                        ((FlameAround) flameAroundCenter).setFlameStatus(BombStatus.EXPLODED);
+
+                        audioController.playParallel(AudioController.AudioName.EXPLODING, 1);
+                        indexOfSprite = 0;
+
+                        timerForExploding.stop();
+                    }
+                }), new KeyFrame(Duration.seconds(1)));
+        timerForExploding.setCycleCount(-1);
+        timerForExploding.playFromStart();
+
         flameAroundCenter = new FlameAround(x, y, FlameAround.FlameType.CENTER, map);
         for (int i = 1; i < bomber.getBombRadius(); i++) {
             flameAroundTop.add(new FlameAround(x, y - i, FlameAround.FlameType.VERTICAL, map));
@@ -127,8 +135,9 @@ public class Bomb extends StillObject {
 
     /**
      * Destroy brick and add item, portal.
-     * @param xTile int
-     * @param yTile int
+     *
+     * @param xTile    int
+     * @param yTile    int
      * @param nearTile Brick
      */
     private void destroyBrick(int xTile, int yTile, Brick nearTile) {
@@ -226,13 +235,13 @@ public class Bomb extends StillObject {
     }
 
 
-
     public BombStatus getBombStatus() {
         return bombStatus;
     }
 
     /**
      * Check if a point in Pixel is inside bombList.
+     *
      * @param xPos is x pos of bomber.
      * @param yPos is y pos of bomber.
      * @return true if bomber is inside bomb's exploding range.

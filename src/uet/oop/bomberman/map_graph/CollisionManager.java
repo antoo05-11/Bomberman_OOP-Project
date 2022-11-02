@@ -57,7 +57,7 @@ public class CollisionManager {
         downLeftCorner = map.getEntityAt(curX, curY + CENTER_OBJECT_HEIGHT);
         downRightCorner = map.getEntityAt(curX + CENTER_OBJECT_WIDTH, curY + CENTER_OBJECT_HEIGHT);
         boolean checkIfColliding = false;
-        if (curX <= 0 || curX + Sprite.SCALED_SIZE >= map.getWidthPixel() || curY <= 0 || curY + Sprite.SCALED_SIZE >= map.getHeightPixel()) {
+        if (curX <= 0 || curX + Sprite.SCALED_SIZE >= map.getWidth_Pixel() || curY <= 0 || curY + Sprite.SCALED_SIZE >= map.getHeight_Pixel()) {
             return true;
         }
         List<Class> cannotPassEntityList = movingObject.getCannotPassEntityList();

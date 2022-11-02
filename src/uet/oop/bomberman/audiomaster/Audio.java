@@ -1,53 +1,49 @@
 package uet.oop.bomberman.audiomaster;
 
-import javax.sound.sampled.*;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import java.io.File;
-import java.io.IOException;
 
 public class Audio {
-    private AudioInputStream audioInput;
     private Clip clip;
     private boolean isPlaying = false;
-    private String audioSrc;
-    public Audio(String audioSrc) {
-        File audioFile = new File(audioSrc);
-        this.audioSrc = audioSrc;
-        try {
-            audioInput = AudioSystem.getAudioInputStream(audioFile);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+    private String source;
 
+    public Audio(String source) {
+        this.source = source;
         try {
+            AudioInputStream audioInput = AudioSystem.getAudioInputStream(new File(source));
             clip = AudioSystem.getClip();
             clip.open(audioInput);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
-
-
     }
 
     /**
      * @time = -1 if loop with infinite times.
      */
     public void play(int time) {
-        if(!isPlaying) {
-            if(time > 0) clip.loop(time-1);
-            else clip.loop(-1);
+        if (!isPlaying) {
+            clip.loop((time > 0) ? time - 1 : -1);
         }
         isPlaying = true;
     }
 
     public void stop() {
-        if(isPlaying) {
+        if (isPlaying) {
             clip.stop();
         }
         isPlaying = false;
     }
 
-    public Audio copyAudio() {
-        Audio copy = new Audio(audioSrc);
-        return copy;
+    /**
+     * clone current audio to play parallel same audio.
+     *
+     * @return clone current audio.
+     */
+    public Audio cloneAudio() {
+        return new Audio(source);
     }
 }
