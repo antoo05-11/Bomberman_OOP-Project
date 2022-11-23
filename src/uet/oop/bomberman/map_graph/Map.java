@@ -21,8 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-import static uet.oop.bomberman.BombermanGame.HEIGHT;
-import static uet.oop.bomberman.BombermanGame.WIDTH;
+
 
 public class Map {
     private int widthTile;
@@ -135,8 +134,8 @@ public class Map {
      * Render all list of map.
      */
     public void render(GraphicsContext gc) {
-        for (int i = 0; i < HEIGHT; i++) {
-            for (int j = 0; j < WIDTH; j++) {
+        for (int i = 0; i < heightTile; i++) {
+            for (int j = 0; j < widthTile; j++) {
                 grassList[i][j].render(gc);
             }
         }

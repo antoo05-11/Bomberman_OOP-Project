@@ -112,7 +112,7 @@ public class CollisionManager {
                 curX += OBJECT_SPEED;
                 break;
         }
-        return curX == Sprite.SCALED_SIZE || curX == BombermanGame.WIDTH * Sprite.SCALED_SIZE - (Sprite.DEFAULT_SIZE * 4)
-                || curY == Sprite.SCALED_SIZE || curY == BombermanGame.HEIGHT * Sprite.SCALED_SIZE - (Sprite.DEFAULT_SIZE * 4);
+        return curX == Sprite.SCALED_SIZE || curX == map.getWidth_Pixel() - (Sprite.DEFAULT_SIZE * 4)
+                || curY == Sprite.SCALED_SIZE || curY == map.getHeight_Pixel() - (Sprite.DEFAULT_SIZE * 4);
     }
 }
