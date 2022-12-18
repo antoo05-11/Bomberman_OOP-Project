@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
@@ -217,7 +218,7 @@ public class PlayingController extends SceneController implements Initializable 
     /**
      * Update status for all game events include timers, status bar.
      */
-    public void updateStatus() {
+    public void updateStatus() throws SQLException {
         switch (GameController.gameStatus) {
             case GAME_START:
                 if (nextLevelTimeline.getStatus() == Animation.Status.STOPPED) {
@@ -285,7 +286,7 @@ public class PlayingController extends SceneController implements Initializable 
                 break;
             case WIN_ALL:
                 if (victoryTimeline.getStatus() != Animation.Status.RUNNING) {
-                    updateRankingTable();
+                    gameController.editRankingDB(gameController.getUsername(), gameController.getGamePoint());
                     timerCounter.set(7);
                     victoryTimeline.playFromStart();
                     winAllBox.setVisible(true);
@@ -296,31 +297,13 @@ public class PlayingController extends SceneController implements Initializable 
                 }
                 break;
             case GAME_LOSE:
-                updateRankingTable();
+                gameController.editRankingDB(gameController.getUsername(), gameController.getGamePoint());
                 curGamePoint = 0;
                 gameController.reset();
                 stage.setScene(lobbyScene);
                 timeline.stop();
                 break;
         }
-    }
-
-    /**
-     * Update ranking table.
-     */
-    public void updateRankingTable() {
-        File file = new File("res/lobbyTexture/ranking.txt");
-        try {
-            FileWriter fileWriter = new FileWriter(file, true);
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-            Date date = new Date();
-            String stringAppend = "\n" + gameController.getUsername() + "\n" + gameController.getGamePoint() + " " + formatter.format(date);
-            fileWriter.write(stringAppend);
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 
     /**

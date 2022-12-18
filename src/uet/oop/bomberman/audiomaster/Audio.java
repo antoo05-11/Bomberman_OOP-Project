@@ -1,9 +1,12 @@
 package uet.oop.bomberman.audiomaster;
 
+import uet.oop.bomberman.BombermanGame;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
+import java.io.InputStream;
 
 public class Audio {
     private Clip clip;
@@ -13,7 +16,8 @@ public class Audio {
     public Audio(String source) {
         this.source = source;
         try {
-            AudioInputStream audioInput = AudioSystem.getAudioInputStream(new File(source));
+
+            AudioInputStream audioInput = AudioSystem.getAudioInputStream(getClass().getResource(source));
             clip = AudioSystem.getClip();
             clip.open(audioInput);
         } catch (Exception e) {

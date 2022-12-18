@@ -13,7 +13,10 @@ import uet.oop.bomberman.Ranking;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 public class LobbyController extends SceneController implements Initializable {
@@ -113,7 +116,7 @@ public class LobbyController extends SceneController implements Initializable {
     /**
      * Click rank button.
      */
-    public void clickRankButton() {
+    public void clickRankButton() throws SQLException {
         if (!rankTable.isVisible()) {
             scaleValue = 0;
             rankTable.setScaleX(scaleValue);
@@ -130,25 +133,31 @@ public class LobbyController extends SceneController implements Initializable {
      * Read into priority queue to get max queue and convert it to list,
      * then push it into tableview.
      */
-    public void readRankingFile() {
-        File rankFile = new File("res/lobbyTexture/ranking.txt");
-        Scanner readFile = null;
-        try {
-            readFile = new Scanner(rankFile);
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        String rankInfo;
+    public void readRankingFile() throws SQLException {
+
+//        Scanner readFile = null;
+//        try {
+//            readFile = new Scanner(getClass().getResource("/lobbyTexture/ranking.txt").openStream());
+//        } catch (FileNotFoundException e) {
+//            System.out.println(e.getMessage());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        //String rankInfo;
         PriorityQueue<Ranking> rankingQueue = new PriorityQueue<>(Comparator.reverseOrder());
-        while (true) {
-            assert readFile != null;
-            if (!readFile.hasNextLine()) break;
-            String name = readFile.nextLine();
-            rankInfo = readFile.nextLine();
-            String[] s = rankInfo.split(" ");
-            rankingQueue.add(new Ranking(name, s[0], s[1] + " " + s[2]));
+        ResultSet resultSet = gameController.getSQLResultSet();
+        while (resultSet.next()) {
+            rankingQueue.add(new Ranking(resultSet.getString(1), String.valueOf(resultSet.getInt(2)),"0000"));
         }
-        readFile.close();
+//        while (true) {
+//            assert readFile != null;
+//            if (!readFile.hasNextLine()) break;
+//            String name = readFile.nextLine();
+//            rankInfo = readFile.nextLine();
+//            String[] s = rankInfo.split(" ");
+//            rankingQueue.add(new Ranking(name, s[0], s[1] + " " + s[2]));
+//        }
+//        readFile.close();
 
         List<Ranking> rankingList = new ArrayList<>();
         int rankIndex = 0;

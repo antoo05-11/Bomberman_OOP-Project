@@ -19,14 +19,14 @@ public class AudioController {
 
     public AudioController() {
         audiosList = new Audio[20];
-        audiosList[AudioName.LOBBY.ordinal()] = new Audio("res/audio/lobby.wav");
-        audiosList[AudioName.PLAYING.ordinal()] = new Audio("res/audio/playing.wav");
-        audiosList[AudioName.EXPLODING.ordinal()] = new Audio("res/audio/exploding.wav");
-        audiosList[AudioName.EAT_ITEM.ordinal()] = new Audio("res/audio/eatItem.wav");
-        audiosList[AudioName.CLICK_BUTTON.ordinal()] = new Audio("res/audio/clickButton.wav");
-        audiosList[AudioName.START_STAGE.ordinal()] = new Audio("res/audio/startStage.wav");
-        audiosList[AudioName.WIN_ONE.ordinal()] = new Audio("res/audio/winOne.wav");
-        audiosList[AudioName.WIN_ALL.ordinal()] = new Audio("res/audio/winAll.wav");
+        audiosList[AudioName.LOBBY.ordinal()] = new Audio("/audio/lobby.wav");
+        audiosList[AudioName.PLAYING.ordinal()] = new Audio("/audio/playing.wav");
+        audiosList[AudioName.EXPLODING.ordinal()] = new Audio("/audio/exploding.wav");
+        audiosList[AudioName.EAT_ITEM.ordinal()] = new Audio("/audio/eatItem.wav");
+        audiosList[AudioName.CLICK_BUTTON.ordinal()] = new Audio("/audio/clickButton.wav");
+        audiosList[AudioName.START_STAGE.ordinal()] = new Audio("/audio/startStage.wav");
+        audiosList[AudioName.WIN_ONE.ordinal()] = new Audio("/audio/winOne.wav");
+        audiosList[AudioName.WIN_ALL.ordinal()] = new Audio("/audio/winAll.wav");
     }
 
     /**

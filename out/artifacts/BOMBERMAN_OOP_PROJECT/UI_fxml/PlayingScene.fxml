@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uet.oop.bomberman.scenemaster.PlayingController">
+
+   <children>
+      <VBox fx:id="playingBox" prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <HBox alignment="CENTER" prefHeight="30.0" prefWidth="700.0" style="-fx-background-color: grey;">
+               <children>
+                  <Text fx:id="levelText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="STAGE 1" textAlignment="CENTER" wrappingWidth="122.03316672642995">
+                     <font>
+                        <Font name="Kristen ITC" size="20.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="MOVE" />
+                     </cursor>
+                  </Text>
+                  <ProgressBar fx:id="progressBar" prefHeight="18.0" prefWidth="494.0" style="-fx-background-color: grey;" />
+                  <Text fx:id="pointText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="80.92346143722534">
+                     <font>
+                        <Font name="Kristen ITC" size="27.0" />
+                     </font>
+                     <effect>
+                        <DropShadow />
+                     </effect>
+                  </Text>
+                  <HBox alignment="CENTER" prefHeight="43.0" prefWidth="82.0">
+                     <children>
+                        <ImageView fitHeight="30.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../statusBar/bomb.png" />
+                           </image>
+                        </ImageView>
+                        <Text fx:id="maxBombs" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="3" wrappingWidth="24.0550537109375">
+                           <font>
+                              <Font name="Kristen ITC" size="24.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </HBox>
+                  <HBox fx:id="livesImg" alignment="CENTER" prefHeight="38.0" prefWidth="140.0">
+                     <children>
+                        <ImageView fitHeight="27.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../statusBar/heart.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="27.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../statusBar/heart.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="27.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../statusBar/heart.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
+                  <StackPane prefHeight="38.0" prefWidth="27.0">
+                     <children>
+                        <Button fx:id="audioButton" focusTraversable="false" mnemonicParsing="false" onMouseEntered="#enterButton" onMouseExited="#exitButton" onMousePressed="#pressButton" style="-fx-background-color: transparent;">
+                           <graphic>
+                              <ImageView fitHeight="30.0" fitWidth="73.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../statusBar/music.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Line fx:id="muteLine" endX="82.23719787597656" endY="-7.23498010635376" startX="53.984745025634766" startY="-23.154094696044922" stroke="WHITE" strokeWidth="2.0" />
+                     </children>
+                  </StackPane>
+                  <Button fx:id="pauseButton" focusTraversable="false" mnemonicParsing="false" onMouseEntered="#enterButton" onMouseExited="#exitButton" onMousePressed="#pressButton" prefHeight="36.0" prefWidth="15.0" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../statusBar/pause.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="quitButton" focusTraversable="false" mnemonicParsing="false" onMouseEntered="#enterButton" onMouseExited="#exitButton" onMousePressed="#pressButton" prefHeight="38.0" prefWidth="33.0" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../statusBar/quit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox fx:id="winOneImg" alignment="CENTER" disable="true" prefHeight="200.0" prefWidth="100.0" visible="false">
+         <children>
+            <ImageView disable="true" fitHeight="384.0" fitWidth="505.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../statusBar/winOne.gif" />
+               </image>
+            </ImageView>
+         </children>
+      </VBox>
+      <Button fx:id="continueButton" disable="true" focusTraversable="false" mnemonicParsing="false" onMouseEntered="#enterButton" onMouseExited="#exitButton" onMousePressed="#pressButton" style="-fx-background-color: transparent;" visible="false">
+         <graphic>
+            <ImageView fitHeight="95.0" fitWidth="94.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../statusBar/continue.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <VBox fx:id="nextLevelBox" alignment="CENTER" disable="true" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: black;" visible="false">
+         <children>
+            <Text fx:id="stageText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="STAGE 1">
+               <font>
+                  <Font name="Kristen ITC" size="40.0" />
+               </font>
+            </Text>
+         </children>
+      </VBox>
+      <VBox fx:id="winAllBox" alignment="CENTER" disable="true" prefHeight="200.0" prefWidth="100.0" spacing="10.0" style="-fx-background-color: black;" visible="false">
+         <children>
+            <ImageView fitHeight="150.0" fitWidth="490.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../statusBar/winAll.gif" />
+               </image>
+            </ImageView>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  CONGRATULATIONS" textAlignment="CENTER">
+               <font>
+                  <Font name="Gill Sans MT Condensed" size="33.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="YOU HAVE SUCCEEDED IN HELPING BOMBERMAN TO BECOME A HUMAN BEING" textAlignment="CENTER">
+               <font>
+                  <Font name="Gill Sans MT Condensed" size="33.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="MAYBE YOU CAN RECOGNIZE HIM IN ANOTHER HUDSON SOFT GAME" textAlignment="CENTER">
+               <font>
+                  <Font name="Gill Sans MT Condensed" size="33.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="GOODBYE" textAlignment="CENTER">
+               <font>
+                  <Font name="Gill Sans MT Condensed" size="33.0" />
+               </font>
+            </Text>
+         </children>
+      </VBox>
+   </children>
+</StackPane>

@@ -5,12 +5,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import uet.oop.bomberman.audiomaster.AudioController;
 import uet.oop.bomberman.scenemaster.LobbyController;
 import uet.oop.bomberman.scenemaster.PlayingController;
 
 import java.io.IOException;
+import java.sql.*;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -76,6 +76,17 @@ public class GameController {
 
 
     /**
+     * Database
+     */
+    private static final String url = "jdbc:mysql://sql6.freesqldatabase.com:3306/sql6585210";
+    private static final String user = "sql6585210";
+    private static final String password = "Y2HBnkgMFy";
+    private static final String sql = "select * from bomberman_database";
+    Connection connection;
+    Statement statement;
+
+
+    /**
      * Timer for scenes.
      */
 
@@ -83,7 +94,11 @@ public class GameController {
         @Override
         public void handle(long now) {
             render();
-            update();
+            try {
+                update();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     };
     Scene playingScene;
@@ -119,14 +134,48 @@ public class GameController {
         stage.setScene(lobbyScene);
         stage.show();
 
+        try {
+            connection = DriverManager.getConnection(url, user, password);
+        } catch (
+                SQLException e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
+
         timer.start();
+
+
+
     }
 
+    private static void showInfo(ResultSet resultSet) throws SQLException {
+        while (resultSet.next())
+            System.out.println(resultSet.getString(1) + resultSet.getInt(2));
+    }
+
+    public ResultSet getSQLResultSet() {
+        ResultSet resultSet = null;
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultSet;
+    }
+    public void editRankingDB(String name, int point) throws SQLException {
+        String sql = " insert into bomberman_database (name, point)"
+                + " values (?, ?)";
+        PreparedStatement preparedStmt = connection.prepareStatement(sql);
+        preparedStmt.setString (1, name);
+        preparedStmt.setInt (2, point);
+        preparedStmt.execute();
+    }
 
     /**
      * Update all specs of game, set scenes.
      */
-    private void update() {
+    private void update() throws SQLException {
         lobbyController.updateStatus();
         playingController.updateStatus();
         audioController.run();

@@ -17,8 +17,7 @@ import uet.oop.bomberman.entities.stillobject.item.SpeedItem;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.scenemaster.SceneController;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.*;
 
 
@@ -54,10 +53,16 @@ public class Map {
     public void readMapFromFile() {
         Scanner scanner = null;
         try {
-            scanner = new Scanner(new File("res/levels/Level" + (currentLevel.getLevelCode().get() + 1) + ".txt"));
+            scanner = new Scanner(getClass().getResource("/levels/Level" + (currentLevel.getLevelCode().get() + 1) + ".txt").openStream());
+//            InputStreamReader inputStreamReader = new InputStreamReader(getClass().getResource("/levels/Level" + (currentLevel.getLevelCode().get() + 1) + ".txt").openStream())
+//            BufferedReader br = new BufferedReader(inputStreamReader);
         } catch (FileNotFoundException e) {
             System.out.println("No file exist");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
+
         String rowString; //Save info of a row into string.
         assert scanner != null;
         rowString = scanner.nextLine(); //Read first line in Level.txt.
