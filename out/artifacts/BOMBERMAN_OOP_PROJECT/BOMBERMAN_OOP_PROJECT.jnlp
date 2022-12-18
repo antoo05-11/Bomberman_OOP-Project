@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="BOMBERMAN_OOP_PROJECT.jnlp">
   <information>
-    <title>game</title>
+    <title>bomberman</title>
     <vendor>1234</vendor>
     <description>3243567</description>
     <offline-allowed/>
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="BOMBERMAN_OOP_PROJECT.jar" size="32255059" download="eager" />
+    <jar href="BOMBERMAN_OOP_PROJECT.jar" size="34787638" download="eager" />
     <jar href="javafx-base-15-win.jar" size="745515" download="eager" />
     <jar href="javafx-base-15.jar" size="302" download="eager" />
     <jar href="javafx-controls-15-win.jar" size="2531028" download="eager" />

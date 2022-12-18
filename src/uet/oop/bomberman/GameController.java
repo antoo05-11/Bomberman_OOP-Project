@@ -11,6 +11,8 @@ import uet.oop.bomberman.scenemaster.PlayingController;
 
 import java.io.IOException;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -35,6 +37,14 @@ public class GameController {
 
     private Stage stage;
     private String username = "";
+    private static GameController gameController = null;
+
+    public static GameController getGameController(Stage stage) {
+        if (gameController == null) {
+            gameController = new GameController(stage);
+        }
+        return gameController;
+    }
 
     public void setUsername(String username) {
         this.username = username;
@@ -46,7 +56,6 @@ public class GameController {
 
     public static GameStatus gameStatus;
 
-    public static int LEVEL = 0;
     public static final int MAX_LEVEL = 4;
 
     int currentLevelCode = 0;
@@ -65,7 +74,7 @@ public class GameController {
     /**
      * Constructor with available stage.
      */
-    public GameController(Stage stage) {
+    private GameController(Stage stage) {
         this.stage = stage;
         currentLevel = new Level(gamePoint);
     }
@@ -139,21 +148,15 @@ public class GameController {
         } catch (
                 SQLException e) {
             e.printStackTrace();
-            System.exit(0);
+            //System.exit(0);
         }
 
         timer.start();
 
 
-
     }
 
-    private static void showInfo(ResultSet resultSet) throws SQLException {
-        while (resultSet.next())
-            System.out.println(resultSet.getString(1) + resultSet.getInt(2));
-    }
-
-    public ResultSet getSQLResultSet() {
+    public ResultSet getRankingSet() {
         ResultSet resultSet = null;
         try {
             statement = connection.createStatement();
@@ -163,12 +166,16 @@ public class GameController {
         }
         return resultSet;
     }
-    public void editRankingDB(String name, int point) throws SQLException {
-        String sql = " insert into bomberman_database (name, point)"
-                + " values (?, ?)";
+
+    public void editRankingSet(String name, int point) throws SQLException {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        String sql = " insert into bomberman_database (name, point, date)"
+                + " values (?, ?, ?)";
         PreparedStatement preparedStmt = connection.prepareStatement(sql);
-        preparedStmt.setString (1, name);
-        preparedStmt.setInt (2, point);
+        preparedStmt.setString(1, name);
+        preparedStmt.setInt(2, point);
+        preparedStmt.setString(3, formatter.format(date));
         preparedStmt.execute();
     }
 

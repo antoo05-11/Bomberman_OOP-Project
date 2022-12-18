@@ -134,31 +134,11 @@ public class LobbyController extends SceneController implements Initializable {
      * then push it into tableview.
      */
     public void readRankingFile() throws SQLException {
-
-//        Scanner readFile = null;
-//        try {
-//            readFile = new Scanner(getClass().getResource("/lobbyTexture/ranking.txt").openStream());
-//        } catch (FileNotFoundException e) {
-//            System.out.println(e.getMessage());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        //String rankInfo;
         PriorityQueue<Ranking> rankingQueue = new PriorityQueue<>(Comparator.reverseOrder());
-        ResultSet resultSet = gameController.getSQLResultSet();
+        ResultSet resultSet = gameController.getRankingSet();
         while (resultSet.next()) {
-            rankingQueue.add(new Ranking(resultSet.getString(1), String.valueOf(resultSet.getInt(2)),"0000"));
+            rankingQueue.add(new Ranking(resultSet.getString(1), String.valueOf(resultSet.getInt(2)),resultSet.getString(3)));
         }
-//        while (true) {
-//            assert readFile != null;
-//            if (!readFile.hasNextLine()) break;
-//            String name = readFile.nextLine();
-//            rankInfo = readFile.nextLine();
-//            String[] s = rankInfo.split(" ");
-//            rankingQueue.add(new Ranking(name, s[0], s[1] + " " + s[2]));
-//        }
-//        readFile.close();
-
         List<Ranking> rankingList = new ArrayList<>();
         int rankIndex = 0;
         while (!rankingQueue.isEmpty()) {

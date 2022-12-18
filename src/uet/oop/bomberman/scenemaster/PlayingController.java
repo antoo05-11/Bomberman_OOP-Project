@@ -25,24 +25,15 @@ import javafx.util.Duration;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.GameController;
 import uet.oop.bomberman.Level;
-import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.movingobject.Bomber;
-import uet.oop.bomberman.map_graph.Map;
 
-import java.io.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static uet.oop.bomberman.GameController.GameStatus.*;
-import static uet.oop.bomberman.GameController.LEVEL;
 
 public class PlayingController extends SceneController implements Initializable {
     @FXML
@@ -240,7 +231,7 @@ public class PlayingController extends SceneController implements Initializable 
                 } else if (timeline.getStatus() == Timeline.Status.RUNNING) {
                     // Update display.
                     levelText.setText("STAGE " + (currentLevel.getLevelCode().get() + 1));
-                    maxBombs.setText(Integer.toString(((Bomber)gameController.getCurrentLevel().getGameMap().getMovingEntitiesList().get(0)).getMaxBomb()));
+                    maxBombs.setText(Integer.toString(((Bomber) gameController.getCurrentLevel().getGameMap().getMovingEntitiesList().get(0)).getMaxBomb()));
 
                     muteLine.setVisible(gameController.audioController.isMuted());
                     for (int i = 0; i < currentLevel.getGameMap().getBomberNumOfLives(); i++)
@@ -286,7 +277,7 @@ public class PlayingController extends SceneController implements Initializable 
                 break;
             case WIN_ALL:
                 if (victoryTimeline.getStatus() != Animation.Status.RUNNING) {
-                    gameController.editRankingDB(gameController.getUsername(), gameController.getGamePoint());
+                    gameController.editRankingSet(gameController.getUsername(), gameController.getGamePoint());
                     timerCounter.set(7);
                     victoryTimeline.playFromStart();
                     winAllBox.setVisible(true);
@@ -297,7 +288,7 @@ public class PlayingController extends SceneController implements Initializable 
                 }
                 break;
             case GAME_LOSE:
-                gameController.editRankingDB(gameController.getUsername(), gameController.getGamePoint());
+                gameController.editRankingSet(gameController.getUsername(), gameController.getGamePoint());
                 curGamePoint = 0;
                 gameController.reset();
                 stage.setScene(lobbyScene);
